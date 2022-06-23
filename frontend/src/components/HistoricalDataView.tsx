@@ -9,7 +9,6 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
-
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
@@ -38,7 +37,7 @@ export default function HistoricalDataView() {
           onChange={handleChange}
         >
             {Array.from(Array(filesNames.length)).map((_, index) => (
-                <MenuItem value={filesNames[index]}>{filesNames[index]}</MenuItem>
+                <MenuItem key={'menu-item-' + index} value={filesNames[index]}>{filesNames[index]}</MenuItem>
             ))}
         </Select>
       </FormControl>
@@ -47,8 +46,9 @@ export default function HistoricalDataView() {
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 12, md: 12 }}>
         {Array.from(Array(cameras.length)).map((_, index) => (
-          <Grid item xs={2} sm={4} md={4} key={index}>
+          <Grid key={index} item xs={2} sm={4} md={4}>
             <VideoCard title={cameras[index]} subtitle={"130 frames"}/>
+            {index}
           </Grid>
         ))}
       </Grid>

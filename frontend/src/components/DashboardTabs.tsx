@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import HistoricalDataView from './HistoricalDataView';
 import LiveDataView from './LiveDataView';
+import RecipesView from './RecipesView';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -25,7 +26,7 @@ function TabPanel(props: TabPanelProps) {
     >
       {value === index && (
         <Box sx={{ p: 2 }}>
-          <Typography>{children}</Typography>
+          <Typography component={'div'}>{children}</Typography>
         </Box>
       )}
     </div>
@@ -50,6 +51,7 @@ export default function DashboardTabs() {
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
           <Tab label="Live Data" {...a11yProps(0)} />
           <Tab label="Historical Data" {...a11yProps(1)} />
+          <Tab label="Recipe Collection" {...a11yProps(2)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
@@ -57,6 +59,9 @@ export default function DashboardTabs() {
       </TabPanel>
       <TabPanel value={value} index={1}>
         <HistoricalDataView />
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+        <RecipesView />
       </TabPanel>
     </Box>
   );
