@@ -10,8 +10,8 @@ import DashboardTabs from './components/DashboardTabs';
 export default function App() {
   return (
     <div className="App">
-        <Box sx={{ flexGrow: 1 }}>
-          <AppBar position="static">
+        <Box sx={{ display: "flex" }}>
+          <AppBar component="nav">
               <Toolbar>
               <IconButton
                   size="large"
@@ -32,3 +32,4 @@ export default function App() {
     </div>
   );
 }
+//sx={{ flexGrow: 1 }}

@@ -19,7 +19,7 @@ export default function LiveDataView() {
       variant="contained">Start Recording</Button>
       <div style={{margin: 22}}
       ></div>
-      <VideoCard title="Live Data" subtitle={""}/>
+      <VideoCard title="Live Data" subtitle={""} path={"http://localhost:4000/video"}/>
     </div>
   );
 }

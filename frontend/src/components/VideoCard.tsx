@@ -8,6 +8,7 @@ import ReactPlayer from 'react-player'
 interface VideoCardProps {
     title: string;
     subtitle: string;
+    path: string;
   }
 interface VideoCardState {
 
@@ -19,30 +20,31 @@ VideoCardState
 > {
     render() {
     return (
-        <Card sx={{ maxWidth: 400 }}>
+        <Card sx={{ maxWidth: 300 }}>
         <CardHeader
             titleTypographyProps={{
                 fontSize: 16,
             }}
             title={this.props.title}
-            subheader={this.props.subtitle}
+            // subheader={this.props.subtitle}
         />
-        {/* <CardMedia
+        <CardMedia
             component="video"
-            autoPlay 
+            // autoPlay 
             controls 
-            image="/videos/gll.mp4"
-        /> */}
-        <CardContent>
+            image={this.props.path}
+        />
+        {/* <CardContent>
             <ReactPlayer
-                url="/videos/gll.mp4"
+                url={this.props.path}//"http://localhost:4000/video"
+                //"/videos/gll.mp4"
                 // url='https://vimeo.com/243556536'
-                width='100%'
-                height='100%'
+                width='150px'
+                height='150px'
                 controls = {true}
 
                 />
-        </CardContent>
+        </CardContent> */}
         </Card>
     );
     }

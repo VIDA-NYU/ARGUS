@@ -46,8 +46,8 @@ export default function DashboardTabs() {
     setValue(newValue);
   };
   return (
-    <Box sx={{ width: '100%' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+    <Box sx={{ pt: 9, pl: 1,  width: '100%' }} component="main">
+      <Box sx={{ borderBottom: 1, borderColor: 'divider' }} >
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
           <Tab label="Live Data" {...a11yProps(0)} />
           <Tab label="Historical Data" {...a11yProps(1)} />
