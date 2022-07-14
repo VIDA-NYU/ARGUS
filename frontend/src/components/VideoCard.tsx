@@ -26,7 +26,7 @@ VideoCardState
                 fontSize: 16,
             }}
             title={this.props.title}
-            // subheader={this.props.subtitle}
+            // subheader={this.props.path}
         />
         <CardMedia
             component="video"

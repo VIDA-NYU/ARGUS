@@ -1,7 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { styled } from '@mui/material/styles';
+import React, { useEffect } from 'react';
 import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import { VideoCard } from './VideoCard';
 import InputLabel from '@mui/material/InputLabel';
@@ -14,21 +12,10 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { TokenProvider, useToken } from '../api/TokenContext';
+import { API_URL, RECORDINGS_STATIC_PATH } from '../config';
+import useSWR, { Key } from 'swr';
 
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-}));
-
-interface VideoData {
-    id: number,
-    poster: string,
-    duration: string,
-    name: string
-}
 interface Data {
   id: number,
   name: string,
@@ -36,162 +23,185 @@ interface Data {
   totalCameras: number
 }
 
-interface JsonProps {
-  jsonData: any,
+interface AccordionProps {
+  type: string,
   title: string,
-}
-const JsonView = ({ jsonData, title }: JsonProps) => {
- return  <Accordion defaultExpanded={true} >
- <AccordionSummary
-   expandIcon={<ExpandMoreIcon />}
-   aria-controls="panel2a-content"
-   id="panel2a-header"
- >
-   <Typography>{title}</Typography>
- </AccordionSummary>
- <AccordionDetails>
-   <Box style={{maxHeight: 400, overflow: 'auto'}}
-   sx={{
-     backgroundColor: '#f9f9f9',
-     '&:hover': {
-       backgroundColor: '#E5E5E5',
-       opacity: [0.9, 0.8, 0.7],
-     },
-   }}>
-     {JSON.stringify(jsonData)}
-     {/* <JSONPretty id="json-pretty" data={jsonData}></JSONPretty> */}
-   </Box>
- </AccordionDetails>
-</Accordion> 
+  data: any | Data [],
+  recordingName?: string
 }
 
-export default function HistoricalDataView() {
-    const cameraNames = {"main": 'Main',
+enum dataType {
+  VIDEO = 'VIDEO',
+  JSON = 'JSON',
+}
+
+const AccordionView = ({ type, title, data, recordingName }: AccordionProps) => {
+  const videoStreamings = {"main": 'Main',
                      "depthlt": 'Depth',
                      "gll": 'Grey Left-Left',
                      "glf": 'Grey Left-Front',
                      "grf": 'Grey Right-Front',
                      "grr": 'Grey Right-Right'
-    };
-    const [cameraId, setCamera] = React.useState<number>(0);
-    const [videos, setVideos] = React.useState<VideoData[]>([]);
-    const [data, setData] = React.useState<Data[]>([]);
+  };
+  const videoStreamingsIDs = Object.keys(videoStreamings);
+
+  return (
+    <Accordion defaultExpanded={true} >
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon />}
+        aria-controls="panel2a-content"
+        id="panel2a-header"
+      >
+        <Typography>{title}</Typography>
+      </AccordionSummary>
+      <AccordionDetails>
+      {
+        type === dataType.JSON &&
+        <Box style={{maxHeight: 400, overflow: 'auto'}}
+            sx={{
+              backgroundColor: '#f9f9f9',
+              '&:hover': {
+                backgroundColor: '#E5E5E5',
+                opacity: [0.9, 0.8, 0.7],
+              },
+            }}>
+            {JSON.stringify(data)}
+          </Box>
+      }
+      {
+        type === dataType.VIDEO && 
+        <Box sx={{ flexGrow: 1 }}>
+            <Grid container spacing={{ xs: 1, md: 2 }} >
+              {
+              data !== undefined && data && data.streams &&
+              videoStreamingsIDs.map((name, index) => {
+                const streams = Object.keys(data.streams);
+                if (streams.includes(name)){ //verify if stream exists.
+                  return <Grid key={index} item xs={2}>
+                    <VideoCard title={videoStreamings[name]} subtitle={"130 frames"} path={API_URL + RECORDINGS_STATIC_PATH + `${recordingName}/${name}.mp4`}/>
+                  </Grid>
+                }
+              })
+              }
+            </Grid>
+          </Box>
+      }
+      {/* <JSONPretty id="json-pretty" data={jsonData}></JSONPretty> */}
+      </AccordionDetails>
+    </Accordion> 
+  )
+}
+
+function RecordingsDataView() {
+    const [recordingID, setRecordingID] = React.useState<number>(0);
+    const [recordingName, setRecordingName] = React.useState<string>('');
     const [eyeData, setEyeData] = React.useState({});
     const [handData, setHandData] = React.useState({});
 
-    useEffect(() => {
-      const fetchVideoData = async () => {
-        const res = await fetch(
-          'http://localhost:4000/videos',
-        );
-        const videos = await res.json();
-        setVideos(videos);
-      };
-      fetchVideoData();
-    }, [setVideos]);
+
+    // get the token and authenticated fetch function
+    const { token, fetchAuth } = useToken();
+    // query the recipes endpoint (only if we have a token)
+    // fetch list of available recordings 
+    const uid: Key = token && `${API_URL}/recordings`;
+    const fetcher = (url: string) => fetchAuth !== undefined && fetchAuth !== "" && fetchAuth(url).then((res) => res.json());
+    const { data: recordingsList, error } = useSWR(uid, fetcher);
+
+    // fetch data available of an specific recording
+    const uidRecordID: Key = token && `${API_URL}/recordings/` + recordingName;
+    const fetcherRecordID = (url: string) => fetchAuth !== undefined && fetchAuth !== "" && fetchAuth(url).then((res) => res.json());
+    const { data: recordingData } = useSWR(uidRecordID, fetcherRecordID);
+
 
     useEffect(() => {
-      const fetchData = async () => {
-        const res = await fetch(
-          'http://localhost:4000/data',
-        );
-        const data = await res.json();
-        console.log("data");
-        console.log(data);
-        setData(data);
-      };
-      fetchData();
-    }, [setData]);
+      // Setup/initialize recording name.
+      recordingsList && setRecordingName(recordingsList[0]);
+    }, [recordingsList]);
 
     useEffect(() => {
-      const fetchData = async () => {
-        const res = await fetch(
-          `http://localhost:4000/files/${data[cameraId].name}/${data[cameraId].files[6]}`,
-        );
-        const jsonFile = await res.json();
-        setEyeData(jsonFile);
+      const fetchEyeData = async () => {
+        try {
+          // const url ="https://api.ptg.poly.edu/recordings/static/coffee-test-1/eye.json";
+          const url = API_URL +  RECORDINGS_STATIC_PATH + `${recordingName}/eye.json`;
+          const res = await fetch(url);
+          const jsonFile = await res.json();
+          setEyeData(jsonFile.slice(0, 20));
+        } catch (error) {
+                // console.log("error", error);
+                setEyeData("404 Not Found. Eye data was not found.");
+              }
       };
-      if (data !== undefined && data[cameraId] != undefined) {
-        fetchData();
+      const fetchHandData = async () => {
+        try {
+          // const url ="https://api.ptg.poly.edu/recordings/static/coffee-test-1/hand.json";
+          const url = API_URL +  RECORDINGS_STATIC_PATH + `${recordingName}/hand.json`;
+          const res = await fetch(url);
+          const jsonFile = await res.json();
+          setHandData(jsonFile.slice(0, 20));
+        } catch (error) {
+          // console.log("error", error);
+          setHandData("404 Not Found. Hand data was not found.");
+        }
+      };
+
+      if (recordingData && recordingData.streams){
+        Object.keys(recordingData.streams).includes('eye') && fetchEyeData();
+        Object.keys(recordingData.streams).includes('hand') && fetchHandData();
       }
-    }, [cameraId, data]);
 
-    useEffect(() => {
-      const fetchData = async () => {
-        const res = await fetch(
-          `http://localhost:4000/files/${data[cameraId].name}/${data[cameraId].files[7]}`,
-        );
-        const jsonFile = await res.json();
-        console.log(jsonFile);
-        setHandData(jsonFile);
-      };
-      if (data !== undefined && data[cameraId] != undefined) {
-        fetchData();
-      }
-    }, [cameraId, data]);
+    }, [recordingData]);
 
 
     const handleChange = (event: SelectChangeEvent) => {
-      setCamera(Number(event.target.value));
+      const index = Number(event.target.value);
+      setRecordingID(index);
+      recordingsList && setRecordingName(recordingsList[index]);
     };
 
+  const renderStreamings= () => {
+    if (recordingData &&  recordingData.streams){
+      return <>
+        <AccordionView type={dataType.VIDEO} data={recordingData} title={"Cameras"} recordingName={recordingName}></AccordionView>
+        {
+          Object.keys(recordingData.streams).includes('eye') &&
+          <AccordionView type={dataType.JSON} data={eyeData} title={"Eye Data"} ></AccordionView>
+        }
+        {
+          Object.keys(recordingData.streams).includes('hand') && 
+        <AccordionView type={dataType.JSON} data={handData} title={"Hand Data"} ></AccordionView>
+        }
+        </>
+    }
+    return <></>;
+  }
   return (
-      <div>
-        {/* <div>
-          {videos != undefined && videos.map((video: VideoData) => (
-            <li key={video.id}>
-              <div className="card border-0">
-                  <img src={`http://localhost:4000${video.poster}`} alt={video.name} />
-                  <div className="card-body">
-                      <p>{video.name}</p>
-                      <p>{video.duration}</p>
-                  </div>
-              </div>
-            </li>
-          ))}
-          </div> 
-        */}
-    <Box sx={{ flexGrow: 1 }}>
-      <FormControl sx={{ m: 1, minWidth: 340 }} size="small">
-        <InputLabel id="demo-simple-select-label">Select Data </InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={cameraId.toString()}
-          label="Select Data"
-          onChange={handleChange}
-        >
-            {Array.from(Array(data.length)).map((_, index) => (
-                <MenuItem key={'menu-item-' + index} value={index}>{data[index].name}</MenuItem>
-            ))}
-        </Select>
-      </FormControl>
-    </Box>
-    
-    <Accordion defaultExpanded={true}>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
-        >
-          <Typography>Cameras</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-        <Box sx={{ flexGrow: 1 }}>
-          <Grid container spacing={{ xs: 1, md: 2 }} >
-            {data !== undefined && data[cameraId] != undefined &&
-            Array.from(Array(data[cameraId].totalCameras)).map((_, index) => (
-              <Grid key={index} item xs={2}>
-                <VideoCard title={cameraNames[data[cameraId].files[index]]} subtitle={"130 frames"} path={`http://localhost:4000/video/${data[cameraId].name}/${data[cameraId].files[index]}`}/>
-              </Grid>
-            ))}
-          </Grid>
-          
-        </Box>
-        </AccordionDetails>
-      </Accordion>    
-      <JsonView jsonData={eyeData} title={"Eye Data"}></JsonView>
-      <JsonView jsonData={handData} title={"Hand Data"}></JsonView>
+    <div>
+      <Box sx={{ flexGrow: 1 }}>
+        <FormControl sx={{ m: 1, minWidth: 340 }} size="small">
+          <InputLabel id="demo-simple-select-label">Select Data </InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={recordingID.toString()}
+            label="Select Data"
+            onChange={handleChange}
+          >
+              {recordingsList && Array.from(Array(recordingsList.length)).map((_, index) => (
+                  <MenuItem key={'menu-item-' + index} value={index}>{recordingsList[index]}</MenuItem>
+              ))}
+          </Select>
+        </FormControl>
+      </Box>   
+      {renderStreamings()}
     </div>
   );
 }
+
+// top level - wraps with a global token context
+const HistoricalDataView = () => {
+  return <TokenProvider>
+    <RecordingsDataView />
+  </TokenProvider>
+}
+
+export default HistoricalDataView;

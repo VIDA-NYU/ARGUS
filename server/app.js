@@ -7,15 +7,15 @@ const cors = require('cors');
 
 const recording_data = [
     {
-        id: 0,
-        name: 'coffee-test-1',
-        files: ["main", "depthlt", "gll", "glf", "grf", "grr", "eye", "hand"],
-        totalCameras: 6
-    },
-    {
         id: 1,
         name: 'coffee-test-2',
         files: ["main", "depthlt", "gll", "glf", "grf", "grr", "eye", "hand" ],
+        totalCameras: 6
+    },
+    {
+        id: 0,
+        name: 'coffee-test-1',
+        files: ["main", "depthlt", "gll", "glf", "grf", "grr", "eye", "hand"],
         totalCameras: 6
     },
     {
