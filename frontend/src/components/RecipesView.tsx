@@ -15,7 +15,7 @@ Pages::
 */
 
 // simple login form
-const Login = ({ username, password }: LoginCredential) => {
+export const Login = ({ username, password }: LoginCredential) => {
   const { login } = useToken();
   const [ user, setUser ] = useState(username);
   const [ pass, setPass ] = useState(password);
