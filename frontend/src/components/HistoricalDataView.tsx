@@ -101,16 +101,16 @@ function RecordingsDataView() {
 
     // get the token and authenticated fetch function
     const { token, fetchAuth } = useToken();
-    // query the recipes endpoint (only if we have a token)
+    const fetcher = (url: string) => fetchAuth !== undefined && fetchAuth !== "" && fetchAuth(url).then((res) => res.json());
+
+    // query the streamings endpoint (only if we have a token)
     // fetch list of available recordings 
     const uid: Key = token && `${API_URL}/recordings`;
-    const fetcher = (url: string) => fetchAuth !== undefined && fetchAuth !== "" && fetchAuth(url).then((res) => res.json());
     const { data: recordingsList, error } = useSWR(uid, fetcher);
 
     // fetch data available of an specific recording
     const uidRecordID: Key = token && `${API_URL}/recordings/` + recordingName;
-    const fetcherRecordID = (url: string) => fetchAuth !== undefined && fetchAuth !== "" && fetchAuth(url).then((res) => res.json());
-    const { data: recordingData } = useSWR(uidRecordID, fetcherRecordID);
+    const { data: recordingData } = useSWR(uidRecordID, fetcher);
 
 
     useEffect(() => {
