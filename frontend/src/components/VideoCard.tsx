@@ -7,7 +7,7 @@ import ReactPlayer from 'react-player'
 
 interface VideoCardProps {
     title: string;
-    subtitle: string;
+    subtitle?: string;
     path: string;
   }
 interface VideoCardState {

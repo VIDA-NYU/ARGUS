@@ -15,6 +15,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { TokenProvider, useToken } from '../api/TokenContext';
 import { API_URL, RECORDINGS_STATIC_PATH } from '../config';
 import useSWR, { Key } from 'swr';
+import { AudioCard } from './AudioCard';
 
 interface Data {
   id: number,
@@ -33,6 +34,7 @@ interface AccordionProps {
 enum dataType {
   VIDEO = 'VIDEO',
   JSON = 'JSON',
+  AUDIO = 'AUDIO',
 }
 
 const AccordionView = ({ type, title, data, recordingName }: AccordionProps) => {
@@ -78,13 +80,24 @@ const AccordionView = ({ type, title, data, recordingName }: AccordionProps) => 
                 const streams = Object.keys(data.streams);
                 if (streams.includes(name)){ //verify if stream exists.
                   return <Grid key={index} item xs={2}>
-                    <VideoCard title={videoStreamings[name]} subtitle={"130 frames"} path={API_URL + RECORDINGS_STATIC_PATH + `${recordingName}/${name}.mp4`}/>
+                    <VideoCard title={videoStreamings[name]} path={API_URL + RECORDINGS_STATIC_PATH + `${recordingName}/${name}.mp4`}/>
                   </Grid>
                 }
               })
               }
             </Grid>
           </Box>
+      }
+      {
+      type === dataType.AUDIO &&
+      <Box sx={{ flexGrow: 1 }}>
+        <Grid container spacing={{ xs: 1, md: 2 }} >
+          {
+          data !== undefined && data && data.streams && Object.keys(data.streams).includes("mic0") &&
+            <AudioCard path={API_URL + RECORDINGS_STATIC_PATH + `${recordingName}/mic0.wav`}/>
+          }
+        </Grid>
+      </Box>
       }
       {/* <JSONPretty id="json-pretty" data={jsonData}></JSONPretty> */}
       </AccordionDetails>
@@ -162,6 +175,10 @@ function RecordingsDataView() {
     if (recordingData &&  recordingData.streams){
       return <>
         <AccordionView type={dataType.VIDEO} data={recordingData} title={"Cameras"} recordingName={recordingName}></AccordionView>
+        {
+          Object.keys(recordingData.streams).includes('mic0') &&
+          <AccordionView type={dataType.AUDIO} data={recordingData} title={"Audio Data"} recordingName={recordingName} ></AccordionView>
+        }
         {
           Object.keys(recordingData.streams).includes('eye') &&
           <AccordionView type={dataType.JSON} data={eyeData} title={"Eye Data"} ></AccordionView>
