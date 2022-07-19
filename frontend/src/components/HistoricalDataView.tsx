@@ -13,10 +13,10 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { TokenProvider, useToken } from '../api/TokenContext';
-import { API_URL, RECORDINGS_STATIC_PATH } from '../config';
-import useSWR, { Key } from 'swr';
 import { AudioCard } from './AudioCard';
 import { FormControlLabel, Switch } from '@mui/material';
+import { getAudioPath, getEyeData, getHandData, getVideoPath, useGetAllRecordings, useGetRecording } from '../api/rest';
+import { dataType, streamingType } from '../api/types';
 
 interface Data {
   id: number,
@@ -33,22 +33,15 @@ interface AccordionProps {
   autoplay?: boolean 
 }
 
-enum dataType {
-  VIDEO = 'VIDEO',
-  JSON = 'JSON',
-  AUDIO = 'AUDIO',
-}
-
 const AccordionView = ({ type, title, data, recordingName, autoplay }: AccordionProps) => {
-  const videoStreamings = {"main": 'Main',
-                     "depthlt": 'Depth',
-                     "gll": 'Grey Left-Left',
-                     "glf": 'Grey Left-Front',
-                     "grf": 'Grey Right-Front',
-                     "grr": 'Grey Right-Right'
+  const videoStreamings = { [streamingType.VIDEO_MAIN]: 'Main',
+                     [streamingType.VIDEO_DEPTH]: 'Depth',
+                     [streamingType.VIDEO_GLL]: 'Grey Left-Left',
+                     [streamingType.VIDVIDEO_GLF]: 'Grey Left-Front',
+                     [streamingType.VIDEO_GRF]: 'Grey Right-Front',
+                     [streamingType.VIDEO_GRR]: 'Grey Right-Right'
   };
   const videoStreamingsIDs = Object.keys(videoStreamings);
-console.log("autoplay accordion: " , autoplay);
   return (
     <Accordion defaultExpanded={true} >
       <AccordionSummary
@@ -77,12 +70,11 @@ console.log("autoplay accordion: " , autoplay);
         <Box sx={{ flexGrow: 1 }}>
             <Grid container spacing={{ xs: 1, md: 2 }} >
               {
-              data !== undefined && data && data.streams &&
               videoStreamingsIDs.map((name, index) => {
                 const streams = Object.keys(data.streams);
                 if (streams.includes(name)){ //verify if stream exists.
                   return <Grid key={index} item xs={2}>
-                    <VideoCard title={videoStreamings[name]} autoplay={autoplay} path={API_URL + RECORDINGS_STATIC_PATH + `${recordingName}/${name}.mp4`}/>
+                    <VideoCard title={videoStreamings[name]} autoplay={autoplay} path={getVideoPath(recordingName, name)}/>
                   </Grid>
                 }
               })
@@ -94,10 +86,7 @@ console.log("autoplay accordion: " , autoplay);
       type === dataType.AUDIO &&
       <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={{ xs: 1, md: 2 }} >
-          {
-          data !== undefined && data && data.streams && Object.keys(data.streams).includes("mic0") &&
-            <AudioCard autoplay={autoplay} path={API_URL + RECORDINGS_STATIC_PATH + `${recordingName}/mic0.wav`}/>
-          }
+          <AudioCard autoplay={autoplay} path={getAudioPath(recordingName)} />
         </Grid>
       </Box>
       }
@@ -117,16 +106,12 @@ function RecordingsDataView() {
 
     // get the token and authenticated fetch function
     const { token, fetchAuth } = useToken();
-    const fetcher = (url: string) => fetchAuth !== undefined && fetchAuth !== "" && fetchAuth(url).then((res) => res.json());
 
     // query the streamings endpoint (only if we have a token)
     // fetch list of available recordings 
-    const uid: Key = token && `${API_URL}/recordings`;
-    const { data: recordingsList, error } = useSWR(uid, fetcher);
-
+    const {response: recordingsList} = useGetAllRecordings(token, fetchAuth);
     // fetch data available of an specific recording
-    const uidRecordID: Key = token && `${API_URL}/recordings/` + recordingName;
-    const { data: recordingData } = useSWR(uidRecordID, fetcher);
+    const {response: recordingData} = useGetRecording(token, fetchAuth, recordingName);
 
     useEffect(() => {
       // Setup/initialize recording name.
@@ -140,10 +125,7 @@ function RecordingsDataView() {
     useEffect(() => {
       const fetchEyeData = async () => {
         try {
-          // const url ="https://api.ptg.poly.edu/recordings/static/coffee-test-1/eye.json";
-          const url = API_URL +  RECORDINGS_STATIC_PATH + `${recordingName}/eye.json`;
-          const res = await fetch(url);
-          const jsonFile = await res.json();
+          const jsonFile = await getEyeData(recordingName);
           setEyeData(jsonFile.slice(0, 20));
         } catch (error) {
                 // console.log("error", error);
@@ -152,10 +134,7 @@ function RecordingsDataView() {
       };
       const fetchHandData = async () => {
         try {
-          // const url ="https://api.ptg.poly.edu/recordings/static/coffee-test-1/hand.json";
-          const url = API_URL +  RECORDINGS_STATIC_PATH + `${recordingName}/hand.json`;
-          const res = await fetch(url);
-          const jsonFile = await res.json();
+          const jsonFile = await getHandData(recordingName);
           setHandData(jsonFile.slice(0, 20));
         } catch (error) {
           // console.log("error", error);
@@ -164,8 +143,8 @@ function RecordingsDataView() {
       };
 
       if (recordingData && recordingData.streams){
-        Object.keys(recordingData.streams).includes('eye') && fetchEyeData();
-        Object.keys(recordingData.streams).includes('hand') && fetchHandData();
+        Object.keys(recordingData.streams).includes(streamingType.EYE) && fetchEyeData();
+        Object.keys(recordingData.streams).includes(streamingType.HAND) && fetchHandData();
       }
 
     }, [recordingData]);
@@ -178,19 +157,19 @@ function RecordingsDataView() {
     };
 
   const renderStreamings= () => {
-    if (recordingData &&  recordingData.streams){
+    if (recordingData !== undefined && recordingData &&  recordingData.streams){
       return <>
         <AccordionView type={dataType.VIDEO} data={recordingData} title={"Cameras"} autoplay={autoplayStatus} recordingName={recordingName}></AccordionView>
         {
-          Object.keys(recordingData.streams).includes('mic0') &&
+          Object.keys(recordingData.streams).includes(streamingType.MIC) &&
           <AccordionView type={dataType.AUDIO} data={recordingData} title={"Audio Data"} autoplay={autoplayStatus} recordingName={recordingName} ></AccordionView>
         }
         {
-          Object.keys(recordingData.streams).includes('eye') &&
+          Object.keys(recordingData.streams).includes(streamingType.EYE) &&
           <AccordionView type={dataType.JSON} data={eyeData} title={"Eye Data"} ></AccordionView>
         }
         {
-          Object.keys(recordingData.streams).includes('hand') && 
+          Object.keys(recordingData.streams).includes(streamingType.HAND) &&
         <AccordionView type={dataType.JSON} data={handData} title={"Hand Data"} ></AccordionView>
         }
         </>
@@ -209,9 +188,11 @@ function RecordingsDataView() {
             label="Select Data"
             onChange={handleChange}
           >
-              {recordingsList && Array.from(Array(recordingsList.length)).map((_, index) => (
-                  <MenuItem key={'menu-item-' + index} value={index}>{recordingsList[index]}</MenuItem>
-              ))}
+          {
+            recordingsList && Array.from(Array(recordingsList.length)).map((_, index) => (
+                <MenuItem key={'menu-item-' + index} value={index}>{recordingsList[index]}</MenuItem>
+            ))
+          }
           </Select>
         </FormControl>
       </Box>   

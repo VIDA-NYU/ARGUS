@@ -30,3 +30,21 @@ export interface LoginCredential {
     username: string,
     password: string,
 }
+
+export enum dataType {
+    VIDEO = 'VIDEO',
+    JSON = 'JSON',
+    AUDIO = 'AUDIO',
+  }
+  
+export enum streamingType {
+    VIDEO_MAIN = 'main', // Main
+    VIDEO_DEPTH = 'depthlt', // Depth
+    VIDEO_GLL = 'gll', // Grey Left-Left
+    VIDVIDEO_GLF = 'glf', // Grey Left-Front
+    VIDEO_GRF = 'grf', // Grey Right-Front
+    VIDEO_GRR = 'grr', // Grey Right-Right
+    MIC = 'mic0', // microphone
+    EYE = 'eye', // eye
+    HAND = 'hand', // hand
+  }

@@ -5,8 +5,9 @@ import Button from '@mui/material/Button';
 import useSWR, { Key } from 'swr';
 import { Box } from '@mui/material';
 import { TokenProvider, useToken } from '../api/TokenContext';
-import {API_URL, TEST_USER, TEST_PASS} from '../config';
+import {TEST_USER, TEST_PASS} from '../config';
 import { LoginCredential, Recipe } from '../api/types';
+import { useGetRecipes } from '../api/rest';
 
 /* 
 Login / Authentication::
@@ -41,14 +42,9 @@ const ListValues = ({list}: {list: string []}) => {
 const App = () => {
   // get the token and authenticated fetch function
   const { token, fetchAuth } = useToken();
-    // const appContext = React.useContext(TokenContext);
   // query the recipes endpoint (only if we have a token)
-  const uid: Key = token && `${API_URL}/recipes`;
-  const fetcher = (url: string) => fetchAuth !== undefined && fetchAuth !== "" && fetchAuth(url).then((res) => res.json());
-  const { data: recipes, error } = useSWR(uid, fetcher);
-  // can print out data/error for debugging
-  useEffect(() => { recipes && console.log(recipes) }, [recipes])
-  useEffect(() => { error && console.error(error) }, [error])
+  // fetch recipes
+  const {response: recipes} = useGetRecipes(token, fetchAuth);
   // render the recipes!
   return (
     <div className="mt-2 mr-2 ml-2">
