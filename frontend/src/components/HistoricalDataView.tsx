@@ -16,6 +16,7 @@ import { TokenProvider, useToken } from '../api/TokenContext';
 import { API_URL, RECORDINGS_STATIC_PATH } from '../config';
 import useSWR, { Key } from 'swr';
 import { AudioCard } from './AudioCard';
+import { FormControlLabel, Switch } from '@mui/material';
 
 interface Data {
   id: number,
@@ -28,7 +29,8 @@ interface AccordionProps {
   type: string,
   title: string,
   data: any | Data [],
-  recordingName?: string
+  recordingName?: string,
+  autoplay?: boolean 
 }
 
 enum dataType {
@@ -37,7 +39,7 @@ enum dataType {
   AUDIO = 'AUDIO',
 }
 
-const AccordionView = ({ type, title, data, recordingName }: AccordionProps) => {
+const AccordionView = ({ type, title, data, recordingName, autoplay }: AccordionProps) => {
   const videoStreamings = {"main": 'Main',
                      "depthlt": 'Depth',
                      "gll": 'Grey Left-Left',
@@ -46,7 +48,7 @@ const AccordionView = ({ type, title, data, recordingName }: AccordionProps) => 
                      "grr": 'Grey Right-Right'
   };
   const videoStreamingsIDs = Object.keys(videoStreamings);
-
+console.log("autoplay accordion: " , autoplay);
   return (
     <Accordion defaultExpanded={true} >
       <AccordionSummary
@@ -80,7 +82,7 @@ const AccordionView = ({ type, title, data, recordingName }: AccordionProps) => 
                 const streams = Object.keys(data.streams);
                 if (streams.includes(name)){ //verify if stream exists.
                   return <Grid key={index} item xs={2}>
-                    <VideoCard title={videoStreamings[name]} path={API_URL + RECORDINGS_STATIC_PATH + `${recordingName}/${name}.mp4`}/>
+                    <VideoCard title={videoStreamings[name]} autoplay={autoplay} path={API_URL + RECORDINGS_STATIC_PATH + `${recordingName}/${name}.mp4`}/>
                   </Grid>
                 }
               })
@@ -94,7 +96,7 @@ const AccordionView = ({ type, title, data, recordingName }: AccordionProps) => 
         <Grid container spacing={{ xs: 1, md: 2 }} >
           {
           data !== undefined && data && data.streams && Object.keys(data.streams).includes("mic0") &&
-            <AudioCard path={API_URL + RECORDINGS_STATIC_PATH + `${recordingName}/mic0.wav`}/>
+            <AudioCard autoplay={autoplay} path={API_URL + RECORDINGS_STATIC_PATH + `${recordingName}/mic0.wav`}/>
           }
         </Grid>
       </Box>
@@ -110,6 +112,7 @@ function RecordingsDataView() {
     const [recordingName, setRecordingName] = React.useState<string>('');
     const [eyeData, setEyeData] = React.useState({});
     const [handData, setHandData] = React.useState({});
+    const [autoplayStatus, setAutoplayStatus] = React.useState(false);
 
 
     // get the token and authenticated fetch function
@@ -125,11 +128,14 @@ function RecordingsDataView() {
     const uidRecordID: Key = token && `${API_URL}/recordings/` + recordingName;
     const { data: recordingData } = useSWR(uidRecordID, fetcher);
 
-
     useEffect(() => {
       // Setup/initialize recording name.
       recordingsList && setRecordingName(recordingsList[0]);
     }, [recordingsList]);
+
+    useEffect(() => {
+      console.log("Autoplay click");
+    }, [autoplayStatus]);
 
     useEffect(() => {
       const fetchEyeData = async () => {
@@ -174,10 +180,10 @@ function RecordingsDataView() {
   const renderStreamings= () => {
     if (recordingData &&  recordingData.streams){
       return <>
-        <AccordionView type={dataType.VIDEO} data={recordingData} title={"Cameras"} recordingName={recordingName}></AccordionView>
+        <AccordionView type={dataType.VIDEO} data={recordingData} title={"Cameras"} autoplay={autoplayStatus} recordingName={recordingName}></AccordionView>
         {
           Object.keys(recordingData.streams).includes('mic0') &&
-          <AccordionView type={dataType.AUDIO} data={recordingData} title={"Audio Data"} recordingName={recordingName} ></AccordionView>
+          <AccordionView type={dataType.AUDIO} data={recordingData} title={"Audio Data"} autoplay={autoplayStatus} recordingName={recordingName} ></AccordionView>
         }
         {
           Object.keys(recordingData.streams).includes('eye') &&
@@ -209,6 +215,20 @@ function RecordingsDataView() {
           </Select>
         </FormControl>
       </Box>   
+      <FormControlLabel
+        sx={{
+          display: 'block',
+        }}
+        control={
+          <Switch
+            checked={autoplayStatus}
+            onChange={() => setAutoplayStatus(!autoplayStatus)}
+            name="loading"
+            color="primary"
+          />
+        }
+        label={autoplayStatus ? "Play all" : "Stop all"}
+      />
       {renderStreamings()}
     </div>
   );

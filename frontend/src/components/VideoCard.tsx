@@ -3,12 +3,13 @@ import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
-import ReactPlayer from 'react-player'
+import ReactPlayer from 'react-player';
 
 interface VideoCardProps {
     title: string;
     subtitle?: string;
     path: string;
+    autoplay?: boolean;
   }
 interface VideoCardState {
 
@@ -19,8 +20,13 @@ VideoCardProps,
 VideoCardState
 > {
     render() {
+console.log("autoplay videocard: " , this.props.autoplay);
+
     return (
-        <Card sx={{ maxWidth: 300 }}>
+        <>
+        <div className='player-wrapper'>
+        </div>
+        <Card sx={{ maxWidth: 600 }}>
         <CardHeader
             titleTypographyProps={{
                 fontSize: 16,
@@ -28,24 +34,18 @@ VideoCardState
             title={this.props.title}
             // subheader={this.props.path}
         />
-        <CardMedia
-            component="video"
-            // autoPlay 
-            controls 
-            image={this.props.path}
-        />
-        {/* <CardContent>
+        <CardContent>
             <ReactPlayer
-                url={this.props.path}//"http://localhost:4000/video"
-                //"/videos/gll.mp4"
-                // url='https://vimeo.com/243556536'
-                width='150px'
-                height='150px'
+                url={this.props.path}
+                width='100%'
+                height='100%'
+                playing = {this.props.autoplay}
                 controls = {true}
-
-                />
-        </CardContent> */}
+                playbackRate = {5}
+            />
+        </CardContent>
         </Card>
+        </>
     );
     }
 }
