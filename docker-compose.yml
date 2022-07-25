@@ -1,0 +1,13 @@
+version: '2.4'
+services:
+  frontend:
+    image: tim_dashboard_frontend
+    command: npm start
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    # environment:
+    #   - API_URL=${API_URL}
+    cpu_shares: 10
+    ports:
+      - "3000:3000"

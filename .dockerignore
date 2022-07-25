@@ -1,0 +1,65 @@
+**/.env
+volumes
+docs
+frontend/node_modules
+frontend/build
+lib_geo/data
+
+# Git
+**/.git
+**/.gitignore
+
+# Python
+**/__pycache__
+**/*.pyc
+**/.ipynb_checkpoints
+
+# Packages
+**/*.egg
+**/*.egg-info
+**/dist
+**/build
+**/eggs
+**/parts
+**/bin
+**/var
+**/sdist
+**/develop-eggs
+**/.installed.cfg
+**/lib
+**/lib64
+
+# Installer logs
+**/pip-log.txt
+
+# Unit test / coverage reports
+**/.coverage
+**/.tox
+**/nosetests.xml
+
+# Eclipse PyDev
+**/.project
+**/.pydevproject
+
+# PyCharm
+**/.idea
+
+# ViM
+**/.*.swp
+
+# Emacs
+**/#*#
+
+# OS files
+**/.DS_Store
+**/desktop.ini
+
+# Archives
+**/*.tar
+**/*.tar.gz
+**/*.tar.bz2
+**/*.zip
+**/*.whl
+
+# Vagrant
+**/.vagrant
