@@ -155,7 +155,7 @@ const Controls = forwardRef<MutableRefObject<any>, ControlsProps>(
               </Grid>
             </Grid>
 
-            <Grid item>
+            {/* <Grid item>
                <Button
                 onClick={handleClick}
                 aria-describedby={id}
@@ -202,7 +202,7 @@ const Controls = forwardRef<MutableRefObject<any>, ControlsProps>(
               >
                 <FullscreenIcon fontSize="large" />
               </IconButton>
-            </Grid>
+            </Grid> */}
           </Grid>
         </Grid>
       </div>
