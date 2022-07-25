@@ -32,9 +32,6 @@ const TokenProvider: React.FC<ProviderProps> = ({ children }) => {
     fetch(`${API_URL}/token`, {
       method: "POST",
       body: formData,
-      headers: {
-        'content-type': 'text/plain',
-        },
     }).then(r => r.json()).then(({ access_token }) => {
       if(!access_token) {
         throw Error("Something went wrong! the server didn't return a token");
