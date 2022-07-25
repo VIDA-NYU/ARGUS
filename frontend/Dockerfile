@@ -1,8 +1,15 @@
 FROM node:16-slim AS build
 
-RUN mkdir /src
 WORKDIR /src
-COPY frontend/package.json frontend/package-lock.json /src/
+
+COPY package.json package-lock.json ./
 RUN npm install
-COPY frontend /src/
+COPY . ./
 RUN npm run build
+
+# production env
+FROM nginx:stable-alpine
+COPY --from=build /src/build /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
