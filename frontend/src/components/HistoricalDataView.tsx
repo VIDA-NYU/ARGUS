@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import { VideoCard } from './VideoCard';
+import { onProgressType, VideoCard } from './VideoCard';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -17,6 +17,9 @@ import { AudioCard } from './AudioCard';
 import { FormControlLabel, Switch } from '@mui/material';
 import { getAudioPath, getEyeData, getHandData, getVideoPath, useGetAllRecordings, useGetRecording } from '../api/rest';
 import { dataType, streamingType } from '../api/types';
+import Controls from './Controls';
+import { stringify } from 'querystring';
+import screenful from "screenfull";
 
 interface Data {
   id: number,
@@ -30,10 +33,12 @@ interface AccordionProps {
   title: string,
   data: any | Data [],
   recordingName?: string,
-  autoplay?: boolean 
+  state?: StateMedia,
+  onProgress?: (changeStatus: onProgressType) => void;
+  onSeek?: (value: number) => void;
 }
 
-const AccordionView = ({ type, title, data, recordingName, autoplay }: AccordionProps) => {
+const AccordionView = ({ type, title, data, recordingName, state, onProgress, onSeek }: AccordionProps) => {
   const videoStreamings = { [streamingType.VIDEO_MAIN]: 'Main',
                      [streamingType.VIDEO_DEPTH]: 'Depth',
                      [streamingType.VIDEO_GLL]: 'Grey Left-Left',
@@ -74,7 +79,8 @@ const AccordionView = ({ type, title, data, recordingName, autoplay }: Accordion
                 const streams = Object.keys(data.streams);
                 if (streams.includes(name)){ //verify if stream exists.
                   return <Grid key={index} item xs={2}>
-                    <VideoCard title={videoStreamings[name]} autoplay={autoplay} path={getVideoPath(recordingName, name)}/>
+                    <VideoCard title={videoStreamings[name]} state={state}
+                    onSeek={res => onSeek(res)} onProgress={(res) => onProgress(res)} path={getVideoPath(recordingName, name)} />
                   </Grid>
                 }
               })
@@ -86,7 +92,7 @@ const AccordionView = ({ type, title, data, recordingName, autoplay }: Accordion
       type === dataType.AUDIO &&
       <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={{ xs: 1, md: 2 }} >
-          <AudioCard autoplay={autoplay} path={getAudioPath(recordingName)} />
+          <AudioCard state={state} onSeek={res => onSeek(res)} onProgress={(res) => onProgress(res)} path={getAudioPath(recordingName)} />
         </Grid>
       </Box>
       }
@@ -96,13 +102,80 @@ const AccordionView = ({ type, title, data, recordingName, autoplay }: Accordion
   )
 }
 
+const format = (seconds) => {
+  if (isNaN(seconds)) {
+    return `00:00`;
+  }
+  const date = new Date(seconds * 1000);
+  const hh = date.getUTCHours();
+  const mm = date.getUTCMinutes();
+  const ss = date.getUTCSeconds().toString().padStart(2, "0");
+  if (hh) {
+    return `${hh}:${mm.toString().padStart(2, "0")}:${ss}`;
+  }
+  return `${mm}:${ss}`;
+};
+const formatTotalDuration = (time: string) => {
+  const value = time.split(":");
+  if (value[0].substring(0, 2) !== "0" && time.substring(1, 2) !==":") {
+    return `${value[0].substring(0, 2)}:${value[1].substring(0, 2)}:${value[2].substring(0, 2)}`;
+  }
+  return `${value[1].substring(0, 2)}:${value[2].substring(0, 2)}`;
+};
+
+
+
+export interface StateMedia {
+  pip?: boolean;
+  playing: boolean;
+  controls?: boolean;
+  light?: boolean;
+  played: number;
+  duration?: number;
+  playbackRate: number;
+  loop?: boolean;
+  seeking: boolean;
+  totalDuration?: string;
+  currentTime?: string;
+}
 function RecordingsDataView() {
     const [recordingID, setRecordingID] = React.useState<number>(0);
     const [recordingName, setRecordingName] = React.useState<string>('');
     const [eyeData, setEyeData] = React.useState({});
     const [handData, setHandData] = React.useState({});
-    const [autoplayStatus, setAutoplayStatus] = React.useState(false);
 
+    const [timeDisplayFormat, setTimeDisplayFormat] = React.useState("normal");
+    const [state, setState] = React.useState<StateMedia>({
+      pip: false,
+      playing: false,
+      controls: false,
+      light: false,
+
+      played: 0,
+      duration: 0,
+      playbackRate: 1.0,
+      loop: false,
+      seeking: false,
+      totalDuration: "0:0",
+      currentTime: "0:0",
+    });
+
+    const playerRef = useRef(null);
+    const playerContainerRef = useRef(null);
+    const controlsRef = useRef(null);
+    const canvasRef = useRef(null);
+    const {
+      playing,
+      controls,
+      light,
+      loop,
+      playbackRate,
+      pip,
+      played,
+      seeking,
+      totalDuration,
+      currentTime,
+    } = state;
 
     // get the token and authenticated fetch function
     const { token, fetchAuth } = useToken();
@@ -118,9 +191,6 @@ function RecordingsDataView() {
       recordingsList && setRecordingName(recordingsList[0]);
     }, [recordingsList]);
 
-    useEffect(() => {
-      console.log("Autoplay click");
-    }, [autoplayStatus]);
 
     useEffect(() => {
       const fetchEyeData = async () => {
@@ -149,20 +219,86 @@ function RecordingsDataView() {
 
     }, [recordingData]);
 
-
-    const handleChange = (event: SelectChangeEvent) => {
+    const handleChangeRecording = (event: SelectChangeEvent) => {
       const index = Number(event.target.value);
       setRecordingID(index);
       recordingsList && setRecordingName(recordingsList[index]);
+      setState({ ...state, totalDuration: "0:0" });
     };
+
+    const handleSeekMouseDown = (e) => {
+      // console.log({ value: e.target });
+      setState({ ...state, seeking: true });
+    };
+    const handleSeekChange = (e) => {
+      // console.log("handleSeekChange", e.target.value);
+      const temporal = parseFloat(e.target.value); // parseFloat(e.target.value) / 100;
+      setState({ ...state, played: temporal });
+    };
+    const handleSeekMouseUp = (e) => {
+      // console.log("handleSeekMouseUp", { value: e.target });
+      setState({ ...state, seeking: false });
+    };
+
+    const handleProgress  = (changeState: onProgressType) => {
+      const newDuration = changeState.totalDuration;
+      // We only want to update time slider if we are not currently seeking
+      if (!state.seeking) {
+        setState({ ...state, ...changeState, totalDuration: newDuration > totalDuration ? totalDuration : newDuration  });
+      }
+    }
+
+    const handleSeekingFromVideoCard  = (value) => {
+      //TODO: being able to control all the videos from a child video
+    }
+
+    const handlePlayPause = () => {
+      setState({ ...state, playing: !state.playing });
+    };
+
+    const handleRewind = () => {
+      playerRef.current.seekTo(playerRef.current.getCurrentTime() - 10);
+    };
+
+    const handleFastForward = () => {
+      playerRef.current.seekTo(playerRef.current.getCurrentTime() + 10);
+    };
+
+    const handleDuration = (duration) => {
+      setState({ ...state, duration });
+    };
+
+    const handleDisplayFormat = () => {
+      setTimeDisplayFormat(
+        timeDisplayFormat == "normal" ? "remaining" : "normal"
+      );
+    };
+
+    const handlePlaybackRate = (rate) => {
+      setState({ ...state, playbackRate: rate });
+    };
+
+    const toggleFullScreen = () => {
+      screenful.toggle(playerContainerRef.current);
+    };
+
+    const elapsedTime =
+      timeDisplayFormat == "normal"
+        ? format(currentTime) : "0:0";
+        // : `-${format(totalDuration - currentTime)}`;
+
+    // const totalDurationValue = format(totalDuration);
+    const totalDurationValue = (recordingData && recordingData.duration) ? formatTotalDuration(recordingData.duration) : "0:0";
 
   const renderStreamings= () => {
     if (recordingData !== undefined && recordingData &&  recordingData.streams){
       return <>
-        <AccordionView type={dataType.VIDEO} data={recordingData} title={"Cameras"} autoplay={autoplayStatus} recordingName={recordingName}></AccordionView>
+        <AccordionView type={dataType.VIDEO} data={recordingData} title={"Cameras"} state={state} recordingName={recordingName} onProgress={(res) => handleProgress(res)} onSeek={res => handleSeekingFromVideoCard(res)}
+        ></AccordionView>
         {
           Object.keys(recordingData.streams).includes(streamingType.MIC) &&
-          <AccordionView type={dataType.AUDIO} data={recordingData} title={"Audio Data"} autoplay={autoplayStatus} recordingName={recordingName} ></AccordionView>
+          <AccordionView type={dataType.AUDIO} data={recordingData} title={"Audio Data"} state={state} recordingName={recordingName} onProgress={(res) => handleProgress(res)} onSeek={res => handleSeekingFromVideoCard(res)}
+        ></AccordionView>
         }
         {
           Object.keys(recordingData.streams).includes(streamingType.EYE) &&
@@ -186,7 +322,7 @@ function RecordingsDataView() {
             id="demo-simple-select"
             value={recordingID.toString()}
             label="Select Data"
-            onChange={handleChange}
+            onChange={handleChangeRecording}
           >
           {
             recordingsList && Array.from(Array(recordingsList.length)).map((_, index) => (
@@ -196,20 +332,31 @@ function RecordingsDataView() {
           </Select>
         </FormControl>
       </Box>   
-      <FormControlLabel
-        sx={{
-          display: 'block',
-        }}
-        control={
-          <Switch
-            checked={autoplayStatus}
-            onChange={() => setAutoplayStatus(!autoplayStatus)}
-            name="loading"
-            color="primary"
+
+      <Controls
+            ref={controlsRef}
+            onSeek={handleSeekChange}
+            onSeekMouseDown={handleSeekMouseDown}
+            onSeekMouseUp={handleSeekMouseUp}
+            onDuration={handleDuration}
+            onRewind={handleRewind}
+            onPlayPause={handlePlayPause}
+            onFastForward={handleFastForward}
+            playing={playing}
+            played={played}
+            elapsedTime={elapsedTime}
+            totalDuration={totalDurationValue}
+            // onMute={hanldeMute}
+            // muted={muted}
+            // onVolumeChange={handleVolumeChange}
+            // onVolumeSeekDown={handleVolumeSeekDown}
+            onChangeDispayFormat={handleDisplayFormat}
+            playbackRate={playbackRate}
+            onPlaybackRateChange={handlePlaybackRate}
+            onToggleFullScreen={toggleFullScreen}
+            // volume={volume}
+            // onBookmark={addBookmark}
           />
-        }
-        label={autoplayStatus ? "Play all" : "Stop all"}
-      />
       {renderStreamings()}
     </div>
   );
