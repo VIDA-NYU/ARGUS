@@ -1,5 +1,4 @@
-# tim-dashboard
-TIM Dashboard
+# TIM Dashboard
 
 TIM Dashboard is a Hololens data exploration platform developed at New York University. It can be used to ingest new data or to explore data generated using Hololens. The system can be found at this address: https://dashboard.ptg.poly.edu/
 
