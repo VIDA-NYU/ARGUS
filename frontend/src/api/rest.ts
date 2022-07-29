@@ -1,6 +1,7 @@
 import axios, {AxiosResponse, AxiosRequestConfig} from 'axios';
 import useSWR, { Key } from 'swr';
 import { API_URL, RECORDINGS_STATIC_PATH } from '../config';
+import { RequestStatus } from './types';
 
 /*
 Using SWR React hooks "useSWR" in an external API service layer: This will be possible following this two rules:
@@ -50,13 +51,12 @@ export function useGetRecipes(token, fetchAuth) {
     };
 }
 
-/* start recording */
-export function useStartRecording(token, fetchAuth, recording, recordingName) {
+/* fetch current recording info */
+export function useGetCurrentRecordingInfo(token, fetchAuth) {
     // get the authenticated fetch function
-    const fetcher = (url: string) => fetchAuth(url, {
-        method: "PUT"
-      }).then((res) => res.json());
-    const uid: Key = recording && recordingName == '' && token && `${API_URL}/recordings/start`;
+    const fetcher = (url: string) => fetchAuth(url).then((res) => res.json());
+    // query the streamings endpoint (only if we have a token)
+    const uid: Key = token && `${API_URL}/recordings/current`;
     const { data: response, error } = useSWR(uid, fetcher);
     return {
         data: response && response.data,
@@ -65,18 +65,53 @@ export function useStartRecording(token, fetchAuth, recording, recordingName) {
     };
 }
 
+/* start recording */
+export function useStartRecording(token, fetchAuth, serverStatusStart) {
+     // get the authenticated fetch function
+     const fetcher = (url: string) => fetchAuth(url, {
+        method: "PUT"
+      }).then((res) => res.json());
+    const uid: Key = serverStatusStart === RequestStatus.STARTED && token && `${API_URL}/recordings/start`;
+    const { data: response, error } = useSWR(uid, fetcher);
+
+    if(serverStatusStart === RequestStatus.STARTED){
+        console.log("SEERVER start:", response);
+        return {
+            data: response && response.data,
+            response,
+            error,
+            status: RequestStatus.SUCCESS
+        };
+    }
+    return {
+        data: undefined,
+        response: undefined,
+        error: undefined,
+        status: undefined
+    };
+}
+
 /* stop recording */
-export function useStopRecording(token, fetchAuth, recording, recordingName) {
+export function useStopRecording(token, fetchAuth, serverStatusStop) {
     // get the authenticated fetch function
     const fetcher = (url: string) => fetchAuth(url, {
         method: "PUT"
       }).then((res) => res.json());
-    const uid: Key = !recording && recordingName !== '' && token && `${API_URL}/recordings/stop`;
+    const uid: Key = serverStatusStop === RequestStatus.STARTED && token && `${API_URL}/recordings/stop`;
     const { data: response, error } = useSWR(uid, fetcher);
+    if(serverStatusStop === RequestStatus.STARTED) {
+        return {
+            data: response && response.data,
+            response,
+            error,
+            status: RequestStatus.SUCCESS
+        };
+    }
     return {
-        data: response && response.data,
-        response,
-        error
+        data: undefined,
+        response: undefined,
+        error: undefined,
+        status: undefined
     };
 }
 

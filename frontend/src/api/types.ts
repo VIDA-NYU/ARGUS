@@ -48,3 +48,17 @@ export enum streamingType {
     EYE = 'eye', // eye
     HAND = 'hand', // hand
   }
+
+export enum RequestStatus {
+    STARTED = 'STARTED',
+    SUCCESS = 'SUCCESS',
+    ERROR = 'ERROR',
+    IN_PROGRESS = 'IN_PROGRESS',
+    END = 'END',
+  }
+
+export interface responseServer {
+    response: any,
+    error: any,
+    status: RequestStatus,
+  }

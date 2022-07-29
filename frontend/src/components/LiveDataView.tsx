@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Box, Button, Paper } from '@mui/material';
+import { Alert, Box, Button, Paper } from '@mui/material';
 import { TokenProvider, useToken } from '../api/TokenContext';
 import { Login } from './RecipesView';
 import { TEST_PASS, TEST_USER } from '../config';
@@ -7,32 +7,87 @@ import { TEST_PASS, TEST_USER } from '../config';
 import LoadingButton from '@mui/lab/LoadingButton';
 import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
 import StopCircleIcon from '@mui/icons-material/StopCircle';
-import { getLiveVideo, useStartRecording, useStopRecording } from '../api/rest';
+import { getLiveVideo, useGetCurrentRecordingInfo, useGetRecording, useStartRecording, useStopRecording } from '../api/rest';
+import { RequestStatus, responseServer } from '../api/types';
 
+let interval = null;
 
 // the app - once you're authenticated
 function LiveVideo() {
 
   const [recording, setRecording] = React.useState(false);
-  const [recordingName, setName] = React.useState('');
+  const [count, setCurrentRecordInfo] = React.useState<number>(0);
+  const [startStatus, setStartStatus] = React.useState<RequestStatus | undefined>(undefined);
+  const [stopStatus, setStopStatus] = React.useState<RequestStatus | undefined>(undefined);
+  const [startData, setStartData] = React.useState<responseServer>({response: undefined, error: undefined, status: undefined});
+  const [stopData, setStopData] = React.useState<responseServer>({response: undefined, error: undefined, status: undefined});
+
+
   
   // get the token and authenticated fetch function
   const { token, fetchAuth } = useToken();
-  const { response: startData } = useStartRecording(token, fetchAuth, recording, recordingName);
-  const { response: stopData } = useStopRecording(token, fetchAuth, recording, recordingName);
+  const { response: respStartData, error: respStartError, status: respStartStatus } = useStartRecording(token, fetchAuth, startStatus);
+  const { response: respStopData, error: respStopError, status: respStopStatus  } = useStopRecording(token, fetchAuth, stopStatus);
+  const {response: recordingData} = useGetRecording(token, fetchAuth, startData.response);
 
   useEffect(() => { 
-    if(recording){
-      setName('start-recording');
+    if(recording && startStatus !== RequestStatus.IN_PROGRESS && stopStatus !== RequestStatus.ERROR){
+      setStartStatus(RequestStatus.STARTED)
+      setStopStatus(undefined);
     }
-    if(!recording && recordingName !== ''){
-      setName('');
+    if(!recording && startStatus === RequestStatus.IN_PROGRESS){
+      setStopStatus(RequestStatus.STARTED);
     }
   }, [recording])
+
+  useEffect(() => {
+    if (respStartStatus === RequestStatus.SUCCESS) {
+
+      if(respStartData === undefined){ //Something get wrong! Try to start again!
+        setRecording(false);
+        setStartStatus(RequestStatus.ERROR);
+      } else {
+        setStartStatus(RequestStatus.IN_PROGRESS);
+        interval = null;
+        let count_ = 0;
+        interval = setInterval(function() {
+          count_++
+          setCurrentRecordInfo(count_++);
+        }, 5000);
+      }
+      setStartData({response: respStartData, error: respStartError, status: respStartStatus});
+    }
+  }, [respStartStatus, respStartData])
+
+  useEffect(() => {
+    if (respStopStatus === RequestStatus.SUCCESS) {
+      if(respStopData === 0 || respStopData === undefined){ //Something get wrong! respStopData should be 1 if it was successful! Try to stop again!
+        setStopStatus(RequestStatus.ERROR);
+        setRecording(true);
+      } else {
+        setStartStatus(undefined);
+        setStopStatus(RequestStatus.IN_PROGRESS);
+        clearInterval(interval);
+      }
+      setStopData({response: respStopData, error: respStopError, status: respStopStatus});
+    }
+  }, [respStopStatus, respStopData])
 
   function handleStartLoadingClick(value) {
     setRecording(value);
   }
+
+  useEffect(() => {
+    console.log("Refresh Page (total): ", count)
+  }, [count])
+
+  const currentRecordingInfo = recordingData && recordingData.name !== "undefined" && recordingData.name === startData.response &&
+    <>
+    Recording name: {startData.response}<br/>
+    Duration: {recordingData.duration} <br/>
+    First Entry Time: {recordingData["first-entry-time"]} <br/>
+    Last Entry Time{recordingData["last-entry-time"]}
+    </>;
 
   return (
     <div className="mt-2 mr-2 ml-2">
@@ -57,6 +112,27 @@ function LiveVideo() {
         >
           Stop Recording
         </Button>
+      </Box>
+      <Box style={{margin: 22}}>
+        {
+        (startStatus === undefined && startStatus !== RequestStatus.ERROR) || stopStatus === RequestStatus.IN_PROGRESS?
+        <></> :
+        startStatus === RequestStatus.STARTED ?
+        <Alert severity="info">Connecting to server ... </Alert> :
+        startStatus === RequestStatus.IN_PROGRESS && startData.response !== undefined ?
+        <Alert severity="success">SUCCESSFUL server connection. The video is being recorded.<br/><br/>
+        {currentRecordingInfo}
+        </Alert> :
+        <Alert severity="error">We couldn't connect with the server. Please try again!</Alert>
+        }
+        {
+        stopStatus === RequestStatus.ERROR && <Alert severity="error">Server Connection Issues: Please click again on the 'Stop Recording' button to finish your recording!</Alert>
+        }
+        {
+        stopStatus === RequestStatus.IN_PROGRESS && <Alert severity="success">Your recording was saved.<br/><br/>
+        {currentRecordingInfo}
+        </Alert>
+        }
       </Box>
       <div style={{margin: 22}}
       >
