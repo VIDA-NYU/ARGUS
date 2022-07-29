@@ -1,131 +1,19 @@
 import React, { useEffect, useRef } from 'react';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import { onProgressType, VideoCard } from './VideoCard';
+import { onProgressType } from './VideoCard';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import JSONPretty from 'react-json-pretty';
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import Typography from '@mui/material/Typography';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { TokenProvider, useToken } from '../api/TokenContext';
-import { AudioCard } from './AudioCard';
-import { FormControlLabel, Switch } from '@mui/material';
 import { getAudioPath, getEyeData, getHandData, getVideoPath, useGetAllRecordings, useGetRecording } from '../api/rest';
 import { dataType, streamingType } from '../api/types';
 import Controls from './Controls';
-import { stringify } from 'querystring';
 import screenful from "screenfull";
+import { format, formatTotalDuration } from './Helpers';
+import AccordionView from './AccordionView';
 
-interface Data {
-  id: number,
-  name: string,
-  files: string [],
-  totalCameras: number
-}
-
-interface AccordionProps {
-  type: string,
-  title: string,
-  data: any | Data [],
-  recordingName?: string,
-  state?: StateMedia,
-  onProgress?: (changeStatus: onProgressType) => void;
-  onSeek?: (value: number) => void;
-}
-
-const AccordionView = ({ type, title, data, recordingName, state, onProgress, onSeek }: AccordionProps) => {
-  const videoStreamings = { [streamingType.VIDEO_MAIN]: 'Main',
-                     [streamingType.VIDEO_DEPTH]: 'Depth',
-                     [streamingType.VIDEO_GLL]: 'Grey Left-Left',
-                     [streamingType.VIDVIDEO_GLF]: 'Grey Left-Front',
-                     [streamingType.VIDEO_GRF]: 'Grey Right-Front',
-                     [streamingType.VIDEO_GRR]: 'Grey Right-Right'
-  };
-  const videoStreamingsIDs = Object.keys(videoStreamings);
-  return (
-    <Accordion defaultExpanded={true} >
-      <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
-        aria-controls="panel2a-content"
-        id="panel2a-header"
-      >
-        <Typography>{title}</Typography>
-      </AccordionSummary>
-      <AccordionDetails>
-      {
-        type === dataType.JSON &&
-        <Box style={{maxHeight: 400, overflow: 'auto'}}
-            sx={{
-              backgroundColor: '#f9f9f9',
-              '&:hover': {
-                backgroundColor: '#E5E5E5',
-                opacity: [0.9, 0.8, 0.7],
-              },
-            }}>
-            {JSON.stringify(data)}
-          </Box>
-      }
-      {
-        type === dataType.VIDEO && 
-        <Box sx={{ flexGrow: 1 }}>
-            <Grid container spacing={{ xs: 1, md: 2 }} >
-              {
-              videoStreamingsIDs.map((name, index) => {
-                const streams = Object.keys(data.streams);
-                if (streams.includes(name)){ //verify if stream exists.
-                  return <Grid key={index} item xs={2}>
-                    <VideoCard title={videoStreamings[name]} state={state}
-                    onSeek={res => onSeek(res)} onProgress={(res) => onProgress(res)} path={getVideoPath(recordingName, name)} />
-                  </Grid>
-                }
-              })
-              }
-            </Grid>
-          </Box>
-      }
-      {
-      type === dataType.AUDIO &&
-      <Box sx={{ flexGrow: 1 }}>
-        <Grid container spacing={{ xs: 1, md: 2 }} >
-          <AudioCard state={state} onSeek={res => onSeek(res)} onProgress={(res) => onProgress(res)} path={getAudioPath(recordingName)} />
-        </Grid>
-      </Box>
-      }
-      {/* <JSONPretty id="json-pretty" data={jsonData}></JSONPretty> */}
-      </AccordionDetails>
-    </Accordion> 
-  )
-}
-
-const format = (seconds) => {
-  if (isNaN(seconds)) {
-    return `00:00`;
-  }
-  const date = new Date(seconds * 1000);
-  const hh = date.getUTCHours();
-  const mm = date.getUTCMinutes();
-  const ss = date.getUTCSeconds().toString().padStart(2, "0");
-  if (hh) {
-    return `${hh}:${mm.toString().padStart(2, "0")}:${ss}`;
-  }
-  return `${mm}:${ss}`;
-};
-const formatTotalDuration = (time: string) => {
-  const value = time.split(":");
-  if (value[0].substring(0, 2) !== "0" && time.substring(1, 2) !==":") {
-    return `${value[0].substring(0, 2)}:${value[1].substring(0, 2)}:${value[2].substring(0, 2)}`;
-  }
-  return `${value[1].substring(0, 2)}:${value[2].substring(0, 2)}`;
-};
-
-
-
-export interface StateMedia {
+export interface MediaState {
   pip?: boolean;
   playing: boolean;
   controls?: boolean;
@@ -145,7 +33,7 @@ function RecordingsDataView() {
     const [handData, setHandData] = React.useState({});
 
     const [timeDisplayFormat, setTimeDisplayFormat] = React.useState("normal");
-    const [state, setState] = React.useState<StateMedia>({
+    const [state, setState] = React.useState<MediaState>({
       pip: false,
       playing: false,
       controls: false,
@@ -312,6 +200,8 @@ function RecordingsDataView() {
     }
     return <></>;
   }
+
+
   return (
     <div>
       <Box sx={{ flexGrow: 1 }}>
