@@ -2,12 +2,12 @@ import { useEffect, useRef } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import ReactPlayer from 'react-player';
-import { StateMedia } from "./HistoricalDataView";
+import { MediaState } from "./HistoricalDataView";
 import { onProgressType } from "./VideoCard";
 
 interface AudioCardProps {
     path: string;
-    state: StateMedia;
+    state: MediaState;
     onProgress?: (changeState: onProgressType) => void;
     onSeek?: (seek: number) => void;
 }

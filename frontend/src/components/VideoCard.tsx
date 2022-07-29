@@ -4,13 +4,13 @@ import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import ReactPlayer from 'react-player';
-import { StateMedia } from "./HistoricalDataView";
+import { MediaState } from "./HistoricalDataView";
 
 interface VideoCardProps {
     title: string;
     subtitle?: string;
     path: string;
-    state?: StateMedia;
+    state?: MediaState;
     onProgress?: (changeState: onProgressType) => void;
     onSeek?: (seek: number) => void;
   }
