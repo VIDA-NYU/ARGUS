@@ -91,6 +91,7 @@ function LiveVideo() {
 
   return (
     <div className="mt-2 mr-2 ml-2">
+      {!recording && <Alert severity="info">Before starting a new recording, please refresh the page!</Alert>}
       <Box sx={{ '& > button': { m: 1 } }}>
         <LoadingButton
           startIcon={<VideocamOutlinedIcon />}
