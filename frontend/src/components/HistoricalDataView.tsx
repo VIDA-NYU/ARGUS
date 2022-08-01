@@ -6,12 +6,14 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { TokenProvider, useToken } from '../api/TokenContext';
-import { getAudioPath, getEyeData, getHandData, getVideoPath, useGetAllRecordings, useGetRecording } from '../api/rest';
-import { dataType, streamingType } from '../api/types';
+import { getAudioPath, getEyeData, getHandData, getVideoPath, useDeleteRecording, useGetAllRecordings, useGetRecording } from '../api/rest';
+import { dataType, RequestStatus, streamingType } from '../api/types';
 import Controls from './Controls';
 import screenful from "screenfull";
-import { format, formatTotalDuration } from './Helpers';
+import { ConfirmationDeleteDialog, DeleteRecordingDialog, format, formatTotalDuration } from './Helpers';
 import AccordionView from './AccordionView';
+import Button from '@mui/material/Button';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export interface MediaState {
   pip?: boolean;
@@ -26,11 +28,23 @@ export interface MediaState {
   totalDuration?: string;
   currentTime?: string;
 }
+
+export interface DeleteInfo {
+  name: string,
+  confirmation: boolean,
+}
+
 function RecordingsDataView() {
+    const [recordings, setRecordings] = React.useState([]);
     const [recordingID, setRecordingID] = React.useState<number>(0);
     const [recordingName, setRecordingName] = React.useState<string>('');
     const [eyeData, setEyeData] = React.useState({});
     const [handData, setHandData] = React.useState({});
+
+    const [openDelDialog, setOpenDelDialog] = React.useState(false);
+    const [openConfDelDialog, setOpenConfDelDialog] = React.useState(false);
+
+    const [delData, setDelData] = React.useState<DeleteInfo>({name: "", confirmation: false});
 
     const [timeDisplayFormat, setTimeDisplayFormat] = React.useState("normal");
     const [state, setState] = React.useState<MediaState>({
@@ -73,12 +87,13 @@ function RecordingsDataView() {
     const {response: recordingsList} = useGetAllRecordings(token, fetchAuth);
     // fetch data available of an specific recording
     const {response: recordingData} = useGetRecording(token, fetchAuth, recordingName);
+    const {response: deletedRecord, status: statusDel} = useDeleteRecording(token, fetchAuth, delData);
 
     useEffect(() => {
       // Setup/initialize recording name.
       recordingsList && setRecordingName(recordingsList[0]);
+      recordingsList && setRecordings(recordingsList);
     }, [recordingsList]);
-
 
     useEffect(() => {
       const fetchEyeData = async () => {
@@ -107,10 +122,23 @@ function RecordingsDataView() {
 
     }, [recordingData]);
 
+    useEffect(() => {
+      if (statusDel === RequestStatus.SUCCESS){
+        console.log("Successfully deleted:");
+        setOpenConfDelDialog(true);
+        setDelData({name: "", confirmation: false});
+
+        const index = 0;
+        setRecordingID(index);
+        recordings && setRecordingName(recordings[index]);
+        setState({ ...state, totalDuration: "0:0" });
+      }
+    }, [deletedRecord]);
+
     const handleChangeRecording = (event: SelectChangeEvent) => {
       const index = Number(event.target.value);
       setRecordingID(index);
-      recordingsList && setRecordingName(recordingsList[index]);
+      recordings && setRecordingName(recordings[index]);
       setState({ ...state, totalDuration: "0:0" });
     };
 
@@ -201,6 +229,21 @@ function RecordingsDataView() {
     return <></>;
   }
 
+  const handleClickDelButton = () => {
+    setOpenDelDialog(true);
+  }
+  const handleCloseDeleteDialog = (value) => {
+    setOpenDelDialog(false);
+    if (value) { // if confirmation is true
+      //Delete recording
+      setDelData({name: recordingName, confirmation: value});
+    } else {
+      // Do nothing
+    }
+  };
+  const handleCloseConfDeleteDialog = () => {
+    setOpenConfDelDialog(false);
+  };
 
   return (
     <div>
@@ -215,12 +258,29 @@ function RecordingsDataView() {
             onChange={handleChangeRecording}
           >
           {
-            recordingsList && Array.from(Array(recordingsList.length)).map((_, index) => (
-                <MenuItem key={'menu-item-' + index} value={index}>{recordingsList[index]}</MenuItem>
+            recordings && Array.from(Array(recordings.length)).map((_, index) => (
+                <MenuItem key={'menu-item-' + index} value={index}>{recordings[index]}</MenuItem>
             ))
           }
           </Select>
         </FormControl>
+        <FormControl sx={{ m: 1, minWidth: 140 }} size="small">
+          <Button variant="outlined" onClick={handleClickDelButton}  startIcon={<DeleteIcon />}>
+            Delete
+          </Button>
+        </FormControl>
+        <DeleteRecordingDialog
+          id="delete-recording"
+          keepMounted
+          open={openDelDialog}
+          onClose={handleCloseDeleteDialog}
+        />
+        <ConfirmationDeleteDialog
+          id="confirmation-delete-recording"
+          keepMounted
+          open={openConfDelDialog}
+          onClose={handleCloseConfDeleteDialog}
+        />
       </Box>   
 
       <Controls

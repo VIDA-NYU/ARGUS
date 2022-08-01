@@ -1,4 +1,65 @@
 import * as React from "react";
+import Button from "@mui/material/Button";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import Dialog from "@mui/material/Dialog";
+
+export function DeleteRecordingDialog(props) {
+  const { onClose, open, ...other } = props;
+
+  const handleCancel = () => {
+    onClose(false);
+  };
+
+  const handleOk = () => {
+    onClose(true);
+  };
+
+  return (
+    <Dialog
+      sx={{ "& .MuiDialog-paper": { width: "80%", maxHeight: 435 } }}
+      maxWidth="xs"
+      open={open}
+      {...other}
+    >
+      <DialogTitle>Delete Recording</DialogTitle>
+      <DialogContent dividers>
+        Are you sure you want to delete this recording?
+      </DialogContent>
+      <DialogActions>
+        <Button autoFocus onClick={handleCancel}>
+          No, cancel!
+        </Button>
+        <Button onClick={handleOk}>Yes, delete it!</Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
+export function ConfirmationDeleteDialog(props) {
+    const { onClose, value: recordingName, open, ...other } = props;
+
+    const handleOk = () => {
+      onClose();
+    };
+
+    return (
+      <Dialog
+        sx={{ "& .MuiDialog-paper": { width: "80%", maxHeight: 435 } }}
+        maxWidth="xs"
+        open={open}
+      >
+        <DialogTitle>Deleted!</DialogTitle>
+        <DialogContent dividers>
+            Recording {recordingName} was successfully deleted!
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleOk}>Yes</Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
 
 
 export const format = (seconds) => {

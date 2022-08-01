@@ -1,5 +1,7 @@
 import axios, {AxiosResponse, AxiosRequestConfig} from 'axios';
+import React from 'react';
 import useSWR, { Key } from 'swr';
+import { DeleteInfo } from '../components/HistoricalDataView';
 import { API_URL, RECORDINGS_STATIC_PATH } from '../config';
 import { RequestStatus } from './types';
 
@@ -15,7 +17,8 @@ export function useGetAllRecordings(token, fetchAuth) {
     const fetcher = (url: string) => fetchAuth(url).then((res) => res.json());
     // query the streamings endpoint (only if we have a token)
     const uid: Key = token && `${API_URL}/recordings`;
-    const { data: response, error } = useSWR(uid, fetcher);
+    const random = React.useRef(Date.now());
+    const { data: response, error } = useSWR([uid, random], fetcher);
     return {
         data: response && response.data,
         response,
@@ -115,6 +118,31 @@ export function useStopRecording(token, fetchAuth, serverStatusStop) {
     };
 }
 
+/* delete recording */
+export function useDeleteRecording(token, fetchAuth, delData: DeleteInfo) {
+    // get the authenticated fetch function
+    const fetcher = (url: string) => fetchAuth(url, {
+        method: "DELETE"
+      }).then((res) => res.json());
+    const validation = delData && delData.name !== "" && delData.confirmation;
+    const uid: Key = validation && token && `${API_URL}/recordings/` + delData.name;
+    const { data: response, error } = useSWR(uid, fetcher);
+    if(validation) {
+        return {
+            data: response && response.data,
+            response,
+            error,
+            status: RequestStatus.SUCCESS
+        };
+    }
+    return {
+        data: undefined,
+        response: undefined,
+        error: undefined,
+        status: undefined
+    };
+}
+
 /* ************* End SWR React hooks ***************** */
 
 
@@ -148,6 +176,13 @@ export async function getHandData (recordingName) {
     // const url ="https://api.ptg.poly.edu/recordings/static/coffee-test-1/hand.json";
     const url = API_URL +  RECORDINGS_STATIC_PATH + `${recordingName}/hand.json`;
     const response = await fetch(url).then((res) => res.json());
+    return response;
+}
+
+export async function getAllRecordings(token, fetchAuth) {
+    // query the streamings endpoint (only if we have a token)
+    const uid: Key = token && `${API_URL}/recordings`;
+    const response = await fetchAuth(uid).then((res) => res.json());
     return response;
 }
 
