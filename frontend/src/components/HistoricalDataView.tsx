@@ -264,11 +264,14 @@ function RecordingsDataView() {
           }
           </Select>
         </FormControl>
+        {/*
+        // Disable Delete recording
         <FormControl sx={{ m: 1, minWidth: 140 }} size="small">
           <Button variant="outlined" onClick={handleClickDelButton}  startIcon={<DeleteIcon />}>
             Delete
           </Button>
         </FormControl>
+        */}
         <DeleteRecordingDialog
           id="delete-recording"
           keepMounted
