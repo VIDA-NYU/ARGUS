@@ -31,7 +31,7 @@ export function useGetRecording(token, fetchAuth, recordingName) {
     // get the authenticated fetch function
     const fetcher = (url: string) => fetchAuth(url).then((res) => res.json());
     // query the streamings endpoint (only if we have a token)
-    const uid: Key = token && `${API_URL}/recordings/` + recordingName;
+    const uid: Key = token  && recordingName && `${API_URL}/recordings/` + recordingName;
     const { data: response, error } = useSWR(uid, fetcher);
     return {
         data: response && response.data,
