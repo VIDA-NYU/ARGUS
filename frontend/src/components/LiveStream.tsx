@@ -4,10 +4,8 @@ import Box from '@mui/material/Box';
 import Badge from '@mui/material/Badge';
 import Tooltip from '@mui/material/Tooltip';
 import Chip from '@mui/material/Chip';
-import { useToken } from '../api/TokenContext';
-import { WS_API_URL } from '../config';
-import useWebSocket, { ReadyState } from 'react-use-websocket';
-
+import { ReadyState } from 'react-use-websocket';
+import { useStreamData } from '../api/rest';
 
 
 
@@ -24,50 +22,6 @@ const STATUS_COLOR = {
     [ReadyState.CLOSING]: 'warning',
     [ReadyState.CLOSED]: 'error',
     [ReadyState.UNINSTANTIATED]: 'default',
-}
-
-const unpackEntries = (offsets, content, utf=false) => {
-    offsets = JSON.parse(offsets);
-    return offsets.map(([sid, ts, ii], i) => {
-        let data = content.slice(ii, offsets?.[i+1]?.[2]);
-        data = utf ? new TextDecoder("utf-8").decode(data) : data
-        return [sid, ts, parseInt(ts.split('-')), data]
-    })
-}
-
-const useTimeout = (callback, delay, tock=null) => {
-    const cb = useRef(callback);
-    useEffect(() => { cb.current = callback; }, [callback]);
-    useEffect(() => {
-      const id = delay && setTimeout(() => cb.current?.(), delay);
-      return () => id && clearTimeout(id);
-    }, [delay, tock]);
-  };
-
-const useStreamData = ({ streamId, params=null, utf=false, timeout=6000 }) => {
-    // query websocket
-    const { token } = useToken();
-    params = token && new URLSearchParams({ token, ...params }).toString()
-    const { lastMessage, readyState,  ...wsData } = useWebSocket(
-        token && streamId && `${WS_API_URL}/data/${streamId}/pull?${params}`);
-
-    // parse data
-    const offsets = useRef(null);
-    const [ [sid, ts, time, data], setData ] = useState([null, null, null,  null])
-    useEffect(() => {
-        if(!lastMessage?.data) return;
-        if(typeof lastMessage?.data === 'string') {
-            offsets.current = lastMessage.data;
-        } else {
-            lastMessage.data.arrayBuffer().then((buf) => {
-                const data = unpackEntries(offsets.current, buf, utf)
-                setData(data[data.length-1]);  // here we're assuming we're only querying one stream
-            })
-        }
-    }, [lastMessage]);
-
-    useTimeout(() => {setData([null, null, null, null])}, timeout, data)
-    return {sid, ts, time, data, readyState}
 }
 
 export const prettyJSON = msg => msg ? JSON.stringify(JSON.parse(msg), null, 2) : msg

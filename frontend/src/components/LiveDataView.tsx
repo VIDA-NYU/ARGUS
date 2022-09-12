@@ -146,6 +146,7 @@ function LiveVideo() {
         <ImageView streamId='main' />
         <LogsView streamId={'clip:action:steps'} formatter={str => (<ClipOutputsView data={JSON.parse(str)} />)} />
         <LogsView streamId={'detic:image'} />
+        <LogsView streamId={'reasoning'} />
       </div>
     </div>
   )
