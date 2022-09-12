@@ -1,9 +1,11 @@
 import axios, {AxiosResponse, AxiosRequestConfig} from 'axios';
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import useSWR, { Key } from 'swr';
 import { DeleteInfo } from '../components/HistoricalDataView';
-import { API_URL, RECORDINGS_STATIC_PATH } from '../config';
+import { API_URL, WS_API_URL, RECORDINGS_STATIC_PATH } from '../config';
 import { RequestStatus } from './types';
+import { useToken } from '../api/TokenContext';
+import useWebSocket, { ReadyState } from 'react-use-websocket';
 
 /*
 Using SWR React hooks "useSWR" in an external API service layer: This will be possible following this two rules:
@@ -188,3 +190,46 @@ export async function getAllRecordings(token, fetchAuth) {
 
 /* *********** End fetch data from API *************** */
 
+export const unpackEntries = (offsets, content, utf=false) => {
+    offsets = JSON.parse(offsets);
+    return offsets.map(([sid, ts, ii], i) => {
+        let data = content.slice(ii, offsets?.[i+1]?.[2]);
+        data = utf ? new TextDecoder("utf-8").decode(data) : data
+        return [sid, ts, parseInt(ts.split('-')), data]
+    })
+}
+
+const useTimeout = (callback, delay, tock=null) => {
+    const cb = useRef(callback);
+    useEffect(() => { cb.current = callback; }, [callback]);
+    useEffect(() => {
+      const id = delay && setTimeout(() => cb.current?.(), delay);
+      return () => id && clearTimeout(id);
+    }, [delay, tock]);
+};
+
+export const useStreamData = ({ streamId, params=null, utf=false, timeout=6000 }) => {
+    // query websocket
+    const { token } = useToken();
+    params = token && new URLSearchParams({ token, ...params }).toString()
+    const { lastMessage, readyState,  ...wsData } = useWebSocket(
+        token && streamId && `${WS_API_URL}/data/${streamId}/pull?${params}`);
+
+    // parse data
+    const offsets = useRef(null);
+    const [ [sid, ts, time, data], setData ] = useState([null, null, null,  null])
+    useEffect(() => {
+        if(!lastMessage?.data) return;
+        if(typeof lastMessage?.data === 'string') {
+            offsets.current = lastMessage.data;
+        } else {
+            lastMessage.data.arrayBuffer().then((buf) => {
+                const data = unpackEntries(offsets.current, buf, utf)
+                setData(data[data.length-1]);  // here we're assuming we're only querying one stream
+            })
+        }
+    }, [lastMessage]);
+
+    useTimeout(() => {setData([null, null, null, null])}, timeout, data)
+    return {sid, ts, time, data, readyState}
+}
