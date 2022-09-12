@@ -4,13 +4,16 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 // import 'bootstrap/dist/css/bootstrap.min.css';
+import { TokenProvider, useToken } from './api/TokenContext';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   // <React.StrictMode>
+  <TokenProvider>
     <App />
+  </TokenProvider>
   // </React.StrictMode>
 );
 

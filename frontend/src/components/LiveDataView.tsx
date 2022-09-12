@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Alert, Box, Button, Paper } from '@mui/material';
-import { TokenProvider, useToken } from '../api/TokenContext';
+import { useToken } from '../api/TokenContext';
 import { Login } from './RecipesView';
 import { TEST_PASS, TEST_USER } from '../config';
 
@@ -157,11 +157,4 @@ const MainVideo = () => {
   </Box>
 }
 
-// top level - wraps with a global token context
-const LiveDataView = () => {
-  return <TokenProvider>
-    <MainVideo />
-  </TokenProvider>
-}
-
-export default LiveDataView;
+export default MainVideo;

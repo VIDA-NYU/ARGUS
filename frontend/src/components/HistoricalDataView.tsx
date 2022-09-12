@@ -5,7 +5,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { TokenProvider, useToken } from '../api/TokenContext';
+import { useToken } from '../api/TokenContext';
 import { getAudioPath, getEyeData, getHandData, getVideoPath, useDeleteRecording, useGetAllRecordings, useGetRecording } from '../api/rest';
 import { dataType, RequestStatus, streamingType } from '../api/types';
 import Controls from './Controls';
@@ -315,11 +315,4 @@ function RecordingsDataView() {
   );
 }
 
-// top level - wraps with a global token context
-const HistoricalDataView = () => {
-  return <TokenProvider>
-    <RecordingsDataView />
-  </TokenProvider>
-}
-
-export default HistoricalDataView;
+export default RecordingsDataView;

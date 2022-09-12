@@ -4,7 +4,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import useSWR, { Key } from 'swr';
 import { Box } from '@mui/material';
-import { TokenProvider, useToken } from '../api/TokenContext';
+import { useToken } from '../api/TokenContext';
 import {TEST_USER, TEST_PASS} from '../config';
 import { LoginCredential, Recipe } from '../api/types';
 import { useGetRecipes } from '../api/rest';
@@ -50,7 +50,7 @@ const App = () => {
     <div className="mt-2 mr-2 ml-2">
       <ul>
         {recipes && recipes.map((recipe: Recipe, index: number) => 
-            <div>
+            <div key={recipe.name}>
             {index === 0 && <span style={{marginLeft: "2px", color: "#6c757d"}}>Total of {recipes.length} recipes.</span>}
             <h1>{index+1}. {recipe.name}</h1>
             <h3>Ingredients</h3>
@@ -76,12 +76,5 @@ const Main = () => {
   </Box>
 }
 
-// top level - wraps with a global token context
-const RecipesView = () => {
-  return <TokenProvider>
-    <Main />
-  </TokenProvider>
-}
-
-export default RecipesView;
+export default Main;
 
