@@ -56,18 +56,13 @@ const useStreamData = ({ streamId, params=null, utf=false, timeout=6000 }) => {
     const [ [sid, ts, time, data], setData ] = useState([null, null, null,  null])
     useEffect(() => {
         if(!lastMessage?.data) return;
-        if(offsets.current != null) {
-            if(typeof lastMessage?.data?.arrayBuffer !== 'function') console.log(typeof lastMessage?.data, lastMessage?.data, lastMessage?.data?.arrayBuffer)
+        if(typeof lastMessage?.data === 'string') {
+            offsets.current = lastMessage.data;
+        } else {
             lastMessage.data.arrayBuffer().then((buf) => {
-                const off = offsets.current;
-                offsets.current = null;
-                const data = unpackEntries(off, buf, utf)
-                // console.log(data);
-                
+                const data = unpackEntries(offsets.current, buf, utf)
                 setData(data[data.length-1]);  // here we're assuming we're only querying one stream
             })
-        } else {
-            offsets.current = lastMessage.data;
         }
     }, [lastMessage]);
 
