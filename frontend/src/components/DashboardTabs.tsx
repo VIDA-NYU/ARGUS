@@ -5,7 +5,8 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import HistoricalDataView from './HistoricalDataView';
 import LiveDataView from './LiveDataView';
-import RecipesView from './RecipesView';
+import RecipesView, { Login } from './RecipesView';
+import { TEST_PASS, TEST_USER } from '../config';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -66,3 +67,20 @@ export default function DashboardTabs() {
     </Box>
   );
 }
+
+      // <BrowserRouter>
+      //   <Routes>
+      //     <Route exact path = '/' element={<LiveDataView />} />
+      //     <Route path='/recordings'>
+      //       <Route path="" element={<HistoricalDataView />} />
+      //       {/* <Route path=":recordingId" element={<HistoricalDataView />} /> */}
+      //     </Route>
+      //     <Route path='/recipes'>
+      //       <Route path="" element={<RecipesView />} />
+      //       {/* <Route path=":recipeId" element={<RecipesView />} /> */}
+      //     </Route>
+      //     <Route path="/login" element={<Login username={TEST_USER} password={TEST_PASS} />} />
+      //     <Route path="/logout" element={<Logout redirectUri='/' />} />
+      //     <Route path="*" element={<Error404 />} />
+      //   </Routes>
+      // </BrowserRouter>
