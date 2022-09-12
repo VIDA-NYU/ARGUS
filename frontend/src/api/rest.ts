@@ -1,10 +1,10 @@
 import axios, {AxiosResponse, AxiosRequestConfig} from 'axios';
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useEffect, useRef, useCallback, useState } from 'react';
 import useSWR, { Key } from 'swr';
 import { DeleteInfo } from '../components/HistoricalDataView';
 import { API_URL, WS_API_URL, RECORDINGS_STATIC_PATH } from '../config';
 import { RequestStatus } from './types';
-import { useToken } from '../api/TokenContext';
+import { useToken } from './TokenContext';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 
 /*
@@ -143,6 +143,64 @@ export function useDeleteRecording(token, fetchAuth, delData: DeleteInfo) {
         error: undefined,
         status: undefined
     };
+}
+
+
+const useInterval = (callback, delay) => {
+    const cb = useRef(callback);
+    useEffect(() => { cb.current = callback; }, [callback]);
+    useEffect(() => {
+      const id = delay && setInterval(() => cb.current?.(), delay);
+      return () => id && clearInterval(id);
+    }, [delay]);
+  };
+  
+export const useRecordingControls = () => {
+    const { fetchAuth } = useToken();
+    // store errors for starting and stopping requests
+    const [ [startError, stopError], setClickError ] = useState([null, null]);
+    const [ loading, setLoading ] = useState(null);
+    // used to store the meta about a recording that just finished
+    const [ finishedRecording, setFinishedRecording ] = useState(null);
+
+    // stay up to date on the current recording info
+    const { data: recordingData, error: recordingDataError, mutate } = useSWR(
+        fetchAuth && `${API_URL}/recordings/current?info=true`, 
+        url => fetchAuth && fetchAuth(url).then(r=>r.json()));
+    const recordingId = recordingData?.name;
+
+    // update the recording info while it's active
+    useInterval(() => { mutate() }, recordingId ? 1000 : null)
+
+    // start/stop
+    const startRecording = () => {
+        setLoading(true);
+        fetchAuth && fetchAuth(`${API_URL}/recordings/start`, { method: 'PUT' })
+                .then(r=>r.text())
+                .then(d=>{ console.log(d);mutate();setClickError([null,null]) })
+                .catch(e=>setClickError([e,null]));
+        setFinishedRecording(null);
+    }
+    // useCallback(, [fetchAuth])
+    const stopRecording = () => {
+        setLoading(true);
+        fetchAuth && fetchAuth(`${API_URL}/recordings/stop`, { method: 'PUT' })
+                .then(r=>r.text()).then(d=>{ mutate(); setClickError([null,null]); setLoading(false) })
+                .catch(e=>{ setClickError([null,e]); setLoading(false) });
+        fetchAuth && recordingId && fetchAuth(`${API_URL}/recordings/${recordingId}`)
+                .then(r=>r.json())
+                .then(d=>setFinishedRecording(d)).catch(e=>console.error(e));
+    }
+    // useCallback(, [fetchAuth, recordingId])
+
+    return {
+      recordingId, 
+      recordingData, finishedRecording,
+      loading, 
+      recordingDataError, startError, stopError,
+      startRecording,
+      stopRecording,
+    }
 }
 
 /* ************* End SWR React hooks ***************** */
