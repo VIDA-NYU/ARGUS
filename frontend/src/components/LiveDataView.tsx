@@ -9,6 +9,7 @@ import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
 import StopCircleIcon from '@mui/icons-material/StopCircle';
 import { getLiveVideo, useGetCurrentRecordingInfo, useGetRecording, useStartRecording, useStopRecording } from '../api/rest';
 import { RequestStatus, responseServer } from '../api/types';
+import { LogsView, ImageView } from './LiveStream';
 
 let interval = null;
 
@@ -139,12 +140,26 @@ function LiveVideo() {
       >
         <div><span style={{fontWeight: "bold"}}>Live View</span></div>
         <></>
-         <img alt='live' src={getLiveVideo()} />
+         {/* <img alt='live' src={getLiveVideo()} /> */}
         {/* <img alt='live' src={`${API_URL}/mjpeg/main?last_entry_id=0`} /> */}
         {/* <VideoCard title="Live Data" subtitle={""} path={"http://localhost:4000/video"}/> */}
+        <ImageView streamId='main' />
+        <LogsView streamId={'clip:action:steps'} formatter={str => (<ClipOutputsView data={JSON.parse(str)} />)} />
+        <LogsView streamId={'detic:image'} />
       </div>
     </div>
   )
+}
+
+
+interface ClipOutputsViewProps { data: { [key: string]: number; } }
+
+const ClipOutputsView = ({ data }: ClipOutputsViewProps) => {
+  return (<ul>
+    {Object.entries(data).sort(([ta, sa], [tb,sb]) => ( sb-sa )).filter(x => x[1] > 0.1).map(([text, similarity]) => (
+      <li key={text}><b>{text}</b>: {(similarity*100).toFixed(2)}</li>
+    ))}
+  </ul>)
 }
 
 // looks at the token and will either ask for login or go to app - (can replace with react router)
