@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useLayoutEffect } from 'react';
 import styled from 'styled-components';
 import Box from '@mui/material/Box';
 import Badge from '@mui/material/Badge';
@@ -39,11 +39,11 @@ overflow: auto;
 font-size: 0.7em;
 `
 
-const StreamInfo = ({ sid, time, data, readyState, children }) => {
+export const StreamInfo = ({ sid, time, data, readyState, children }) => {
     const openNoData = readyState == ReadyState.OPEN && !data;
-    return <Box>
-        <Box display='flex' sx={{ gap: '0.5em' }}>
-            <Chip label={sid} size="small" />
+    return <Box sx={{ position: 'relative' }}>
+        <Box display='flex' sx={{ gap: '0.5em', zIndex: 1, position: 'absolute' }}>
+            <Chip label={sid} size="small" color='primary' />
             {time && <Chip label={new Date(time).toLocaleString()} size="small" />}
         </Box>
     <Badge color={openNoData ? 'secondary' : STATUS_COLOR[readyState]} badgeContent={
@@ -57,45 +57,26 @@ const StreamInfo = ({ sid, time, data, readyState, children }) => {
 }
 
 export const LogsView = ({ streamId, formatter=prettyJSON }) => {
-    const { sid, time, data, readyState } = useStreamData({ streamId, utf: true })
-    const formatted = useMemo(() => data && formatter ? formatter(data) : data, [data, formatter])
+    const { sid, time, data, readyState } = useStreamData({ streamId, utf: true, parse: formatter })
     return (
         <StreamInfo sid={sid||streamId} time={time} data={data} readyState={readyState}>
-            <CodeBlock>{formatted}</CodeBlock>
+            <CodeBlock>{data}</CodeBlock>
         </StreamInfo>
     )
 }
 
 
-const canvasDimensions = (canvas, w, h, upscale=2) => {
+const canvasDimensions = (canvas, w, h) => {
     const parentW = canvas.parentElement.clientWidth;
     w = w || canvas.width;
     h = h || canvas.height;
     h = h * parentW/w;
     w = parentW;
-    canvas.style.width = w + 'px';
-    canvas.style.height = h + 'px';
+    // canvas.style.width = w + 'px';
+    // canvas.style.height = h + 'px';
     const scale = window.devicePixelRatio;
-    canvas.width = w * upscale;
-    canvas.height = h * upscale;
-}
-
-const drawMessage = (ctx, text, fontface='Verdana') => {
-    // const gradient = ctx.createLinearGradient(0, 0, ctx.canvas.width, 0);
-    // gradient.addColorStop("0.3"," rgba(...)");
-    // gradient.addColorStop("0.557", "rgba(...)");
-    // gradient.addColorStop("0.818", "rgba(...)");
-    // ctx.fillStyle = gradient;
-    // ctx.fillRect(0,0, ctx.canvas.width, ctx.canvas.height)
-    // ctx.fillStyle = 'black';
-    // start with a large font size
-    var fontsize = 200;
-    // lower the font size until the text fits the canvas
-    do {
-        fontsize--;
-        ctx.font = fontsize + "px "+fontface;
-    } while (ctx.measureText(text).width > ctx.canvas.width*0.95)
-    ctx.fillText(text, ctx.canvas.width/2, ctx.canvas.height/2);
+    canvas.width = w * scale;
+    canvas.height = h * scale;
 }
 
 const useCanvas = ({}={}) => {
@@ -104,13 +85,9 @@ const useCanvas = ({}={}) => {
     useEffect(() => {
         const canvas = canvasRef.current
         const context = canvas.getContext('2d')
-        canvasDimensions(canvas, canvas.width, canvas.height);
         canvasRef.current = canvas;
         contextRef.current = context;
-        context.textBaseline = 'middle'; 
-        context.textAlign = 'center'; 
-        drawMessage(context, 'no data streaming')
-      }, [])
+    }, [])
     return { canvasRef, contextRef };
 }
 
@@ -135,7 +112,7 @@ const ImageCanvas = ({ image=null, ...rest }) => {
         img.src = src;
         return () => { URL.revokeObjectURL(src) }
     }, [image])
-    return <canvas ref={canvasRef} style={{borderRadius: '8px', border: '2px solid #ececec'}} {...rest} />
+    return <canvas ref={canvasRef} style={{width: '100%', maxWidth: '50rem', borderRadius: '8px', border: '2px solid #ececec'}} {...rest} />
 }
 
 
