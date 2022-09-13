@@ -47,7 +47,7 @@ export enum streamingType {
     MIC = 'mic0', // microphone
     EYE = 'eye', // eye
     HAND = 'hand', // hand
-  }
+}
 
 export enum RequestStatus {
     STARTED = 'STARTED',
