@@ -11,10 +11,6 @@ import { dataType, RequestStatus, streamingType } from '../api/types';
 import Controls from './Controls';
 import screenful from "screenfull";
 import { ConfirmationDeleteDialog, DeleteRecordingDialog, format, formatTotalDuration } from './Helpers';
-// import AccordionView from './AccordionView';
-import AccordionView from '../templates/AccordionView/AccordionView';
-import Button from '@mui/material/Button';
-import DeleteIcon from '@mui/icons-material/Delete';
 
 // custom components
 import AudioDataView from './AudioDataView/AudioDataView';
