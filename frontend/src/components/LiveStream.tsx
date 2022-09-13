@@ -114,8 +114,11 @@ const useCanvas = ({}={}) => {
     return { canvasRef, contextRef };
 }
 
-const ImageCanvas = ({ image=null, ...rest }) => {  
+const ImageCanvas = ({ image=null, streamId, ...rest }) => {
     const { canvasRef, contextRef } = useCanvas()
+
+    // retrieve objects
+    const { sid, time, data, readyState } = useStreamData({ streamId, utf: true });
     useEffect(() => {
         if(!image) return;
 
@@ -128,6 +131,37 @@ const ImageCanvas = ({ image=null, ...rest }) => {
             ctx.canvas.width = width;
             // draw image
             ctx.drawImage(e.target, 0, 0, ctx.canvas.width, ctx.canvas.height);
+
+            const canvasEle = canvasRef.current;
+
+            // draw a bounding box
+            const drawBoundingBox = (info, style = {}) => {
+                const { x, y, x1, y1 } = info;
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.strokeStyle = 'red';
+                ctx.lineWidth = 1;
+                ctx.rect(x, y, x1, y1);
+                ctx.stroke();
+            }
+
+            if (canvasEle) {
+                                console.log("Draw Bouding Boxes");
+                                // get context of the canvas
+                                let ctx = canvasEle.getContext("2d");
+                                // const objects = [{"xywhn":[0.15746684,0.0030323744,0.26777026,0.38022032],"confidence":0.39985728,"class_id":6,"labels":"coffee mug"},{"xywhn":[0.0,0.11014099,0.1214155,0.45666656],"confidence":0.37101164,"class_id":0,"labels":"measuring cup"}];
+                                console.log(data);
+                                for(let object of JSON.parse(data)) {
+                                    console.log(object);
+                                    if (object.xywhn && object.xywhn[0] && object.xywhn[1] && object.xywhn[2] && object.xywhn[3]){
+                                        const loc2D_x =  object.xywhn[0]*ctx.canvas.width;
+                                        const loc2D_y =  object.xywhn[1]*ctx.canvas.height;
+                                        const obj_width =  object.xywhn[2]*ctx.canvas.width;
+                                        const obj_height =  object.xywhn[3]*ctx.canvas.height;
+                                        drawBoundingBox({ x: loc2D_x, y: loc2D_y, x1: obj_width, y1: obj_height });
+                                    }
+                                }
+                            }
         }
 
         // attach object to image
@@ -143,7 +177,7 @@ export const ImageView = ({ streamId }) => {
     const { sid, time, data, readyState } = useStreamData({ streamId, params: { output: 'jpg' } })
     return (
         <StreamInfo sid={sid||streamId} time={time} data={data} readyState={readyState}>
-            <ImageCanvas image={data} />
+            <ImageCanvas image={data} streamId={'detic:image'}/>
         </StreamInfo>
     )
 }
