@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import Box from '@mui/material/Box';
-import { onProgressType } from './VideoCard';
+import { onProgressType } from './VideoDataView/VideoCard/VideoCard';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -11,9 +11,17 @@ import { dataType, RequestStatus, streamingType } from '../api/types';
 import Controls from './Controls';
 import screenful from "screenfull";
 import { ConfirmationDeleteDialog, DeleteRecordingDialog, format, formatTotalDuration } from './Helpers';
-import AccordionView from './AccordionView';
+// import AccordionView from './AccordionView';
+import AccordionView from '../templates/AccordionView/AccordionView';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
+
+// custom components
+import AudioDataView from './AudioDataView/AudioDataView';
+import VideoDataView from './VideoDataView/VideoDataView';
+import EyesDataView from './EyesDataView/EyesDataView';
+import HandsDataView from './HandsDataView/HandsDataView';
+
 
 export interface MediaState {
   pip?: boolean;
@@ -157,6 +165,8 @@ function RecordingsDataView() {
     };
 
     const handleProgress  = (changeState: onProgressType) => {
+      console.log('Handling progress..');
+
       const newDuration = changeState.totalDuration;
       // We only want to update time slider if we are not currently seeking
       if (!state.seeking) {
@@ -198,6 +208,23 @@ function RecordingsDataView() {
       screenful.toggle(playerContainerRef.current);
     };
 
+    const handleClickDelButton = () => {
+      setOpenDelDialog(true);
+    }
+
+    const handleCloseDeleteDialog = (value) => {
+      setOpenDelDialog(false);
+      if (value) { // if confirmation is true
+        //Delete recording
+        setDelData({name: recordingName, confirmation: value});
+      } else {
+        // Do nothing
+      }
+    };
+    const handleCloseConfDeleteDialog = () => {
+      setOpenConfDelDialog(false);
+    };
+
     const elapsedTime =
       timeDisplayFormat == "normal"
         ? format(currentTime) : "0:0";
@@ -206,44 +233,40 @@ function RecordingsDataView() {
     // const totalDurationValue = format(totalDuration);
     const totalDurationValue = (recordingData && recordingData.duration) ? formatTotalDuration(recordingData.duration) : "0:0";
 
-  const renderStreamings= () => {
-    if (recordingData !== undefined && recordingData &&  recordingData.streams){
-      return <>
-        <AccordionView type={dataType.VIDEO} data={recordingData} title={"Cameras"} state={state} recordingName={recordingName} onProgress={(res) => handleProgress(res)} onSeek={res => handleSeekingFromVideoCard(res)}
-        ></AccordionView>
-        {
-          Object.keys(recordingData.streams).includes(streamingType.MIC) &&
-          <AccordionView type={dataType.AUDIO} data={recordingData} title={"Audio Data"} state={state} recordingName={recordingName} onProgress={(res) => handleProgress(res)} onSeek={res => handleSeekingFromVideoCard(res)}
-        ></AccordionView>
-        }
-        {
-          Object.keys(recordingData.streams).includes(streamingType.EYE) &&
-          <AccordionView type={dataType.JSON} data={eyeData} title={"Eye Data"} ></AccordionView>
-        }
-        {
-          Object.keys(recordingData.streams).includes(streamingType.HAND) &&
-        <AccordionView type={dataType.JSON} data={handData} title={"Hand Data"} ></AccordionView>
-        }
-        </>
-    }
-    return <></>;
-  }
+    const renderStreamings= () => {
+      if (recordingData !== undefined && recordingData &&  recordingData.streams){
+        return <>
 
-  const handleClickDelButton = () => {
-    setOpenDelDialog(true);
-  }
-  const handleCloseDeleteDialog = (value) => {
-    setOpenDelDialog(false);
-    if (value) { // if confirmation is true
-      //Delete recording
-      setDelData({name: recordingName, confirmation: value});
-    } else {
-      // Do nothing
+          <VideoDataView 
+            type={dataType.VIDEO} 
+            data={recordingData} 
+            title={"Cameras"} 
+            state={state} 
+            recordingName={recordingName} 
+            onProgress={(res) => handleProgress(res)} 
+            onSeek={res => handleSeekingFromVideoCard(res)}>
+          </VideoDataView>
+
+          <AudioDataView 
+            type={dataType.VIDEO} 
+            data={recordingData} 
+            title={"Cameras"} 
+            state={state} 
+            recordingName={recordingName} 
+            onProgress={(res) => handleProgress(res)} 
+            onSeek={res => handleSeekingFromVideoCard(res)}>  
+          </AudioDataView>
+
+          <EyesDataView></EyesDataView>
+
+          <HandsDataView></HandsDataView>
+          
+          </>
+      }
+      return <></>;
     }
-  };
-  const handleCloseConfDeleteDialog = () => {
-    setOpenConfDelDialog(false);
-  };
+
+
 
   return (
     <div>
