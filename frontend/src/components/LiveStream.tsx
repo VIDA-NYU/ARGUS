@@ -136,20 +136,20 @@ const ImageCanvas = ({ image=null, streamId, ...rest }) => {
 
             // draw a bounding box
             const drawBoundingBox = (info, style) => {
-                const { x, y, x1, y1 } = info;
+                const { x, y, w, h } = info;
                 const { color = 'red', width = 1 } = style;
                 ctx.beginPath();
                 ctx.moveTo(x, y);
                 ctx.strokeStyle = color;
                 ctx.lineWidth = width;
-                ctx.rect(x, y, x1, y1);
+                ctx.rect(x, y, w, h);
                 ctx.stroke();
             }
 
             // write a text (object's label)
             const drawObjectLabel = (info, style) => {
             const { text, x, y } = info;
-            const { fontSize = 20, fontFamily = 'Arial', color = 'black', textAlign = 'left', textBaseline = 'top' } = style;
+            const { fontSize = 12, fontFamily = 'Arial', color = 'black', textAlign = 'left', textBaseline = 'top' } = style;
             ctx.beginPath();
             ctx.font = fontSize + 'px ' + fontFamily;
             ctx.textAlign = textAlign;
@@ -163,18 +163,16 @@ const ImageCanvas = ({ image=null, streamId, ...rest }) => {
                                 console.log("Draw Bouding Boxes");
                                 // get context of the canvas
                                 let ctx = canvasEle.getContext("2d");
+                                const W = ctx.canvas.width;
+                                const H = ctx.canvas.height;
                                 // const objects = [{"xywhn":[0.15746684,0.0030323744,0.26777026,0.38022032],"confidence":0.39985728,"class_id":6,"labels":"coffee mug"},{"xywhn":[0.0,0.11014099,0.1214155,0.45666656],"confidence":0.37101164,"class_id":0,"labels":"measuring cup"}];
                                 console.log(data);
                                 for(let object of JSON.parse(data)) {
                                     console.log(object);
-                                    if (object.xywhn && object.xywhn[0] && object.xywhn[1] && object.xywhn[2] && object.xywhn[3]){
-                                        const loc2D_x =  object.xywhn[0]*ctx.canvas.width;
-                                        const loc2D_y =  object.xywhn[1]*ctx.canvas.height;
-                                        const obj_width =  object.xywhn[2]*ctx.canvas.width;
-                                        const obj_height =  object.xywhn[3]*ctx.canvas.height;
-                                        drawBoundingBox({ x: loc2D_x, y: loc2D_y, x1: obj_width, y1: obj_height }, { color: 'red', width: 2 });
-                                        drawObjectLabel({ text: object.label, x: loc2D_x, y: loc2D_y }, { fontSize: 30, color: 'red', textAlign: 'center' });
-                                    }
+                                    if(!object.xyxyn) return;
+                                    const [x1, y1, x2, y2] = object.xyxyn;
+                                    drawBoundingBox({ x: x1*W, y: y1*H, w: (x2-x1)*W, h: (y2-y1)*H }, { color: 'red', width: 2 });
+                                    drawObjectLabel({ text: object.label, x: x1*W, y: y1*H }, { fontSize: 18, color: 'red', textAlign: 'center' });
                                 }
                             }
         }
