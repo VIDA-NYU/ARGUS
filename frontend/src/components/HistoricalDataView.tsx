@@ -248,18 +248,26 @@ function RecordingsDataView() {
           </VideoDataView>
 
           <AudioDataView 
-            type={dataType.VIDEO} 
+            type={dataType.AUDIO} 
             data={recordingData} 
-            title={"Cameras"} 
+            title={"Audio"} 
             state={state} 
             recordingName={recordingName} 
             onProgress={(res) => handleProgress(res)} 
             onSeek={res => handleSeekingFromVideoCard(res)}>  
           </AudioDataView>
 
-          <EyesDataView></EyesDataView>
+          <EyesDataView 
+            type={dataType.JSON} 
+            data={eyeData} 
+            title={"Eye Data"}>  
+          </EyesDataView>
 
-          <HandsDataView></HandsDataView>
+          <HandsDataView
+            type={dataType.JSON} 
+            data={handData} 
+            title={"Hands Data"}>
+          </HandsDataView>
           
           </>
       }
