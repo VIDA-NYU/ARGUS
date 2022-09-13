@@ -135,14 +135,28 @@ const ImageCanvas = ({ image=null, streamId, ...rest }) => {
             const canvasEle = canvasRef.current;
 
             // draw a bounding box
-            const drawBoundingBox = (info, style = {}) => {
+            const drawBoundingBox = (info, style) => {
                 const { x, y, x1, y1 } = info;
+                const { color = 'red', width = 1 } = style;
                 ctx.beginPath();
                 ctx.moveTo(x, y);
-                ctx.strokeStyle = 'red';
-                ctx.lineWidth = 1;
+                ctx.strokeStyle = color;
+                ctx.lineWidth = width;
                 ctx.rect(x, y, x1, y1);
                 ctx.stroke();
+            }
+
+            // write a text (object's label)
+            const drawObjectLabel = (info, style) => {
+            const { text, x, y } = info;
+            const { fontSize = 20, fontFamily = 'Arial', color = 'black', textAlign = 'left', textBaseline = 'top' } = style;
+            ctx.beginPath();
+            ctx.font = fontSize + 'px ' + fontFamily;
+            ctx.textAlign = textAlign;
+            ctx.textBaseline = textBaseline;
+            ctx.fillStyle = color;
+            ctx.fillText(text, x, y);
+            ctx.stroke();
             }
 
             if (canvasEle) {
@@ -158,7 +172,8 @@ const ImageCanvas = ({ image=null, streamId, ...rest }) => {
                                         const loc2D_y =  object.xywhn[1]*ctx.canvas.height;
                                         const obj_width =  object.xywhn[2]*ctx.canvas.width;
                                         const obj_height =  object.xywhn[3]*ctx.canvas.height;
-                                        drawBoundingBox({ x: loc2D_x, y: loc2D_y, x1: obj_width, y1: obj_height });
+                                        drawBoundingBox({ x: loc2D_x, y: loc2D_y, x1: obj_width, y1: obj_height }, { color: 'red', width: 2 });
+                                        drawObjectLabel({ text: object.label, x: loc2D_x, y: loc2D_y }, { fontSize: 30, color: 'red', textAlign: 'center' });
                                     }
                                 }
                             }
