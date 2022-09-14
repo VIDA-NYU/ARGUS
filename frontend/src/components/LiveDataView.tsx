@@ -58,7 +58,7 @@ function LiveVideo() {
       <Box style={{margin: 22}}>
         {startError && <Alert severity="error">We couldn't connect with the server. Please try again!<br/><pre>{startError.response.data}</pre></Alert>}
         {stopError && <Alert severity="error">Server Connection Issues: Please click again on the 'Stop Recording' button to finish your recording!<br/><pre>{stopError.response.data}</pre></Alert>}
-        {recordingDataError && <Alert severity="error">Error retrieving recording data: {recordingDataError.response.data}</Alert>}
+        {recordingDataError && <Alert severity="error">Error retrieving recording data: {recordingDataError}</Alert>}
         {recordingData && <Alert severity="success">SUCCESSFUL server connection. The video is being recorded.<br/><br/>{formatRecording(recordingData)}</Alert>}
         {finishedRecording && <Alert severity="success">Your recording was saved.<br/><br/>{formatRecording(finishedRecording)}</Alert>}
       </Box>
