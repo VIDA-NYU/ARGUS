@@ -55,12 +55,12 @@ function LiveVideo() {
         {recordingData && <Alert severity="success">SUCCESSFUL server connection. The video is being recorded.<br/><br/>{formatRecording(recordingData)}</Alert>}
         {finishedRecording && <Alert severity="success">Your recording was saved.<br/><br/>{formatRecording(finishedRecording)}</Alert>}
       </Box>
-      <div style={{margin: 22}}>
+      <div style={{margin: 22, width: 720}}>
         <div><span style={{fontWeight: "bold"}}>Live View</span></div>
         <ImageView streamId='main' />
         <LogsView streamId={'clip:action:steps'} formatter={str => (<ClipOutputsView data={JSON.parse(str)} />)} />
-        <LogsView streamId={'detic:image'} />
         <LogsView streamId={'reasoning'} />
+        <LogsView streamId={'detic:image'} />
       </div>
     </div>
   )
