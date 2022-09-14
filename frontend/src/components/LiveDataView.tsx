@@ -7,12 +7,11 @@ import { TEST_PASS, TEST_USER } from '../config';
 import LoadingButton from '@mui/lab/LoadingButton';
 import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
 import StopCircleIcon from '@mui/icons-material/StopCircle';
-import { getLiveVideo, useGetCurrentRecordingInfo, useGetRecording, useStartRecording, useStopRecording, useRecordingControls } from '../api/rest';
+import { useRecordingControls } from '../api/rest';
 import { RequestStatus, responseServer } from '../api/types';
 import { LogsView, ImageView } from './LiveStream';
 
 let interval = null;
-
 
 const RecordingControls = () => {
   const { recordingId, recordingData, recordingDataError, startError, stopError, finishedRecording, startRecording, stopRecording } = useRecordingControls();
@@ -58,23 +57,51 @@ const RecordingControls = () => {
   )
 }
 
-// the app - once you're authenticated
 function LiveVideo() {
   return (
     <Box>
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(6, minmax(0, 1fr))',
+          gap: 1,
+          gridTemplateRows: 'auto',
+          gridTemplateAreas: {
+            md: `
+              "M M M M a a"
+              "M M M M a a"
+              "M M M M b b"
+              "M M M M b b"
+              "c c c d d d"
+          `,
+          xs: `
+              "M M M M M M"
+              "M M M M M M"
+              "M M M M M M"
+              "M M M M M M"
+              "a a a b b b"
+              "c c c d d d"
+          `
+          }
+        }}>
+        <Box sx={{ gridArea: 'M' }}><ImageView streamId='main' boxStreamId='detic:image' confidence={0.5} /></Box>
+        <Box sx={{ gridArea: 'a' }}><LogsView streamId={'clip:action:steps'} formatter={str => (<ClipOutputsView data={JSON.parse(str)} />)} /></Box>
+        <Box sx={{ gridArea: 'b' }}><LogsView streamId={'reasoning'} /></Box>
+        <Box sx={{ gridArea: 'c' }}><LogsView streamId={'detic:image'} /></Box>
+        <Box sx={{ gridArea: 'd' }}>Other</Box>
+      </Box>
       {/* <RecordingControls />
       <Typography>
         Live View
-      </Typography> */}
-      <ImageView streamId='main' />
-      <LogsView streamId={'clip:action:steps'} formatter={str => (<ClipOutputsView data={JSON.parse(str)} />)} />
-      <LogsView streamId={'detic:image'} />
-      <LogsView streamId={'reasoning'} />
+      </Typography>
+        <ImageView streamId='main' boxStreamId='detic:image' />
+        <LogsView streamId={'clip:action:steps'} formatter={str => (<ClipOutputsView data={JSON.parse(str)} />)} />
+        <LogsView streamId={'reasoning'} />
+        <LogsView streamId={'detic:image'} />
+      </div> */}
     </Box>
   )
 }
-
-
 
 
 
@@ -92,11 +119,6 @@ const ClipOutputsView = ({ data }: ClipOutputsViewProps) => {
 const MainVideo = () => {
   const { token } = useToken();
   return token ? <LiveVideo /> : <Login username={TEST_USER} password={TEST_PASS} />
-  // <Box display='flex' justifyContent='center' alignItems='center' height='100%'>
-  //   <Paper>
-  //     {token ? <LiveVideo /> : <Login username={TEST_USER} password={TEST_PASS} />}
-  //   </Paper>
-  // </Box>
 }
 
-export default MainVideo;
+export default LiveVideo;

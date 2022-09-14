@@ -248,7 +248,7 @@ export async function getAllRecordings(token, fetchAuth) {
 
 /* *********** End fetch data from API *************** */
 
-export const unpackEntries = (offsets, content, parse, utf=false) => {
+export const unpackEntries = (offsets, content, parse=null, utf=false) => {
     offsets = JSON.parse(offsets);
     return offsets.map(([sid, ts, ii], i) => {
         let data = content.slice(ii, offsets?.[i+1]?.[2]);
@@ -267,7 +267,7 @@ const useTimeout = (callback, delay, tock=null) => {
     }, [delay, tock]);
 };
 
-export const useStreamData = ({ streamId, params=null, utf=false, parse=(d=>d), multiple=false, timeout=6000 }) => {
+export const useStreamData = ({ streamId, params=null, parse=null, utf=false, multiple=false, timeout=12000 }) => {
     // query websocket
     const { token } = useToken();
     params = token && new URLSearchParams({ token, ...params }).toString()
@@ -275,7 +275,7 @@ export const useStreamData = ({ streamId, params=null, utf=false, parse=(d=>d), 
     const didUnmount = useRef(false);
     useEffect(() => (() => { didUnmount.current = true }), []);
     const { lastMessage, readyState } = useWebSocket(
-        token && streamId && `${WS_API_URL}/data/${streamId}/pull?${params}`, {
+        token && streamId && `${WS_API_URL}/data/${streamId}/pull?${params}` || null, {
             shouldReconnect: e => didUnmount.current === false,
             reconnectInterval: 5000,
             reconnectAttempts: 12,
