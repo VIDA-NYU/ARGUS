@@ -103,7 +103,7 @@ function RecordingsDataView() {
       const fetchEyeData = async () => {
         try {
           const jsonFile = await getEyeData(recordingName);
-          setEyeData(jsonFile.slice(0, 20));
+          setEyeData(jsonFile);
         } catch (error) {
                 // console.log("error", error);
                 setEyeData("404 Not Found. Eye data was not found.");
@@ -161,7 +161,6 @@ function RecordingsDataView() {
     };
 
     const handleProgress  = (changeState: onProgressType) => {
-      console.log('Handling progress..');
 
       const newDuration = changeState.totalDuration;
       // We only want to update time slider if we are not currently seeking
