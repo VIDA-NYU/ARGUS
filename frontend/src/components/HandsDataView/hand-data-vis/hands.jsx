@@ -84,11 +84,22 @@ function buildJointLinks(handData){
     return jointLinks;
 }
 
+function getPlayedIndex(played, seqLen){
+    if(!seqLen){
+        return 0;
+    }
+    if(played < 1){
+        return Math.floor(played * seqLen);
+    }else{
+        return  seqLen - 1;
+    }
+}
+
+
 function HandsModel(props) {
 
 
-    const [seq, setSeq] = useState(0);
-
+    let seq = getPlayedIndex(props.state.played, props.data.length);
 
     let frameData = props.data[seq % props.data.length];
 
@@ -139,16 +150,6 @@ function HandsModel(props) {
             </group>
         )
     }
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setSeq(oldValue => oldValue + 1);
-        }, 1000);
-        return () => {
-            clearTimeout(timer);
-        };
-
-    }, [seq])
 
     return (
         <group position={[0, 0, 0]}>

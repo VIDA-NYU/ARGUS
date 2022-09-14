@@ -31,7 +31,7 @@ const HandsDataView = ({ type, title, data, recordingName, state, onProgress, on
                       }}
                       title={"Overview"}></CardHeader>
                   <CardContent>
-                      <HandsCanvas variant={"overview"}  data={data}/>
+                      <HandsCanvas state={state} variant={"overview"}  data={data}/>
                   </CardContent>
               </Card>
               <Card
@@ -46,7 +46,7 @@ const HandsDataView = ({ type, title, data, recordingName, state, onProgress, on
                       }}
                       title={"Left Hand"}></CardHeader>
                   <CardContent>
-                      <HandsCanvas variant={"left"}  data={data}/>
+                      <HandsCanvas state={state} variant={"left"}  data={data}/>
                   </CardContent>
               </Card>
 
@@ -57,7 +57,7 @@ const HandsDataView = ({ type, title, data, recordingName, state, onProgress, on
                       }}
                       title={"Right Hand"}></CardHeader>
                   <CardContent>
-                      <HandsCanvas variant={"right"} data={data}/>
+                      <HandsCanvas state={state} variant={"right"} data={data}/>
                   </CardContent>
               </Card>
 
