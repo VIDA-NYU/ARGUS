@@ -15,8 +15,23 @@ const Container = styled("div")(({}) => ({
     display: "flex",
     flexDirection: "row",
     marginLeft: 20,
-    marginRight: 20
+    marginRight: 20,
+    marginBottom: 20
 }))
+
+const JsonDataContainer = styled(Card)(({}) => ({
+    height: "100%",
+    width: "600px",
+    marginLeft: 30,
+}))
+
+const JsonContent = styled("div")(({}) => ({
+    overflowY: "scroll",
+    height: "100%",
+    position: "relative",
+    left: 0
+}))
+
 
 const HandsDataView = ({ type, title, data, recordingName, state, onProgress, onSeek }: any) => {
   
@@ -60,9 +75,19 @@ const HandsDataView = ({ type, title, data, recordingName, state, onProgress, on
                       <HandsCanvas state={state} variant={"right"} data={data}/>
                   </CardContent>
               </Card>
+              <JsonDataContainer>
+                  <CardHeader
+                      titleTypographyProps={{
+                          fontSize: 16,
+                      }}
+                      title={"JSON"}></CardHeader>
+                  <JsonContent>
+                      <JSONPretty id="json-pretty" data={data}></JSONPretty>
+                  </JsonContent>
+              </JsonDataContainer>
 
           </Container>
-        <JSONPretty id="json-pretty" data={data}></JSONPretty>
+
       </Box>
     </AccordionView>
   )
