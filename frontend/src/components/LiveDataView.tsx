@@ -4,12 +4,19 @@ import { useToken } from '../api/TokenContext';
 import { Login } from './RecipesView';
 import { TEST_PASS, TEST_USER } from '../config';
 
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+
 import LoadingButton from '@mui/lab/LoadingButton';
 import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
 import StopCircleIcon from '@mui/icons-material/StopCircle';
 import { getLiveVideo, useGetCurrentRecordingInfo, useGetRecording, useStartRecording, useStopRecording, useRecordingControls } from '../api/rest';
 import { RequestStatus, responseServer } from '../api/types';
 import { LogsView, ImageView } from './LiveStream';
+import { useGetRecipes } from '../api/rest';
+import { useCurrentRecipe } from '../api/rest';
 
 let interval = null;
 
@@ -49,14 +56,15 @@ function LiveVideo() {
         </Button>
       </Box>
       <Box style={{margin: 22}}>
-        {startError && <Alert severity="error">We couldn't connect with the server. Please try again!<br/><pre>{startError}</pre></Alert>}
-        {stopError && <Alert severity="error">Server Connection Issues: Please click again on the 'Stop Recording' button to finish your recording!<br/><pre>{stopError}</pre></Alert>}
-        {recordingDataError && <Alert severity="error">Error retrieving recording data: {recordingDataError}</Alert>}
+        {startError && <Alert severity="error">We couldn't connect with the server. Please try again!<br/><pre>{startError.response.data}</pre></Alert>}
+        {stopError && <Alert severity="error">Server Connection Issues: Please click again on the 'Stop Recording' button to finish your recording!<br/><pre>{stopError.response.data}</pre></Alert>}
+        {recordingDataError && <Alert severity="error">Error retrieving recording data: {recordingDataError.response.data}</Alert>}
         {recordingData && <Alert severity="success">SUCCESSFUL server connection. The video is being recorded.<br/><br/>{formatRecording(recordingData)}</Alert>}
         {finishedRecording && <Alert severity="success">Your recording was saved.<br/><br/>{formatRecording(finishedRecording)}</Alert>}
       </Box>
       <div style={{margin: 22, width: 720}}>
         <div><span style={{fontWeight: "bold"}}>Live View</span></div>
+        <RecipePicker />
         <ImageView streamId='main' />
         <LogsView streamId={'clip:action:steps'} formatter={str => (<ClipOutputsView data={JSON.parse(str)} />)} />
         <LogsView streamId={'reasoning'} />
@@ -66,6 +74,28 @@ function LiveVideo() {
   )
 }
 
+const RecipePicker = () => {
+  const { token, fetchAuth } = useToken();
+  const { response: recipes } = useGetRecipes(token, fetchAuth);
+  const { response: recipe, setRecipe, setting } = useCurrentRecipe();
+  return (
+    <FormControl sx={{ m: 1, minWidth: 340 }} size="small">
+      <InputLabel id="recipe-selector-label">Select Recipe</InputLabel>
+      {setting === true ? 'Setting...'  : <Select
+        labelId="recipe-selector-label"
+        id="recipe-selector"
+        value={recipe||''}
+        label="Select Recipe"
+        onChange={e => setRecipe(e.target.value)}
+      >
+      {recipes && recipes.map(r => (
+        <MenuItem key={r.name} value={r._id}>{r.name}</MenuItem>
+      ))}
+      <MenuItem value={''}>--</MenuItem>
+      </Select>}
+    </FormControl>
+  )
+}
 
 interface ClipOutputsViewProps { data: { [key: string]: number; } }
 
