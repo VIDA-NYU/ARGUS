@@ -91,8 +91,11 @@ const useCanvas = ({}={}) => {
     return { canvasRef, contextRef };
 }
 
-const ImageCanvas = ({ image=null, ...rest }) => {  
+const ImageCanvas = ({ image=null, streamId, ...rest }) => {
     const { canvasRef, contextRef } = useCanvas()
+
+    // retrieve objects
+    const { sid, time, data, readyState } = useStreamData({ streamId, utf: true });
     useEffect(() => {
         if(!image) return;
 
@@ -105,6 +108,47 @@ const ImageCanvas = ({ image=null, ...rest }) => {
             ctx.canvas.width = width;
             // draw image
             ctx.drawImage(e.target, 0, 0, ctx.canvas.width, ctx.canvas.height);
+
+            const canvasEle = canvasRef.current;
+
+            // draw a bounding box
+            const drawBoundingBox = (info, style) => {
+                const { x, y, w, h } = info;
+                const { color = 'red', width = 1 } = style;
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.strokeStyle = color;
+                ctx.lineWidth = width;
+                ctx.rect(x, y, w, h);
+                ctx.stroke();
+            }
+
+            // write a text (object's label)
+            const drawObjectLabel = (info, style) => {
+            const { text, x, y } = info;
+            const { fontSize = 12, fontFamily = 'Arial', color = 'black', textAlign = 'left', textBaseline = 'top' } = style;
+            ctx.beginPath();
+            ctx.font = fontSize + 'px ' + fontFamily;
+            ctx.textAlign = textAlign;
+            ctx.textBaseline = textBaseline;
+            ctx.fillStyle = color;
+            ctx.fillText(text, x, y);
+            ctx.stroke();
+            }
+
+            if (canvasEle) {
+                                // get context of the canvas
+                                let ctx = canvasEle.getContext("2d");
+                                const W = ctx.canvas.width;
+                                const H = ctx.canvas.height;
+                                // const objects = [{"xywhn":[0.15746684,0.0030323744,0.26777026,0.38022032],"confidence":0.39985728,"class_id":6,"labels":"coffee mug"},{"xywhn":[0.0,0.11014099,0.1214155,0.45666656],"confidence":0.37101164,"class_id":0,"labels":"measuring cup"}];
+                                for(let object of JSON.parse(data)) {
+                                    if(!object.xyxyn) return;
+                                    const [x1, y1, x2, y2] = object.xyxyn;
+                                    drawBoundingBox({ x: x1*W, y: y1*H, w: (x2-x1)*W, h: (y2-y1)*H }, { color: 'red', width: 2 });
+                                    drawObjectLabel({ text: object.label, x: x1*W, y: y1*H }, { fontSize: 20, color: 'red', textAlign: 'center' });
+                                }
+                            }
         }
 
         // attach object to image
@@ -120,7 +164,7 @@ export const ImageView = ({ streamId }) => {
     const { sid, time, data, readyState } = useStreamData({ streamId, params: { output: 'jpg' } })
     return (
         <StreamInfo sid={sid||streamId} time={time} data={data} readyState={readyState}>
-            <ImageCanvas image={data} />
+            <ImageCanvas image={data} streamId={'detic:image'}/>
         </StreamInfo>
     )
 }

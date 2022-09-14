@@ -1,30 +1,19 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Card from "@mui/material/Card";
-import CardHeader from "@mui/material/CardHeader";
-import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import ReactPlayer from 'react-player';
-import { MediaState } from "./HistoricalDataView";
+import { MediaState } from "../../HistoricalDataView";
+import { onProgressType } from "../../VideoDataView/VideoCard/VideoCard";
 
-interface VideoCardProps {
-    title: string;
-    subtitle?: string;
+interface AudioCardProps {
     path: string;
-    state?: MediaState;
+    state: MediaState;
     onProgress?: (changeState: onProgressType) => void;
     onSeek?: (seek: number) => void;
-  }
-
-export interface onProgressType {
-    loaded: number;
-    loadedSeconds: number;
-    played: number;
-    playedSeconds: number;
-    totalDuration?: string;
-    currentTime?: string;
 }
 
-function VideoCard(props: VideoCardProps) {
+
+function AudioCard(props: AudioCardProps) {
 
     const playerRef = useRef(null);
     const {
@@ -43,7 +32,7 @@ function VideoCard(props: VideoCardProps) {
         }
         if ((played || played===0 ) && seeking ) {
             handleChangePlayed(played);
-         }
+        }
       }, [played]);
 
       const handleProgress  = (changeState: onProgressType) => {
@@ -60,22 +49,15 @@ function VideoCard(props: VideoCardProps) {
 
     return (
         <>
-        <Card sx={{ maxWidth: 600 }}>
-        <CardHeader
-            titleTypographyProps={{
-                fontSize: 16,
-            }}
-            title={props.title}
-            // subheader={this.props.path}
-        />
+        <Card sx={{ marginLeft: "20px", marginRight: "20px",  minWidth: 650 }}>
         <CardContent>
             <ReactPlayer
                 ref = {playerRef}
                 url={props.path}
-                width='100%'
-                height='100%'
+                width="400px"
+                height="50px"
                 playing = {playing}
-                controls = {false}
+                controls = {true}
                 playbackRate={playbackRate}
                 onProgress={handleProgress}
                 onSeek={handleSeeking}
@@ -86,4 +68,4 @@ function VideoCard(props: VideoCardProps) {
     );
 }
 
-export {VideoCard};
+export {AudioCard};
