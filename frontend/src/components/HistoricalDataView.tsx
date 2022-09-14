@@ -255,7 +255,10 @@ function RecordingsDataView() {
           <EyesDataView 
             type={dataType.JSON} 
             data={eyeData} 
-            title={"Eye Data"}>  
+            title={"Eye Data"}
+            recordingMetadata={recordingData}
+            currentState={state}
+            >  
           </EyesDataView>
 
           <HandsDataView
