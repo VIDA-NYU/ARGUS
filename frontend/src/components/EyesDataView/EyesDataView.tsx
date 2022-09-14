@@ -12,11 +12,12 @@ import { useEffect, useRef } from 'react';
 
 // third-party
 import * as THREE from 'three';
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+
 
 // style
 import './EyesDataView.css'
 import { Transformations } from './utils/Transformations';
-import { CatchingPokemonSharp } from '@mui/icons-material';
 
 interface EyesDataViewProps {
   points: any
@@ -24,133 +25,128 @@ interface EyesDataViewProps {
 
 const EyesDataView = ({ type, title, data, recordingName, state, onProgress, onSeek }: any) => {
 
-  // let container, stats;
-  let camera, scene, renderer;
-	// let points;
-
   // DOM Refs
   const containerRef = useRef(null);
 
+  let camera, scene, renderer;
+  let points;
+  let controls;
+
+  let currentPoints;
+
   const initialize_scene = () => {
 
-    camera = new THREE.PerspectiveCamera( 55, window.innerWidth / window.innerHeight, 2, 2000 );
-    camera.position.z = 1000;
+    camera = new THREE.PerspectiveCamera( 75, 1600/600, 0.1, 1000 );
+    camera.position.z = 100;
 
     scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2( 0x000000, 0.001 );
+    scene.background = new THREE.Color( 'white' );
+    scene.fog = new THREE.Fog( 0x050505, 2000, 3500 );
 
-    const geometry = new THREE.BufferGeometry();
-    const vertices = [];
+    // const geometry = new THREE.BoxGeometry( 51, 51, 51 );
+    // const material = new THREE.MeshBasicMaterial( {color: 'red', transparent: true, opacity: 0.5} );
+    // const cube = new THREE.Mesh( geometry, material );
+    // scene.add( cube );
 
-    const sprite = new THREE.TextureLoader().load( 'textures/sprites/disc.png' );
+    // const planegeometry = new THREE.PlaneGeometry( 50, 50 );
+    // const planematerial = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+    // const plane = new THREE.Mesh( planegeometry, planematerial );
+    // plane.rotation.x = Math.PI / 2;
+    // plane.position.set(0, -25.5, 0 );
+    // scene.add( plane );
 
-    for ( let i = 0; i < 10000; i ++ ) {
+    const helper = new THREE.GridHelper( 50, 50 );
+    helper.position.set(0, -25.5, 0 );
+    scene.add( helper );
 
-      const x = 2000 * Math.random() - 1000;
-      const y = 2000 * Math.random() - 1000;
-      const z = 2000 * Math.random() - 1000;
 
-      vertices.push( x, y, z );
-
-    }
-
-    geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
-
-    const material = new THREE.PointsMaterial( { size: 35, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: true } );
-    material.color.setHSL( 1.0, 0.3, 0.7 );
-
-    const particles = new THREE.Points( geometry, material );
-    scene.add( particles );
-
-    //
+    // const axesHelper = new THREE.AxesHelper( 76 );
+    // scene.add( axesHelper );
 
     renderer = new THREE.WebGLRenderer();
     renderer.setPixelRatio( window.devicePixelRatio );
-    renderer.setSize( window.innerWidth, window.innerHeight );
-    document.body.appendChild( renderer.domElement );
+    renderer.setSize( 1600, 600 );
 
-    renderer.render( scene, camera );
+    containerRef.current.appendChild( renderer.domElement );
+
+    const pointgeometry = new THREE.BufferGeometry();
+
+    // getting normalized data
+    const arrays = Transformations.normalize_data( data );
+
+    pointgeometry.setAttribute( 'position', new THREE.Float32BufferAttribute( arrays.normalizedData, 3 ) );
+    pointgeometry.setAttribute( 'color', new THREE.Float32BufferAttribute( arrays.colors, 3 ) );
+    pointgeometry.computeBoundingSphere();
+
+
+    const pointmaterial = new THREE.PointsMaterial( { size: 1, vertexColors: true, transparent: true, opacity: 0.1 } );
+
+    points = new THREE.Points( pointgeometry, pointmaterial );
+    scene.add( points );
+
+    controls = new OrbitControls( camera, renderer.domElement );
 
   };
+
+  const add_highlighted_point = () => {
+
+    scene.remove(currentPoints);
+
+    const pointgeometry = new THREE.BufferGeometry();
+
+    const pointPosition: number[] = [
+      Math.random()*50 - 25, -24, Math.random()*50 - 25, 
+    ]
+
+    pointgeometry.setAttribute( 'position', new THREE.Float32BufferAttribute( pointPosition, 3 ) );
+
+    const color = new THREE.Color();
+    const highlightcolors = [];
+    color.setRGB( 255, 0, 0 );
+    highlightcolors.push( color.r, color.g, color.b );
+    pointgeometry.setAttribute( 'color', new THREE.Float32BufferAttribute( highlightcolors, 3 ) );
+    const pointmaterial = new THREE.PointsMaterial( { size: 1, vertexColors: true } );
+
+    
+    currentPoints = new THREE.Points( pointgeometry, pointmaterial );
+    scene.add( currentPoints );
+
+  };
+
+  function animate() {
+
+    requestAnimationFrame( animate );
+  
+    // required if controls.enableDamping or controls.autoRotate are set to true
+    controls.update();
+  
+    renderer.render( scene, camera );
+  
+  }
 
 
   useEffect( () => {
 
     if(data.length){
       initialize_scene();
+      animate();
+
+      setInterval( () => {
+        add_highlighted_point();
+      }, 1000)
     }
+
+    
 
   }, [data]);
 
   return (
     <AccordionView title='Eyes Data' height={600}>
         <Box sx={{ display: 'flex', width: '100%', height: '100%', overflow: 'auto' }}>
-          <div style={{width: '600px', height: '600px'}} ref={containerRef}></div>
+          <div style={{width: '1600px', height: '600px'}} ref={containerRef}></div>
         </Box>
     </AccordionView>
   )
 }
 
 export default EyesDataView;
-
-
-
-
-
-//     scene = new THREE.Scene();
-//     scene.background = new THREE.Color( 0x050505 );
-//     scene.fog = new THREE.Fog( 0x050505, 2000, 3500 );
-
-//     const particles = 500000;
-//     const geometry = new THREE.BufferGeometry();
-
-//     const positions = [];
-//     const colors = [];
-
-//     const color = new THREE.Color();
-
-//     const n = 1000, n2 = n / 2; // particles spread in the cube
-
-//     for ( let i = 0; i < particles; i ++ ) {
-
-//       // positions
-
-//       const x = Math.random() * n - n2;
-//       const y = Math.random() * n - n2;
-//       const z = Math.random() * n - n2;
-
-//       positions.push( x, y, z );
-
-//       // colors
-
-//       const vx = ( x / n ) + 0.5;
-//       const vy = ( y / n ) + 0.5;
-//       const vz = ( z / n ) + 0.5;
-
-//       color.setRGB( vx, vy, vz );
-
-//       colors.push( color.r, color.g, color.b );
-
-//     }
-
-//     geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
-//     geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
-
-//     geometry.computeBoundingSphere();
-
-//     //
-
-//     const material = new THREE.PointsMaterial( { size: 15, vertexColors: true } );
-
-//     points = new THREE.Points( geometry, material );
-//     scene.add( points );
-
-//     //
-
-//     renderer = new THREE.WebGLRenderer();
-//     renderer.setPixelRatio( window.devicePixelRatio );
-//     renderer.setSize( 600, 600 );
-
-//     containerRef.current.appendChild( renderer.domElement );
-
-//     render();
