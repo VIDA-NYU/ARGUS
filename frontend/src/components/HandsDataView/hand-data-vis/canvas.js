@@ -58,7 +58,7 @@ export function HandsCanvas(props) {
                 <hemisphereLight intensity={0.5} color="#eaeaea" position={[0, 1, 0]} />
                 <OrbitControls />
                 <primitive object={new THREE.AxesHelper(1)} />
-                <HandsModel variant={props.variant} data={props.data}></HandsModel>
+                <HandsModel state={props.state} variant={props.variant} data={props.data}></HandsModel>
                 {/*<FaceModel data={props.data} position={[0, 0, -10]}> </FaceModel>*/}
             </Canvas>
         </ContentContainer>
