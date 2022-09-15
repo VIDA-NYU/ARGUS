@@ -5,6 +5,10 @@ import { useToken } from '../api/TokenContext';
 import { Login } from './RecipesView';
 import { TEST_PASS, TEST_USER } from '../config';
 
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
+
 import LoadingButton from '@mui/lab/LoadingButton';
 import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
 import StopCircleIcon from '@mui/icons-material/StopCircle';
@@ -38,9 +42,9 @@ const RecordingControls = () => {
         >
           Stop Recording
         </Button>
-        {startError && <Alert severity="error">We couldn't connect with the server. Please try again!<br/><pre>{startError}</pre></Alert>}
-        {stopError && <Alert severity="error">Server Connection Issues: Please click again on the 'Stop Recording' button to finish your recording!<br/><pre>{stopError}</pre></Alert>}
-        {recordingDataError && <Alert severity="error">Error retrieving recording data: {recordingDataError}</Alert>}
+        {startError && <Alert severity="error">We couldn't connect with the server. Please try again!<br/><pre>{''+startError}</pre></Alert>}
+        {stopError && <Alert severity="error">Server Connection Issues: Please click again on the 'Stop Recording' button to finish your recording!<br/><pre>{''+stopError}</pre></Alert>}
+        {recordingDataError && <Alert severity="error">Error retrieving recording data: {''+recordingDataError}</Alert>}
         {recordingData && <Alert severity="success">SUCCESSFUL server connection. The video is being recorded.<br/>{recordingData?.name && <>
           Recording: <b>{recordingData.name}</b> - &nbsp;
           <b>started:</b> {parseTime(recordingData["first-entry-time"])} &nbsp;
@@ -67,7 +71,7 @@ function LiveVideo() {
           gridTemplateRows: 'auto',
           gridTemplateAreas: {
             md: `
-              "H H H H H H"
+              "H H H H r r"
               "M M M M a a"
               "M M M M a a"
               "M M M M b b"
@@ -75,7 +79,7 @@ function LiveVideo() {
               "c c d d e e"
           `,
           xs: `
-              "H H H H H H"
+              "H H H H r r"
               "M M M M M M"
               "M M M M M M"
               "M M M M M M"
@@ -84,7 +88,7 @@ function LiveVideo() {
               "e e e e e e"
               "c c c d d d"
           `
-          }
+          },
         }}>
         <Box sx={{ gridArea: 'H' }}><RecordingControls /></Box>
         <Box sx={{ gridArea: 'M' }}><ImageView streamId='main' boxStreamId='detic:image' confidence={0.5} /></Box>
@@ -100,7 +104,12 @@ function LiveVideo() {
         </Box>
         <Box sx={{ gridArea: 'c' }}><StreamView utf parse='prettyJSON' streamId={'detic:image'} /></Box>
         <Box sx={{ gridArea: 'd' }}><StreamView utf parse='prettyJSON' streamId={'detic:hands'} /></Box>
-        <Box sx={{ gridArea: 'e' }}><StreamView utf parse='prettyJSON' streamId={'reasoning'} /></Box>
+        {/* <Box sx={{ gridArea: 'e' }}><StreamView utf parse='prettyJSON' streamId={'reasoning'} /></Box> */}
+        <Box sx={{ gridArea: 'r' }}>
+          <StreamView utf streamId={'reasoning'} showStreamId={false} showTime={false}>
+            {data => (<Box><ReasoningOutputsView data={JSON.parse(data)} /></Box>)}
+          </StreamView>
+        </Box>
       </Box>
     </Box>
   )
@@ -115,20 +124,38 @@ let probColors = colormap({
 })
 console.log(probColors)
 
-interface ClipOutputsViewProps { data: { [key: string]: number; } }
+interface ClipOutputsViewProps { data: { [key: string]: number; }, min?: number }
 
-const ClipOutputsView = ({ data }: ClipOutputsViewProps) => {
+const ClipOutputsView = ({ data, min=0 }: ClipOutputsViewProps) => {
   return data && (<Box display='flex' flexDirection='column'>
     {Object.entries(data)
            .sort(([ta, sa], [tb,sb]) => ( sb-sa ))
+           .filter(([t, s]) => s > min)
            .slice(0, 5)
            .map(([text, similarity]) => (
             <Chip key={text} label={`${text}: ${(similarity*100).toFixed(2)}`} sx={{ 
               backgroundColor: probColors[Math.round(Math.max(1, similarity*(probColors.length-1)))],
-              // opacity: Math.max(0.7, similarity),
+              opacity: similarity > min ? 1 : 0,//Math.max(0.7, similarity),
             }} />
     ))}
   </Box>)
+}
+
+const ReasoningOutputsView = ({ data }) => {
+  const { step_id, step_status, step_description, error_status, error_description } = data || {};
+  return <Box>
+    <Chip 
+      label={<span>{step_id && <b>{step_id}:</b>}{step_description || 'no active step.'} <b>{step_status}</b></span>} 
+      color={step_status === 'NEW' ? 'success' : step_status === 'IN_PROGRESS' ? 'primary' : 'default'} />
+    <Chip 
+      label={error_description || 'no errors.'} 
+      color={error_status ? 'error' : 'default'} />
+    {/* <Box>
+      <Button><ArrowBackIcon /></Button>
+      <Button><ArrowForwardIcon /></Button>
+      <Button><RestartAltIcon /></Button>
+    </Box> */}
+  </Box>
 }
 
 // looks at the token and will either ask for login or go to app - (can replace with react router)

@@ -44,7 +44,7 @@ export const StreamInfo = ({ sid, time, data, readyState, children }) => {
     const openNoData = readyState == ReadyState.OPEN && !data;
     return <Box sx={{ position: 'relative', maxWidth: '100%' }}>
         <Box display='flex' sx={{ gap: '0.5em', zIndex: 1, position: 'absolute' }}>
-            <Chip label={sid} size="small" color='primary' />
+            {sid && <Chip label={sid} size="small" color='primary' />}
             {time && <Chip label={new Date(time).toLocaleString()} size="small" />}
         </Box>
     <Badge color={openNoData ? 'secondary' : STATUS_COLOR[readyState]} badgeContent={
@@ -61,11 +61,11 @@ const FORMATTERS = {
     prettyJSON,
 }
 
-export const StreamView = ({ streamId, parse=null, children=null, ...rest }) => {
+export const StreamView = ({ streamId, parse=null, children=null, showStreamId=true, showTime=true, ...rest }) => {
     parse = (typeof parse === 'string') ? FORMATTERS[parse] : parse;
     const { sid, time, data, readyState } = useStreamData({ streamId, parse, ...rest })
     return (
-        <StreamInfo sid={sid||streamId} time={time} data={data} readyState={readyState}>
+        <StreamInfo sid={showStreamId ? sid||streamId : null} time={showTime ? time : null} data={data} readyState={readyState}>
             {children ? children(data) : <CodeBlock>{data}</CodeBlock>}
         </StreamInfo>
     )
