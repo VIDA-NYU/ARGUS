@@ -6,6 +6,7 @@ import Tooltip from '@mui/material/Tooltip';
 import Chip from '@mui/material/Chip';
 import { ReadyState } from 'react-use-websocket';
 import { useStreamData } from '../api/rest';
+import { Code } from '@mui/icons-material';
 
 
 
@@ -56,14 +57,25 @@ export const StreamInfo = ({ sid, time, data, readyState, children }) => {
 </Box>
 }
 
-export const LogsView = ({ streamId, formatter=prettyJSON }) => {
-    const { sid, time, data, readyState } = useStreamData({ streamId, utf: true, parse: formatter })
+const FORMATTERS = {
+    prettyJSON,
+}
+
+export const StreamView = ({ streamId, parse=null, children=null, ...rest }) => {
+    parse = (typeof parse === 'string') ? FORMATTERS[parse] : parse;
+    const { sid, time, data, readyState } = useStreamData({ streamId, parse, ...rest })
     return (
         <StreamInfo sid={sid||streamId} time={time} data={data} readyState={readyState}>
-            <CodeBlock>{data}</CodeBlock>
+            {children ? children(data) : <CodeBlock>{data}</CodeBlock>}
         </StreamInfo>
     )
 }
+
+export const LogsView = ({ streamId, formatter=prettyJSON, ...rest }) => {
+    return <StreamView streamId={streamId} utf formatter={data => <CodeBlock>{formatter(data)}</CodeBlock>} {...rest} />
+}
+
+
 
 
 const canvasDimensions = (canvas, w, h) => {

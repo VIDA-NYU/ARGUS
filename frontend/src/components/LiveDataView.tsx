@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import { Alert, Box, Button, Paper, Typography } from '@mui/material';
+import colormap from 'colormap';
+import { Alert, Box, Button, Paper, Typography, Chip } from '@mui/material';
 import { useToken } from '../api/TokenContext';
 import { Login } from './RecipesView';
 import { TEST_PASS, TEST_USER } from '../config';
@@ -9,7 +10,7 @@ import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
 import StopCircleIcon from '@mui/icons-material/StopCircle';
 import { useRecordingControls } from '../api/rest';
 import { RequestStatus, responseServer } from '../api/types';
-import { LogsView, ImageView } from './LiveStream';
+import { LogsView, StreamView, ImageView } from './LiveStream';
 
 let interval = null;
 
@@ -68,6 +69,7 @@ function LiveVideo() {
           gridTemplateRows: 'auto',
           gridTemplateAreas: {
             md: `
+              "H H H H H H"
               "M M M M a a"
               "M M M M a a"
               "M M M M b b"
@@ -75,6 +77,7 @@ function LiveVideo() {
               "c c c d d d"
           `,
           xs: `
+              "H H H H H H"
               "M M M M M M"
               "M M M M M M"
               "M M M M M M"
@@ -84,11 +87,16 @@ function LiveVideo() {
           `
           }
         }}>
+        <Box sx={{ gridArea: 'H' }}><RecordingControls /></Box>
         <Box sx={{ gridArea: 'M' }}><ImageView streamId='main' boxStreamId='detic:image' confidence={0.5} /></Box>
-        <Box sx={{ gridArea: 'a' }}><LogsView streamId={'clip:action:steps'} formatter={str => (<ClipOutputsView data={JSON.parse(str)} />)} /></Box>
-        <Box sx={{ gridArea: 'b' }}><LogsView streamId={'reasoning'} /></Box>
-        <Box sx={{ gridArea: 'c' }}><LogsView streamId={'detic:image'} /></Box>
-        <Box sx={{ gridArea: 'd' }}>Other</Box>
+        <Box sx={{ gridArea: 'a' }}>
+          <StreamView utf streamId={'clip:action:steps'}>
+            {data => (<Box pt={4}><ClipOutputsView data={JSON.parse(data)} /></Box>)}
+          </StreamView>
+        </Box>
+        <Box sx={{ gridArea: 'b' }}><StreamView utf parse='prettyJSON' streamId={'reasoning'} /></Box>
+        <Box sx={{ gridArea: 'c' }}><StreamView utf parse='prettyJSON' streamId={'detic:image'} /></Box>
+        <Box sx={{ gridArea: 'd' }}><StreamView utf parse='prettyJSON' streamId={'clip:action:steps'} /></Box>
       </Box>
       {/* <RecordingControls />
       <Typography>
@@ -104,15 +112,28 @@ function LiveVideo() {
 }
 
 
+let probColors = colormap({
+  colormap: 'winter',
+  nshades: 10,
+  format: 'rgbaString',
+  alpha: [0, 1],
+})
+console.log(probColors)
 
 interface ClipOutputsViewProps { data: { [key: string]: number; } }
 
 const ClipOutputsView = ({ data }: ClipOutputsViewProps) => {
-  return (<ul>
-    {Object.entries(data).sort(([ta, sa], [tb,sb]) => ( sb-sa )).filter(x => x[1] > 0.1).map(([text, similarity]) => (
-      <li key={text}><b>{text}</b>: {(similarity*100).toFixed(2)}</li>
+  return data && (<Box display='flex' flexDirection='column'>
+    {Object.entries(data)
+           .sort(([ta, sa], [tb,sb]) => ( sb-sa ))
+           .slice(0, 5)
+           .map(([text, similarity]) => (
+            <Chip key={text} label={`${text}: ${(similarity*100).toFixed(2)}`} sx={{ 
+              backgroundColor: probColors[Math.round(Math.max(1, similarity*(probColors.length-1)))],
+              // opacity: Math.max(0.7, similarity),
+            }} />
     ))}
-  </ul>)
+  </Box>)
 }
 
 // looks at the token and will either ask for login or go to app - (can replace with react router)
