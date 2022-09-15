@@ -12,17 +12,9 @@ import { useRecordingControls } from '../api/rest';
 import { RequestStatus, responseServer } from '../api/types';
 import { LogsView, StreamView, ImageView } from './LiveStream';
 
-let interval = null;
-
 const RecordingControls = () => {
   const { recordingId, recordingData, recordingDataError, startError, stopError, finishedRecording, startRecording, stopRecording } = useRecordingControls();
-
-  const formatRecording = (recordingData) => recordingData?.name && <>
-    Recording name: {recordingData.name}<br/>
-    Duration: {recordingData.duration} <br/>
-    First Entry Time: {recordingData["first-entry-time"]} <br/>
-    Last Entry Time: {recordingData["last-entry-time"]}
-  </>;
+  
   return (
     <Box>
       <Box sx={{ '& > button': { m: 1 } }}>
@@ -46,17 +38,23 @@ const RecordingControls = () => {
         >
           Stop Recording
         </Button>
-      </Box>
-      <Box style={{margin: 22}}>
         {startError && <Alert severity="error">We couldn't connect with the server. Please try again!<br/><pre>{startError}</pre></Alert>}
         {stopError && <Alert severity="error">Server Connection Issues: Please click again on the 'Stop Recording' button to finish your recording!<br/><pre>{stopError}</pre></Alert>}
         {recordingDataError && <Alert severity="error">Error retrieving recording data: {recordingDataError}</Alert>}
-        {recordingData && <Alert severity="success">SUCCESSFUL server connection. The video is being recorded.<br/><br/>{formatRecording(recordingData)}</Alert>}
-        {finishedRecording && <Alert severity="success">Your recording was saved.<br/><br/>{formatRecording(finishedRecording)}</Alert>}
+        {recordingData && <Alert severity="success">SUCCESSFUL server connection. The video is being recorded.<br/>{recordingData?.name && <>
+          Recording: <b>{recordingData.name}</b> - &nbsp;
+          <b>started:</b> {parseTime(recordingData["first-entry-time"])} &nbsp;
+        </>}</Alert>}
+        {finishedRecording && <Alert severity="success">Your recording was saved.<br/>{finishedRecording?.name && <>
+          Recording: <b>{finishedRecording.name}</b> -  &nbsp;
+          <b>started:</b> {parseTime(finishedRecording["first-entry-time"])} &nbsp;
+          <b>ended:</b> {parseTime(finishedRecording["last-entry-time"])} &nbsp;
+        </>}</Alert>}
       </Box>
     </Box>
   )
 }
+const parseTime = (tstr) => new Date(Date.parse(tstr + ' GMT')).toLocaleTimeString()
 
 function LiveVideo() {
   return (
@@ -74,7 +72,7 @@ function LiveVideo() {
               "M M M M a a"
               "M M M M b b"
               "M M M M b b"
-              "c c c d d d"
+              "c c d d e e"
           `,
           xs: `
               "H H H H H H"
@@ -83,30 +81,26 @@ function LiveVideo() {
               "M M M M M M"
               "M M M M M M"
               "a a a b b b"
-              "c c c d d d"
+              "c c d d e e"
           `
           }
         }}>
         <Box sx={{ gridArea: 'H' }}><RecordingControls /></Box>
         <Box sx={{ gridArea: 'M' }}><ImageView streamId='main' boxStreamId='detic:image' confidence={0.5} /></Box>
         <Box sx={{ gridArea: 'a' }}>
+          <StreamView utf streamId={'egovlp:action:steps'}>
+            {data => (<Box pt={4}><ClipOutputsView data={JSON.parse(data)} /></Box>)}
+          </StreamView>
+        </Box>
+        <Box sx={{ gridArea: 'b' }}>
           <StreamView utf streamId={'clip:action:steps'}>
             {data => (<Box pt={4}><ClipOutputsView data={JSON.parse(data)} /></Box>)}
           </StreamView>
         </Box>
-        <Box sx={{ gridArea: 'b' }}><StreamView utf parse='prettyJSON' streamId={'reasoning'} /></Box>
         <Box sx={{ gridArea: 'c' }}><StreamView utf parse='prettyJSON' streamId={'detic:image'} /></Box>
-        <Box sx={{ gridArea: 'd' }}><StreamView utf parse='prettyJSON' streamId={'clip:action:steps'} /></Box>
+        <Box sx={{ gridArea: 'd' }}><StreamView utf parse='prettyJSON' streamId={'detic:hands'} /></Box>
+        <Box sx={{ gridArea: 'e' }}><StreamView utf parse='prettyJSON' streamId={'reasoning'} /></Box>
       </Box>
-      {/* <RecordingControls />
-      <Typography>
-        Live View
-      </Typography>
-        <ImageView streamId='main' boxStreamId='detic:image' />
-        <LogsView streamId={'clip:action:steps'} formatter={str => (<ClipOutputsView data={JSON.parse(str)} />)} />
-        <LogsView streamId={'reasoning'} />
-        <LogsView streamId={'detic:image'} />
-      </div> */}
     </Box>
   )
 }
