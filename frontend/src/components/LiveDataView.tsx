@@ -81,7 +81,8 @@ function LiveVideo() {
               "M M M M M M"
               "M M M M M M"
               "a a a b b b"
-              "c c d d e e"
+              "e e e e e e"
+              "c c c d d d"
           `
           }
         }}>
