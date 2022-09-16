@@ -66,7 +66,7 @@ export const StreamView = ({ streamId, parse=null, children=null, showStreamId=t
     const { sid, time, data, readyState } = useStreamData({ streamId, parse, ...rest })
     return (
         <StreamInfo sid={showStreamId ? sid||streamId : null} time={showTime ? time : null} data={data} readyState={readyState}>
-            {children ? children(data) : <CodeBlock>{data}</CodeBlock>}
+            {children ? children(data, time, sid) : <CodeBlock>{data}</CodeBlock>}
         </StreamInfo>
     )
 }
@@ -157,7 +157,7 @@ const ImageCanvas = ({ image=null, boxJson=null, confidence=null, ...rest }) => 
                 ctx.stroke();
             }
 
-            if (canvasEle) {
+            if (canvasEle && boxJson) {
                 // get context of the canvas
                 let ctx = canvasEle.getContext("2d");
                 const W = ctx.canvas.width;

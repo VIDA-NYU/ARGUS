@@ -15,6 +15,7 @@ import StopCircleIcon from '@mui/icons-material/StopCircle';
 import { useRecordingControls } from '../api/rest';
 import { RequestStatus, responseServer } from '../api/types';
 import { LogsView, StreamView, ImageView } from './LiveStream';
+import { DeticHandsChart } from './LiveCharts';
 
 const RecordingControls = () => {
   const { recordingId, recordingData, recordingDataError, startError, stopError, finishedRecording, startRecording, stopRecording } = useRecordingControls();
@@ -76,6 +77,7 @@ function LiveVideo() {
               "M M M M a a"
               "M M M M b b"
               "M M M M b b"
+              "g g g g g g"
               "c c d d e e"
           `,
           xs: `
@@ -84,6 +86,7 @@ function LiveVideo() {
               "M M M M M M"
               "M M M M M M"
               "M M M M M M"
+              "g g g g g g"
               "a a a b b b"
               "e e e e e e"
               "c c c d d d"
@@ -102,6 +105,10 @@ function LiveVideo() {
             {data => (<Box pt={4}><ClipOutputsView data={JSON.parse(data)} /></Box>)}
           </StreamView>
         </Box>
+        <Box sx={{ gridArea: 'g' }}>
+        <StreamView utf streamId={'detic:hands'} showStreamId={false} showTime={false}>
+            {(data, time) => <DeticHandsChart data={{ ...JSON.parse(data), time }} />}
+          </StreamView></Box>
         <Box sx={{ gridArea: 'c' }}><StreamView utf parse='prettyJSON' streamId={'detic:image'} /></Box>
         <Box sx={{ gridArea: 'd' }}><StreamView utf parse='prettyJSON' streamId={'detic:hands'} /></Box>
         {/* <Box sx={{ gridArea: 'e' }}><StreamView utf parse='prettyJSON' streamId={'reasoning'} /></Box> */}
@@ -127,15 +134,17 @@ console.log(probColors)
 interface ClipOutputsViewProps { data: { [key: string]: number; }, min?: number }
 
 const ClipOutputsView = ({ data, min=0 }: ClipOutputsViewProps) => {
+  const entries = data && Object.entries(data)
+  const noAction = entries && entries.every(([t,s]) => s === 0)
   return data && (<Box display='flex' flexDirection='column'>
-    {Object.entries(data)
-           .sort(([ta, sa], [tb,sb]) => ( sb-sa ))
-           .filter(([t, s]) => s > min)
-           .slice(0, 5)
+    {noAction && <Chip label='No Action' color='error' />}
+    {entries.sort(([ta, sa], [tb,sb]) => ( sb-sa ))
+           .slice(0, noAction ? 4 : 5)
            .map(([text, similarity]) => (
             <Chip key={text} label={`${text}: ${(similarity*100).toFixed(2)}`} sx={{ 
               backgroundColor: probColors[Math.round(Math.max(1, similarity*(probColors.length-1)))],
               opacity: similarity > min ? 1 : 0,//Math.max(0.7, similarity),
+              transition: 'opacity 0.4s ease-in-out',
             }} />
     ))}
   </Box>)
