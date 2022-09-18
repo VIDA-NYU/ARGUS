@@ -2,8 +2,6 @@ import { useEffect, useRef } from "react";
 import Box from '@mui/material/Box';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-
-
 const useDeque = (data, maxLen) => {
     const dataRef = useRef([]);
     useEffect(() => { data != null && dataRef.current.push(data) }, [data])
@@ -14,8 +12,6 @@ const useDeque = (data, maxLen) => {
     }, [data, maxLen])
     return dataRef.current;
 }
-
-
 
 export const DeticHandsChart = ({ data, maxLen=100, height=100 }) => {
     const overTime = useDeque(data, maxLen);
