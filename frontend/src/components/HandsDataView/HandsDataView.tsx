@@ -10,6 +10,8 @@ import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
 import {HandsCanvas} from "./hand-data-vis/canvas";
+import {computeHandsActivity} from "./visualization/utils";
+import HandsActivityBarChart from "./visualization/activity-bar-chart";
 
 const Container = styled("div")(({}) => ({
     display: "flex",
@@ -34,7 +36,9 @@ const JsonContent = styled("div")(({}) => ({
 
 
 const HandsDataView = ({ type, title, data, recordingName, state, onProgress, onSeek }: any) => {
-  
+  let handsActivity = computeHandsActivity(data);
+  console.log(handsActivity);
+
   return (
     <AccordionView title='Hands Data' height={300}>
       <Box sx={{ display: 'flex', width: '100%', height: '100%', overflow: 'auto' }}>
@@ -73,6 +77,16 @@ const HandsDataView = ({ type, title, data, recordingName, state, onProgress, on
                       title={"Right Hand"}></CardHeader>
                   <CardContent>
                       <HandsCanvas state={state} variant={"right"} data={data}/>
+                  </CardContent>
+              </Card>
+              <Card>
+                  <CardHeader
+                      titleTypographyProps={{
+                          fontSize: 16,
+                      }}
+                      title={"Movement"}></CardHeader>
+                  <CardContent>
+                      <HandsActivityBarChart data={handsActivity}></HandsActivityBarChart>
                   </CardContent>
               </Card>
               <JsonDataContainer>
