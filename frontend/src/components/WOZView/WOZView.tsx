@@ -80,7 +80,7 @@ function WOZView() {
           </>
           </Box>
         </Box>
-        <Box sx={{ gridArea: 'M' }}><ImageView streamId='main' boxStreamId='detic:image' confidence={0.5} /></Box>
+        <Box sx={{ gridArea: 'M' }}><ImageView streamId='main' boxStreamId='detic:image' confidence={0.5} debugMode={false}/></Box>
       </Box>
     </Box>
   )

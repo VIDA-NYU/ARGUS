@@ -93,7 +93,7 @@ function DebuggingDataView() {
           },
         }}>
         {/* <Box sx={{ gridArea: 'H' }}><RecordingControls /></Box> */}
-        <Box sx={{ gridArea: 'M' }}><ImageView streamId='main' boxStreamId='detic:image' confidence={0.5} /></Box>
+        <Box sx={{ gridArea: 'M' }}><ImageView streamId='main' boxStreamId='detic:image' confidence={0.5} debugMode={true}/></Box>
         <Box sx={{ gridArea: 'a' }}>
           <StreamView utf streamId={'egovlp:action:steps'}>
             {data => (<Box pt={4}><ClipOutputsView data={JSON.parse(data)} /></Box>)}

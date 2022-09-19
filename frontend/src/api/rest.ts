@@ -192,8 +192,8 @@ export const useRecordingControls = () => {
         setLoading(true);
         fetchAuth && fetchAuth(`${API_URL}/recordings/start`, { method: 'PUT' })
                 .then(r=>r.text())
-                .then(d=>{ console.log(d);mutate();setClickError([null,null]) })
-                .catch(e=>setClickError([e,null]));
+                .then(d=>{ console.log(d); mutate(); setClickError([null,null]); setLoading(false) })
+                .catch(e=>{ setClickError([e,null]); setLoading(true) });
         setFinishedRecording(null);
     }
     // useCallback(, [fetchAuth])

@@ -95,7 +95,7 @@ function LiveVideo() {
           },
         }}>
         <Box sx={{ gridArea: 'H' }}><RecordingControls /></Box>
-        <Box sx={{ gridArea: 'M' }}><ImageView streamId='main' boxStreamId='detic:image' confidence={0.5} /></Box>
+        <Box sx={{ gridArea: 'M' }}><ImageView streamId='main' boxStreamId='detic:image' confidence={0.5} debugMode={false}/></Box>
         <Box sx={{ gridArea: 'b' }}>
           <StreamView utf streamId={'clip:action:steps'}>
             {data => (<Box pt={4}><ClipOutputsLiveView data={JSON.parse(data)} /></Box>)}
