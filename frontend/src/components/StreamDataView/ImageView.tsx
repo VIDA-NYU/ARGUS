@@ -6,6 +6,8 @@ import Tooltip from '@mui/material/Tooltip';
 import { ReadyState } from 'react-use-websocket';
 import { useStreamData } from '../../api/rest';
 import { StreamInfo } from './LiveStream';
+import Grid from '@mui/material/Grid/Grid';
+import Typography from '@mui/material/Typography/Typography';
 
 const useCanvas = ({}={}) => {
     const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -19,7 +21,7 @@ const useCanvas = ({}={}) => {
     return { canvasRef, contextRef };
 }
 
-const ImageCanvas = ({ image=null, boxes=null, confidence: defaultConfidence=null, ignoreLabels=null, ...rest }) => {
+const ImageCanvas = ({ image=null, boxes=null, confidence: defaultConfidence=null, ignoreLabels=null, debugMode, ...rest }) => {
     const { canvasRef, contextRef } = useCanvas()
     
     const [ confidence, setConfidence ] = useState(defaultConfidence);
@@ -29,7 +31,7 @@ const ImageCanvas = ({ image=null, boxes=null, confidence: defaultConfidence=nul
     useEffect(() => {
         if(!image) {
             let img = new Image;
-            img.src = '/brb.jpg';
+            img.src = '/brb_whiteblack.png';
             let still = true;
             img.onload = () => {
                 still && contextRef.current.drawImage(
@@ -122,36 +124,43 @@ const ImageCanvas = ({ image=null, boxes=null, confidence: defaultConfidence=nul
     }, [image, boxes, confidence])
     return <Box>
         <canvas ref={canvasRef} style={{width: '100%', borderRadius: '8px', border: '2px solid #ececec'}} {...rest} />
-        {/* <Typography>Detection Confidence:</Typography> */}
-        <Slider size='small' sx={{ 
-                padding: 0,
-                '& .MuiSlider-markLabel': {
-                    top: '5px'
-                }
-            }}
-            aria-label="detection confidence" 
-            value={confidence} min={0} max={1} step={0.1} 
-            marks={[
-                {value: 0, label: '0%'}, 
-                ...(boxes && boxes.map(b => (
-                    {value: b.confidence, 
-                    label: (
-                        <Badge color={'primary'} badgeContent={
-                            <Tooltip title={b.label} placement='top'><span style={{opacity: 0}}>0</span></Tooltip>
-                        }  sx={{display: 'block', '& .MuiBadge-badge': {height: '10px', minWidth: '10px', p: 0 }, ml: '-7px', mt: '5px'}}><span style={{opacity: 0}}>0</span></Badge>)
-                    })) || []),
-                {value: 1, label: '100%'}]}
-            onChange={(e, x) => setConfidence(x)} />
+        { debugMode && <Grid container spacing={2} alignItems="center">
+            <Grid item style={{marginTop:'-25px'}}>
+            <span>Detection Confidence: </span>
+            </Grid>
+            <Grid item xs style={{marginTop:2}}>
+                <Slider size='small' sx={{
+                        padding: 0,
+                        '& .MuiSlider-markLabel': {
+                            top: '5px'
+                        }
+                    }}
+                    aria-label="detection confidence"
+                    value={confidence} min={0} max={1} step={0.1}
+                    marks={[
+                        {value: 0, label: '0%'},
+                        ...(boxes && boxes.map(b => (
+                            {value: b.confidence,
+                            label: (
+                                <Badge color={'error'} badgeContent={
+                                    <Tooltip title={b.label} placement='top'><span style={{opacity: 0}}>0</span></Tooltip>
+                                }  sx={{display: 'block', '& .MuiBadge-badge': {height: '10px', minWidth: '10px', p: 0 }, ml: '-7px', mt: '5px'}}><span style={{opacity: 0}}>0</span></Badge>)
+                            })) || []),
+                        {value: 1, label: '100%'}]}
+                    onChange={(e, x) => setConfidence(x)} />
+            </Grid>
+        </Grid>
+        }
     </Box>
 }
 
 
-export const ImageView = ({ streamId, boxStreamId, ...rest }) => {
+export const ImageView = ({ streamId, boxStreamId, debugMode, ...rest}) => {
     const { sid, time, data, readyState } = useStreamData({ streamId, params: { output: 'jpg' } });
     const { data:  boxes } = useStreamData({ streamId: boxStreamId, utf: true, parse: JSON.parse });
     return (
         <StreamInfo sid={sid||streamId} time={time} data={data} readyState={readyState}>
-            <ImageCanvas image={data} boxes={boxes} {...rest} />
+            <ImageCanvas image={data} boxes={boxes} debugMode ={debugMode} {...rest} />
         </StreamInfo>
     )
 }

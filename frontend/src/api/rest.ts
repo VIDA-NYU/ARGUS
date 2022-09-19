@@ -56,6 +56,21 @@ export function useGetRecipes(token, fetchAuth) {
     };
 }
 
+
+/* fetch one recipe */
+export function useGetRecipeInfo(token, fetchAuth) {
+    // get the authenticated fetch function
+    const fetcher = (url: string) => fetchAuth(url).then((res) => res.json());
+    // query the streamings endpoint (only if we have a token)
+    const uid: Key = token && `${API_URL}/recipes/pinwheels`;
+    const { data: response, error } = useSWR(uid, fetcher);
+    return {
+        data: response && response.data,
+        response,
+        error
+    };
+}
+
 /* fetch current recording info */
 export function useGetCurrentRecordingInfo(token, fetchAuth) {
     // get the authenticated fetch function
@@ -191,6 +206,12 @@ export const useRecordingControls = () => {
                 .then(r=>r.json())
                 .then(d=>setFinishedRecording(d)).catch(e=>console.error(e));
     }
+    const setStep = ({step_id_s= ""}) => {
+        fetchAuth && fetchAuth(`${API_URL}/sessions/recipe/step/${step_id_s}`, { method: 'PUT' })
+                .then(r=>r.text())
+                .then(d=>{ console.log(d);mutate();setClickError([null,null]) })
+                .catch(e=>setClickError([e,null]));
+    }
     // useCallback(, [fetchAuth, recordingId])
 
     return {
@@ -200,6 +221,7 @@ export const useRecordingControls = () => {
       recordingDataError, startError, stopError,
       startRecording,
       stopRecording,
+      setStep
     }
 }
 
