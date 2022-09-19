@@ -62,7 +62,10 @@ const RecordingControls = () => {
 // the app - once you're authenticated
 function LiveVideo() {
   return (
-    <Box>
+    <Box sx={{
+        marginLeft: 30,
+        marginRight: 30
+    }}>
       {/* <RecordingControls />
       <Typography>
         Live View
@@ -71,6 +74,7 @@ function LiveVideo() {
       <LogsView streamId={'clip:action:steps'} formatter={str => (<ClipOutputsView data={JSON.parse(str)} />)} />
       <LogsView streamId={'detic:image'} />
       <LogsView streamId={'reasoning'} />
+        <MemoryObjectView streamId={"detic:memory"}></MemoryObjectView>
     </Box>
   )
 }
