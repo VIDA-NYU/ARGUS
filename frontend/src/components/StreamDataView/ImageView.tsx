@@ -1,4 +1,8 @@
 import React, { useState, useEffect, useMemo, useRef, useLayoutEffect } from 'react';
+import Box from '@mui/material/Box';
+import Slider from '@mui/material/Slider';
+import Badge from '@mui/material/Badge';
+import Tooltip from '@mui/material/Tooltip';
 import { ReadyState } from 'react-use-websocket';
 import { useStreamData } from '../../api/rest';
 import { StreamInfo } from './LiveStream';
@@ -15,8 +19,10 @@ const useCanvas = ({}={}) => {
     return { canvasRef, contextRef };
 }
 
-const ImageCanvas = ({ image=null, boxes=null, confidence=null, ignoreLabels=null, ...rest }) => {
+const ImageCanvas = ({ image=null, boxes=null, confidence: defaultConfidence=null, ignoreLabels=null, ...rest }) => {
     const { canvasRef, contextRef } = useCanvas()
+    
+    const [ confidence, setConfidence ] = useState(defaultConfidence);
 
     // retrieve objects
     
@@ -114,7 +120,24 @@ const ImageCanvas = ({ image=null, boxes=null, confidence=null, ignoreLabels=nul
         img.src = src;
         return () => { URL.revokeObjectURL(src) }
     }, [image, boxes, confidence])
-    return <canvas ref={canvasRef} style={{width: '100%', borderRadius: '8px', border: '2px solid #ececec'}} {...rest} />
+    return <Box>
+        <canvas ref={canvasRef} style={{width: '100%', borderRadius: '8px', border: '2px solid #ececec'}} {...rest} />
+        {/* <Typography>Detection Confidence:</Typography> */}
+        <Slider size='small' sx={{ padding: 0 }}
+            aria-label="detection confidence" 
+            value={confidence} min={0} max={1} step={0.1} 
+            marks={[
+                {value: 0, label: '0%'}, 
+                ...(boxes && boxes.map(b => (
+                    {value: b.confidence, 
+                    label: (
+                        <Badge color={'primary'} badgeContent={
+                            <Tooltip title={b.label} placement='top'><span style={{opacity: 0}}>0</span></Tooltip>
+                        }  sx={{display: 'block', '& .MuiBadge-badge': {height: '10px', minWidth: '10px', p: 0 }, ml: '-7px', mt: '5px'}}><span style={{opacity: 0}}>0</span></Badge>)
+                    })) || []),
+                {value: 1, label: '100%'}]}
+            onChange={(e, x) => setConfidence(x)} />
+    </Box>
 }
 
 
