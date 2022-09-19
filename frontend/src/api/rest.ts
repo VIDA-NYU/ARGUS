@@ -56,6 +56,21 @@ export function useGetRecipes(token, fetchAuth) {
     };
 }
 
+
+/* fetch one recipe */
+export function useGetRecipeInfo(token, fetchAuth) {
+    // get the authenticated fetch function
+    const fetcher = (url: string) => fetchAuth(url).then((res) => res.json());
+    // query the streamings endpoint (only if we have a token)
+    const uid: Key = token && `${API_URL}/recipes/pinwheels`;
+    const { data: response, error } = useSWR(uid, fetcher);
+    return {
+        data: response && response.data,
+        response,
+        error
+    };
+}
+
 /* fetch current recording info */
 export function useGetCurrentRecordingInfo(token, fetchAuth) {
     // get the authenticated fetch function
@@ -191,6 +206,12 @@ export const useRecordingControls = () => {
                 .then(r=>r.json())
                 .then(d=>setFinishedRecording(d)).catch(e=>console.error(e));
     }
+    const setStep = ({step_id_s= ""}) => {
+        fetchAuth && fetchAuth(`${API_URL}/sessions/recipe/step/${step_id_s}`, { method: 'PUT' })
+                .then(r=>r.text())
+                .then(d=>{ console.log(d);mutate();setClickError([null,null]) })
+                .catch(e=>setClickError([e,null]));
+    }
     // useCallback(, [fetchAuth, recordingId])
 
     return {
@@ -200,6 +221,7 @@ export const useRecordingControls = () => {
       recordingDataError, startError, stopError,
       startRecording,
       stopRecording,
+      setStep
     }
 }
 
@@ -248,11 +270,12 @@ export async function getAllRecordings(token, fetchAuth) {
 
 /* *********** End fetch data from API *************** */
 
-export const unpackEntries = (offsets, content, utf=false) => {
+export const unpackEntries = (offsets, content, parse=null, utf=false) => {
     offsets = JSON.parse(offsets);
     return offsets.map(([sid, ts, ii], i) => {
         let data = content.slice(ii, offsets?.[i+1]?.[2]);
-        data = utf ? new TextDecoder("utf-8").decode(data) : data
+        data = utf ? new TextDecoder("utf-8").decode(data) : data;
+        data = parse ? parse(data) : data;
         return [sid, ts, parseInt(ts.split('-')), data]
     })
 }
@@ -266,26 +289,36 @@ const useTimeout = (callback, delay, tock=null) => {
     }, [delay, tock]);
 };
 
-export const useStreamData = ({ streamId, params=null, utf=false, timeout=6000 }) => {
+export const useStreamData = ({ streamId, params=null, parse=null, utf=false, multiple=false, timeout=12000 }) => {
     // query websocket
     const { token } = useToken();
     params = token && new URLSearchParams({ token, ...params }).toString()
-    const { lastMessage, readyState,  ...wsData } = useWebSocket(
-        token && streamId && `${WS_API_URL}/data/${streamId}/pull?${params}`);
+    
+    const didUnmount = useRef(false);
+    useEffect(() => (() => { didUnmount.current = true }), []);
+    const { lastMessage, readyState } = useWebSocket(
+        token && streamId && `${WS_API_URL}/data/${streamId}/pull?${params}` || null, {
+            shouldReconnect: e => didUnmount.current === false,
+            reconnectInterval: 5000,
+            reconnectAttempts: 12,
+            filter: e => {
+                if(typeof e?.data === 'string') {
+                    offsets.current = e.data;
+                    return false;
+                }
+                return true;
+            }
+    });
 
     // parse data
     const offsets = useRef(null);
     const [ [sid, ts, time, data], setData ] = useState([null, null, null,  null])
     useEffect(() => {
-        if(!lastMessage?.data) return;
-        if(typeof lastMessage?.data === 'string') {
-            offsets.current = lastMessage.data;
-        } else {
-            lastMessage.data.arrayBuffer().then((buf) => {
-                const data = unpackEntries(offsets.current, buf, utf)
-                setData(data[data.length-1]);  // here we're assuming we're only querying one stream
-            })
-        }
+        if(!lastMessage?.data || !offsets.current) return;
+        lastMessage.data.arrayBuffer().then(buf => {
+            const data = unpackEntries(offsets.current, buf, parse, utf)
+            setData(multiple ? data : data[data.length-1]);  // here we're assuming we're only querying one stream
+        })
     }, [lastMessage]);
 
     useTimeout(() => {setData([null, null, null, null])}, timeout, data)

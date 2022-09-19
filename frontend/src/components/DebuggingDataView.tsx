@@ -12,7 +12,7 @@ import { RequestStatus, responseServer } from '../api/types';
 import { StreamView } from './StreamDataView/LiveStream';
 import { DeticHandsChart } from './StreamDataView/LiveCharts';
 import { ImageView } from './StreamDataView/ImageView';
-import { ClipOutputsLiveView } from './StreamDataView/PerceptionOutputsView';
+import { ClipOutputsView } from './StreamDataView/PerceptionOutputsView';
 import { ReasoningOutputsView } from './StreamDataView/ReasoningOutputsView';
 
 
@@ -21,10 +21,10 @@ const RecordingControls = () => {
   
   return (
     <Box>
-      <Box sx={{ '& > button': { mt: 2, mb: 2, mr: 2 } }}>
+      <Box sx={{ '& > button': { m: 1 } }}>
         <LoadingButton
           startIcon={<VideocamOutlinedIcon />}
-          size="medium"
+          size="small"
           onClick={() => startRecording()}
           loading={!!recordingId}
           loadingIndicator="Recording…"
@@ -34,7 +34,7 @@ const RecordingControls = () => {
         </LoadingButton>
         <Button
           startIcon={<StopCircleIcon />}
-          size="medium"
+          size="small"
           color="primary"
           onClick={() => stopRecording()}
           variant="contained"
@@ -60,7 +60,7 @@ const RecordingControls = () => {
 }
 const parseTime = (tstr) => new Date(Date.parse(tstr + ' GMT')).toLocaleTimeString()
 
-function LiveVideo() {
+function DebuggingDataView() {
   return (
     <Box>
       <Box
@@ -71,18 +71,16 @@ function LiveVideo() {
           gridTemplateRows: 'auto',
           gridTemplateAreas: {
             md: `
-              "H H H H H H"
-              "H H H H H H"
               "M M M M r r"
-              "M M M M r r"
+              "M M M M a a"
+              "M M M M a a"
               "M M M M b b"
               "M M M M b b"
               "g g g g g g"
               "c c d d e e"
           `,
           xs: `
-              "H H H H H H"
-              "H H H H H H"
+              "M M M M r r"
               "M M M M M M"
               "M M M M M M"
               "M M M M M M"
@@ -94,13 +92,25 @@ function LiveVideo() {
           `
           },
         }}>
-        <Box sx={{ gridArea: 'H' }}><RecordingControls /></Box>
+        {/* <Box sx={{ gridArea: 'H' }}><RecordingControls /></Box> */}
         <Box sx={{ gridArea: 'M' }}><ImageView streamId='main' boxStreamId='detic:image' confidence={0.5} /></Box>
-        <Box sx={{ gridArea: 'b' }}>
-          <StreamView utf streamId={'clip:action:steps'}>
-            {data => (<Box pt={4}><ClipOutputsLiveView data={JSON.parse(data)} /></Box>)}
+        <Box sx={{ gridArea: 'a' }}>
+          <StreamView utf streamId={'egovlp:action:steps'}>
+            {data => (<Box pt={4}><ClipOutputsView data={JSON.parse(data)} /></Box>)}
           </StreamView>
         </Box>
+        <Box sx={{ gridArea: 'b' }}>
+          <StreamView utf streamId={'clip:action:steps'}>
+            {data => (<Box pt={4}><ClipOutputsView data={JSON.parse(data)} /></Box>)}
+          </StreamView>
+        </Box>
+        <Box sx={{ gridArea: 'g' }}>
+        <StreamView utf streamId={'detic:hands'} showStreamId={false} showTime={false}>
+            {(data, time) => <DeticHandsChart data={{ ...JSON.parse(data), time }} />}
+          </StreamView></Box>
+        <Box sx={{ gridArea: 'c' }}><StreamView utf parse='prettyJSON' streamId={'detic:image'} /></Box>
+        <Box sx={{ gridArea: 'd' }}><StreamView utf parse='prettyJSON' streamId={'detic:hands'} /></Box>
+        {/* <Box sx={{ gridArea: 'e' }}><StreamView utf parse='prettyJSON' streamId={'reasoning'} /></Box> */}
         <Box sx={{ gridArea: 'r' }}>
           <StreamView utf streamId={'reasoning'} showStreamId={true} showTime={false}>
             {data => (<Box><ReasoningOutputsView data={JSON.parse(data)} /></Box>)}
@@ -114,7 +124,7 @@ function LiveVideo() {
 // looks at the token and will either ask for login or go to app - (can replace with react router)
 const MainVideo = () => {
   const { token } = useToken();
-  return token ? <LiveVideo /> : <Login username={TEST_USER} password={TEST_PASS} />
+  return token ? <DebuggingDataView /> : <Login username={TEST_USER} password={TEST_PASS} />
 }
 
-export default LiveVideo;
+export default DebuggingDataView;
