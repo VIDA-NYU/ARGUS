@@ -39,6 +39,7 @@ function HandsActivityBarChart({data}: HandsActivityBarChartProps){
     const mouseHoverTextLine0Ref = useRef(null);
     const mouseHoverTextLine1Ref = useRef(null);
     const mouseHoverTextLine2Ref = useRef(null);
+    const mouseHoverTextRectRef = useRef(null);
 
     let marginX = 30;
     let marginY = 10;
@@ -128,9 +129,12 @@ function HandsActivityBarChart({data}: HandsActivityBarChartProps){
         const mouseHoverTextLine1Elm = d3.select(mouseHoverTextLine1Ref.current)
         const mouseHoverTextLine2Elm = d3.select(mouseHoverTextLine2Ref.current);
 
+        const mouseHoverTextRectElm = d3.select(mouseHoverTextRectRef.current);
+
         if(contentElm && mouseHoverElm && mouseHoverLeftCircleElm &&
             mouseHoverRightCircleElm && mouseHoverTextElm &&
-            mouseHoverTextLine0Elm && mouseHoverTextLine1Elm && mouseHoverTextLine2Elm
+            mouseHoverTextLine0Elm && mouseHoverTextLine1Elm && mouseHoverTextLine2Elm &&
+            mouseHoverTextRectElm
         ) {
             contentElm.on("mouseover", function(mouse) {
                 contentElm.style('display', 'block');
@@ -148,7 +152,8 @@ function HandsActivityBarChart({data}: HandsActivityBarChartProps){
                 mouseHoverTextLine2Elm.text(`right hand: ${rightValue.toFixed(2)}`);
                 mouseHoverTextElm
                     .attr('text-anchor', mouseFrame < (data.length) / 2 ? "start" : "end")
-                    .attr("transform", `translate(0, 30)`);
+                    .attr("transform",  `translate(8, 30)`)
+                mouseHoverTextRectElm.attr("transform", mouseFrame < (data).length / 2 ? `translate(3, 22)`: `translate(-80, 22)`);
                 ;
             })
         }
@@ -158,6 +163,14 @@ function HandsActivityBarChart({data}: HandsActivityBarChartProps){
     return (
         <div>
             <svg ref={svgRef} width={SvgWidth} height={SvgHeight}>
+                <defs>
+                    <filter id="f1" x="0" y="0" width="200%" height="200%">
+                        <feOffset result="offOut" in="SourceGraphic" dx="2" dy="2" />
+                        <feColorMatrix result="matrixOut" in="offOut" type="matrix"
+                                       values="0.2 0 0 0 0 0 0.2 0 0 0 0 0 0.2 0 0 0 0 0 0.3 0" />
+                        <feGaussianBlur result="blurOut" in="matrixOut" stdDeviation="1" />
+                        <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />    </filter>
+                </defs>
                 <g
                     transform={`translate(${marginX}, ${marginY})`}
                     ref={contentRef}
@@ -209,18 +222,37 @@ function HandsActivityBarChart({data}: HandsActivityBarChartProps){
                             fill={"none"}
                         >
                         </circle>
+                        <rect
+                            ref={mouseHoverTextRectRef}
+                            width={94}
+                            height={42}
+                            fill={"#fdfdfd"}
+                            transform={"translate(5, 19)"}
+                            filter="url(#f1)"
+                            rx={3}
+                        >
 
+                        </rect
+
+                        >
                         <text
                             ref={mouseHoverTextRef}
-                            transform={"translate(33, 50)"}
+                            transform={"translate(36, 50)"}
                             fontSize={12}
                             textAnchor={"start"}
 
                         >
-                            <tspan x="0" dy=".6em" ref={mouseHoverTextLine0Ref}></tspan>
-                            <tspan x="0" dy=".8em" ref={mouseHoverTextLine1Ref}></tspan>
-                            <tspan x="0" dy=".9em" ref={mouseHoverTextLine2Ref}></tspan>
+                            <tspan x="0" dy=".6em"
+                                   ref={mouseHoverTextLine0Ref}></tspan>
+                            <tspan
+                                fill={leftColor}
+                                x="0" dy=".8em" ref={mouseHoverTextLine1Ref}></tspan>
+                            <tspan
+                                fill={rightColor}
+                                x="0" dy=".9em" ref={mouseHoverTextLine2Ref}></tspan>
                         </text>
+
+
 
                     </g>
                     <g
