@@ -23,7 +23,7 @@ const ImageCanvas = ({ image=null, boxJson=null, confidence=null, ...rest }) => 
     useEffect(() => {
         if(!image) {
             let img = new Image;
-            img.src = '/brb.jpg';
+            img.src = '/brb_whiteblack.png';
             let still = true;
             img.onload = () => {
                 still && contextRef.current.drawImage(

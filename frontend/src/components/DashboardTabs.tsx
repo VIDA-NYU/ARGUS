@@ -7,6 +7,7 @@ import HistoricalDataView from './HistoricalDataView';
 import LiveDataView from './LiveDataView';
 import RecipesView, { Login } from './RecipesView';
 import { TEST_PASS, TEST_USER } from '../config';
+import WOZView from './WOZView/WOZView';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -53,6 +54,7 @@ export default function DashboardTabs() {
           <Tab label="Live Data" {...a11yProps(0)} />
           <Tab label="Historical Data" {...a11yProps(1)} />
           <Tab label="Recipe Collection" {...a11yProps(2)} />
+          <Tab label="Wizard of OZ" {...a11yProps(3)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
@@ -63,6 +65,9 @@ export default function DashboardTabs() {
       </TabPanel>
       <TabPanel value={value} index={2}>
         <RecipesView />
+      </TabPanel>
+      <TabPanel value={value} index={3}>
+        <WOZView />
       </TabPanel>
     </Box>
   );
