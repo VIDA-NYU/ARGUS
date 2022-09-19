@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Alert, Box, Button, Paper, Typography } from '@mui/material';
+import { Alert, Box, Button, Paper } from '@mui/material';
 import { useToken } from '../api/TokenContext';
 import { Login } from './RecipesView';
 import { TEST_PASS, TEST_USER } from '../config';
@@ -10,6 +10,7 @@ import StopCircleIcon from '@mui/icons-material/StopCircle';
 import { getLiveVideo, useGetCurrentRecordingInfo, useGetRecording, useStartRecording, useStopRecording, useRecordingControls } from '../api/rest';
 import { RequestStatus, responseServer } from '../api/types';
 import { LogsView, ImageView } from './LiveStream';
+import {MemoryObjectView} from "./memory-view/memory-object-view";
 
 let interval = null;
 
