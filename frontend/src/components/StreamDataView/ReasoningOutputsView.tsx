@@ -11,7 +11,6 @@ import { blue, green } from '@mui/material/colors';
 export const ReasoningOutputsView = ({ data }) => {
     const { step_id, step_status, step_description, error_status, error_description } = data || {};
     const { setStep } = useRecordingControls();
-    console.log(step_id);
     return <Box display='flex' flexDirection='column' pt={5} mr={2} ml={2}>
       <span><b>Current Step:</b>{step_id}</span>
       {/* <span><b>Current Step:</b>{step_id || ' No active step.'}</span> */}
@@ -26,16 +25,16 @@ export const ReasoningOutputsView = ({ data }) => {
 
 const ListSteps = ({list, completedStep}: {list: string [], completedStep: number}) => {
   return (
-    <ol>{
+    <ol key={'steps_all'}>{
         list.map((value: string, index: number ) => {
           return index < completedStep ? (
-              <li style={{color:"green"}}> {value} <DoneIcon sx={{ color: green[500], fontSize: 25}}></DoneIcon>
+              <li key={'steps_'+index} style={{color:"green"}}> {value} <DoneIcon sx={{ color: green[500], fontSize: 25}}></DoneIcon>
               </li>
             ) : index === completedStep ? (
-              <li style={{color:"blue"}}> {value} <RotateLeftIcon sx={{ color: blue[700], fontSize: 25}}></RotateLeftIcon>
+              <li key={'steps_'+index} style={{color:"blue"}}> {value} <RotateLeftIcon sx={{ color: blue[700], fontSize: 25}}></RotateLeftIcon>
               </li>
             ) : (
-              <li> {value} </li>
+              <li key={'steps_'+index}>  {value} </li>
             );
           })
         }

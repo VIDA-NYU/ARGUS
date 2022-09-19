@@ -20,8 +20,6 @@ interface RecipeData {
   tools_simple: string []
 }
 
-const parseTime = (tstr) => new Date(Date.parse(tstr + ' GMT')).toLocaleTimeString()
-
 function WOZView() {
 
   const { token, fetchAuth } = useToken();
@@ -76,7 +74,7 @@ function WOZView() {
           <span><b>INGREDIENTS</b></span>
           <>{
             recipeData && recipeData.ingredients.map((value: string, index: number ) => {
-              return <li> {value} </li>
+              return <li key={'ing_'+ index} > {value} </li>
               })
             }
           </>

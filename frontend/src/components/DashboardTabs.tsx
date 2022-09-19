@@ -8,6 +8,7 @@ import LiveDataView from './LiveDataView';
 import RecipesView, { Login } from './RecipesView';
 import { TEST_PASS, TEST_USER } from '../config';
 import WOZView from './WOZView/WOZView';
+import DebuggingDataView from './DebuggingDataView';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -51,10 +52,11 @@ export default function DashboardTabs() {
     <Box sx={{ pt: 9, pl: 1,  width: '100%' }} component="main">
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }} >
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-          <Tab label="Live Data" {...a11yProps(0)} />
+          <Tab label="Create Data" {...a11yProps(0)} />
           <Tab label="Historical Data" {...a11yProps(1)} />
           <Tab label="Recipe Collection" {...a11yProps(2)} />
-          <Tab label="Wizard of OZ" {...a11yProps(3)} />
+          <Tab label="Debuging Models" {...a11yProps(3)} />
+          <Tab label="Wizard of OZ" {...a11yProps(4)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
@@ -67,6 +69,9 @@ export default function DashboardTabs() {
         <RecipesView />
       </TabPanel>
       <TabPanel value={value} index={3}>
+        <DebuggingDataView />
+      </TabPanel>
+      <TabPanel value={value} index={4}>
         <WOZView />
       </TabPanel>
     </Box>
