@@ -123,7 +123,12 @@ const ImageCanvas = ({ image=null, boxes=null, confidence: defaultConfidence=nul
     return <Box>
         <canvas ref={canvasRef} style={{width: '100%', borderRadius: '8px', border: '2px solid #ececec'}} {...rest} />
         {/* <Typography>Detection Confidence:</Typography> */}
-        <Slider size='small' sx={{ padding: 0 }}
+        <Slider size='small' sx={{ 
+                padding: 0,
+                '& .MuiSlider-markLabel': {
+                    top: '5px'
+                }
+            }}
             aria-label="detection confidence" 
             value={confidence} min={0} max={1} step={0.1} 
             marks={[
