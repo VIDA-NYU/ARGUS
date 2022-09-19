@@ -11,8 +11,9 @@ import { blue, green } from '@mui/material/colors';
 export const ReasoningOutputsView = ({ data }) => {
     const { step_id, step_status, step_description, error_status, error_description } = data || {};
     const { setStep } = useRecordingControls();
+    const current_step = step_id + 1; // Reasoning handles indexes, so we need to add 1 to communicate the user they are in the first (1) step.
     return <Box display='flex' flexDirection='column' pt={5} mr={2} ml={2}>
-      <span><b>Current Step:</b>{step_id}</span>
+      <span><b>Current Step:</b>{current_step}</span>
       {/* <span><b>Current Step:</b>{step_id || ' No active step.'}</span> */}
       <span><b>Description:</b> {step_description || 'No active step.'}</span>
       <span><b>Status:</b> {step_status}</span>
