@@ -105,9 +105,9 @@ function LiveVideo() {
           </StreamView>
         </Box>
         <Box sx={{ gridArea: 'g' }}>
-        <StreamView utf streamId={'detic:hands'} showStreamId={false} showTime={false}>
+        {/* <StreamView utf streamId={'detic:hands'} showStreamId={false} showTime={false}>
             {(data, time) => <DeticHandsChart data={{ ...JSON.parse(data), time }} />}
-          </StreamView></Box>
+          </StreamView></Box> */}
         <Box sx={{ gridArea: 'c' }}><StreamView utf parse='prettyJSON' streamId={'detic:image'} /></Box>
         <Box sx={{ gridArea: 'd' }}><StreamView utf parse='prettyJSON' streamId={'detic:hands'} /></Box>
         {/* <Box sx={{ gridArea: 'e' }}><StreamView utf parse='prettyJSON' streamId={'reasoning'} /></Box> */}
