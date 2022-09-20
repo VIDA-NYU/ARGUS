@@ -52,7 +52,7 @@ export const ReasoningOutputsWOZView = ({ data, recipe }) => {
     return <Box display='flex' flexDirection='column' pt={0} mr={2} ml={2}>
       <span><b>RECIPE STEPS</b></span>
       <span><b>Current Step: </b>{current_step} - <b>  Status:</b> {step_status}</span>
-      {recipe && recipe.steps_simple && <ListSteps list={recipe.steps_simple} completedStep={step_id}/>}
+      {recipe && recipe.instructions && <ListSteps list={recipe.instructions} completedStep={step_id}/>}
       <Box>
         <Button onClick={() => setStep({ step_id_s: step_id_previous})} variant="contained" style={{margin: 6}}><ArrowBackIcon /> Previous Step</Button>
         <Button  onClick={() => setStep({ step_id_s: step_id_next})} variant="contained"><ArrowForwardIcon />Next Step</Button>
