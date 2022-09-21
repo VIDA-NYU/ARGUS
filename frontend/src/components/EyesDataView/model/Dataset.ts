@@ -23,7 +23,8 @@ export class Dataset {
 
     // array of positions
     // public positions: Float32Array | null = null;
-    public positions: number[] | null = null;
+    // public positions: number[] | null = null;
+    public positions: { originPositions: number[], directionPositions: number[] };
 
     // timestamp index
     public timestampToPoint: { [timestamp: number]: any } = {};
@@ -31,8 +32,10 @@ export class Dataset {
     // binary tree of timestamps
     public timestampTree: BinaryTree.binarytree;
 
+    public extents: { originExtents: number[][], directionExtents: number[][] };
     // transformations params
-    public transformationParams: TransformationUtils;
+    // public transformationParams: TransformationUtils;
+
 
     constructor( public recordingMetadata: any, dataset: any ){
 
@@ -47,17 +50,17 @@ export class Dataset {
     }
 
 
-    public transform_point_to_cube_coords( point: Vector3D ): number[] {
+    // public transform_point_to_cube_coords( point: Vector3D ): number[] {
 
-        const positions: number[] = [
-            Utils.scaleLinear(point.x, this.transformationParams.extents.x, this.transformationParams.scales.x ),
-            Utils.scaleLinear(point.y, this.transformationParams.extents.y, this.transformationParams.scales.y ),
-            Utils.scaleLinear(point.z, this.transformationParams.extents.z, this.transformationParams.scales.z ),
-        ]
+    //     const positions: number[] = [
+    //         Utils.scaleLinear(point.x, this.transformationParams.extents.x, this.transformationParams.scales.x ),
+    //         Utils.scaleLinear(point.y, this.transformationParams.extents.y, this.transformationParams.scales.y ),
+    //         Utils.scaleLinear(point.z, this.transformationParams.extents.z, this.transformationParams.scales.z ),
+    //     ]
 
-        return positions;
+    //     return positions;
 
-    }
+    // }
 
     public get_corresponding_point( timestamp: number ): any {
 
@@ -79,14 +82,23 @@ export class Dataset {
         this.rawDataset = dataset;
 
         // generating scene positions
-        const transformation = Utils.generate_point_position_array( dataset );
-        this.positions = transformation.positions;
+        const extents: { originExtents: number[][], directionExtents: number[][]} = Utils.generate_cloud_extents( this.rawDataset );
+        this.extents = extents;
+
+        console.log(extents);
+
+        // generating positions array
+        const positions: { originPositions: number[], directionPositions: number[] } = Utils.generate_original_point_position_array( this.rawDataset );
+        this.positions = positions;
+
+        // const transformation = Utils.generate_point_position_array( dataset );
+        // this.positions = transformation.positions;
         
-        // saving scales and extents
-        this.transformationParams = {
-            extents: transformation.extents,
-            scales: transformation.scales
-        };
+        // // saving scales and extents
+        // this.transformationParams = {
+        //     extents: transformation.extents,
+        //     scales: transformation.scales
+        // };
 
     }
 

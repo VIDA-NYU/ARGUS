@@ -40,8 +40,11 @@ const EyesDataView = ({ type, title, data, recordingMetadata, currentState }: an
       
       // gaze point is of type {'origin': {x: number, 'y': number, 'z': number }, 'direction': {x: number, 'y': number, 'z': number }}
       const gazePoint: any = dataset.current.get_corresponding_point(timestamp);
-      const gazePosition: number[] = dataset.current.transform_point_to_cube_coords(gazePoint.GazeOrigin);
-      const gazeDirection: number[] = dataset.current.transform_point_to_cube_coords(gazePoint.GazeDirection);
+      // const gazePosition: number[] = dataset.current.transform_point_to_cube_coords(gazePoint.GazeOrigin);
+      // const gazeDirection: number[] = dataset.current.transform_point_to_cube_coords(gazePoint.GazeDirection);
+
+      const gazePosition: number[] = [gazePoint.GazeOrigin.x, gazePoint.GazeOrigin.y, gazePoint.GazeOrigin.z];
+      const gazeDirection: number[] = [gazePoint.GazeDirection.x, gazePoint.GazeDirection.y, gazePoint.GazeDirection.z];
 
       // highlighting gaze position
       scene.current.highlight_current_gaze_point( gazePosition, gazeDirection );
@@ -56,11 +59,11 @@ const EyesDataView = ({ type, title, data, recordingMetadata, currentState }: an
 
       // creating dataset obj
       dataset.current = new Dataset( recordingMetadata, data );
-      console.log(dataset.current.transformationParams);
+      // console.log(dataset.current.transformationParams);
 
       // initializing scene
       scene.current = new Scene();
-      scene.current.init( containerRef );
+      scene.current.init( containerRef, dataset.current.extents.originExtents);
 
       // // adding helpers
       scene.current.add_scene_helpers( true );
@@ -69,7 +72,7 @@ const EyesDataView = ({ type, title, data, recordingMetadata, currentState }: an
       scene.current.add_orbit_controls();
 
       // adding gaze history
-      scene.current.update_gaze_history( dataset.current.positions );
+      scene.current.update_gaze_history( dataset.current.positions.originPositions );
 
       // rendering scene
       scene.current.render();

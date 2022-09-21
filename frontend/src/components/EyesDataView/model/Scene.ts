@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHelper';
+
 
 
 export interface Vector3D {
@@ -37,13 +39,13 @@ export class Scene {
 
     constructor(){}
 
-    public init( containerRef: { current: HTMLElement } ): void {
+    public init( containerRef: { current: HTMLElement }, originExtents: number[][]  ): void {
 
         // saving container ref
         this.container = containerRef.current;
 
         // initializing camera
-        this.initialize_camera();
+        this.initialize_camera( originExtents );
 
         // initializing scene
         this.initialize_scene();
@@ -56,44 +58,83 @@ export class Scene {
 
     }
 
+    // public add_point_cloud( id: string, positions: number[], colors: number[] = [], normals: number[] = []  ): void {
+
+    //     if( id in this.scenePointClouds ){
+    //         this.scene.remove( this.scenePointClouds[id] );
+    //     }
+
+    //     // loading positions
+    //     const pointgeometry = new THREE.BufferGeometry();
+    //     pointgeometry.setAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
+
+    //     if(colors.length > 0) pointgeometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
+    //     if(normals.length > 0) pointgeometry.setAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
+    //     pointgeometry.computeBoundingSphere();
+
+    //     // setting sprint and color
+    //     const pointmaterial = new THREE.PointsMaterial( { size: 0.01, vertexColors: true } );
+    //     // pointmaterial.color.setHSL( 1.0, 0.0, 0.0 );
+
+    //     const points = new THREE.Points( pointgeometry, pointmaterial );
+
+    //     if(normals.length > 0){
+    //         const helper = new VertexNormalsHelper( points, 0.1, 0x00ff00 );
+    //         this.scene.add(helper);
+    //     }
+
+    //     // indexing
+    //     this.scenePointClouds[id] = points;
+
+    //     this.currentPointCloud = points;
+    //     this.scene.add( points );
+
+    // }
+
     public highlight_current_gaze_point( origin: number[], direction: number[] = [] ){
 
         // remove object from scene
         // this.scene.remove( this.highlightedGazeOrigin );
         // this.scene.remove( this.highlighteGazeDirection );
+        this.scene.remove( this.highlightedGazeOrigin );
 
         // loading positions
         const pointgeometry = new THREE.BufferGeometry();
         pointgeometry.setAttribute( 'position', new THREE.Float32BufferAttribute( origin, 3 ) );
+        pointgeometry.setAttribute( 'normal', new THREE.Float32BufferAttribute( direction, 3 ) );
         pointgeometry.computeBoundingSphere();
 
         // setting sprint and color
-        const pointmaterial = new THREE.PointsMaterial( { size: 3, alphaTest: 0.9, map: this.pointSprite, transparent: true } );
+        const pointmaterial = new THREE.PointsMaterial( { size: 0.05, alphaTest: 0.9, map: this.pointSprite, transparent: true } );
         pointmaterial.color.setHSL( 1.0, 0.3, 0.7 );
 
         const point = new THREE.Points( pointgeometry, pointmaterial );
+        const helper = new VertexNormalsHelper( point, 0.1, 0x00ff00 );
+        
+
         this.highlightedGazeOrigin = point;
         this.scene.add( point );
+        this.scene.add(helper);
 
 
-        // adding line
-        //create a blue LineBasicMaterial
-        const linematerial = new THREE.LineBasicMaterial( { color: 0x0000ff } );
+        // // adding line
+        // //create a blue LineBasicMaterial
+        // const linematerial = new THREE.LineBasicMaterial( { color: 0x0000ff } );
 
-        const linepoints = [];
-        const vectorOrigin = new THREE.Vector3( origin[0], origin[1], origin[2] );
-        const vectorDirection = new THREE.Vector3( direction[0], direction[1], direction[2] );
+        // const linepoints = [];
+        // const vectorOrigin = new THREE.Vector3( origin[0], origin[1], origin[2] );
+        // const vectorDirection = new THREE.Vector3( direction[0], direction[1], direction[2] );
 
-        // adding points
-        linepoints.push( vectorOrigin );
-        linepoints.push( vectorDirection );
-        const linegeometry = new THREE.BufferGeometry().setFromPoints( linepoints );
+        // // adding points
+        // linepoints.push( vectorOrigin );
+        // linepoints.push( vectorDirection );
+        // const linegeometry = new THREE.BufferGeometry().setFromPoints( linepoints );
     
-        const line = new THREE.Line( linegeometry, linematerial );
-        // line.scale.set( 0.3, 0.3, 0.3 );
-        // line.position.set( vectorOrigin.x, vectorOrigin.y, vectorOrigin.z )
-        this.highlighteGazeDirection = line;
-        this.scene.add( line );
+        // const line = new THREE.Line( linegeometry, linematerial );
+        // // line.scale.set( 0.3, 0.3, 0.3 );
+        // // line.position.set( vectorOrigin.x, vectorOrigin.y, vectorOrigin.z )
+        // this.highlighteGazeDirection = line;
+        // this.scene.add( line );
 
     }
 
@@ -106,7 +147,7 @@ export class Scene {
         pointgeometry.computeBoundingSphere();
 
         // setting sprint and color
-        const pointmaterial = new THREE.PointsMaterial( { size: 1, alphaTest: 0.1, map: this.pointSprite, transparent: true } );
+        const pointmaterial = new THREE.PointsMaterial( { size: 0.01, alphaTest: 0.1, map: this.pointSprite, transparent: true } );
         pointmaterial.color.setHSL( 0, 0.06, 0.84 );
 
         const points = new THREE.Points( pointgeometry, pointmaterial );
@@ -118,9 +159,9 @@ export class Scene {
 
         if( planeGeometry ){
             // plane geometry
-            const gridHelper = new THREE.GridHelper( 50, 50 );
+            const gridHelper = new THREE.GridHelper( 2, 20 );
             // const gridHelper = new THREE.GridHelper( 2, 2 );
-            gridHelper.position.set(0, -25.5, 0 );
+            gridHelper.position.set(1.955, -0.8, 1.01 );
             // gridHelper.position.set(1.9, -0.5, 0.9 );
             this.scene.add( gridHelper );
         }
@@ -174,13 +215,19 @@ export class Scene {
 
     }
 
-    private initialize_camera(): void {
+    private initialize_camera( extents: number[][] ): void {
 
         const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera( 75, 1600/600, 0.1, 1000 );
         
         // camera position grows towards outside the screen
-        camera.position.z = 100;
-        camera.position.y = -20;
+        const x: number = (extents[0][0] + extents[0][1]) / 2;
+        const y: number = extents[1][1] + 1;
+        const z: number = extents[2][1] + 1;
+        camera.position.x = x + 1;
+        camera.position.y = y;
+        camera.position.z = z + 2;
+        // camera.position.z = 100;
+        // camera.position.y = -20;
         // camera.position.z = 2;
         // camera.position.y = -0.3;
         // camera.position.x = 1.9;

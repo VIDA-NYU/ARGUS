@@ -1,6 +1,45 @@
+import * as d3 from 'd3';
+
 export class Utils {
 
     constructor(){}
+
+    public static generate_original_point_position_array( gazeDataset: any[] ): { originPositions: number[], directionPositions: number[] }{
+
+        const originPositions: number [] = [];
+        const directionPositions: number[] = [];
+        gazeDataset.forEach( (point: any) => {
+
+            // adding current origin position to the positions array
+            originPositions.push( point.GazeOrigin.x );
+            originPositions.push( point.GazeOrigin.y );
+            originPositions.push( point.GazeOrigin.z );
+
+            // adding current origin position to the positions array
+            directionPositions.push( point.GazeDirection.x );
+            directionPositions.push( point.GazeDirection.y );
+            directionPositions.push( point.GazeDirection.z );
+            
+        });
+    
+        return { originPositions: originPositions, directionPositions: directionPositions };
+
+    }
+
+    public static generate_cloud_extents( gazeDataset: any[] ): { originExtents: number[][], directionExtents: number[][]} {
+
+        // computing origin extents
+        const xOriginExtent: any[] = d3.extent( gazeDataset, ( gazePoint: any ) => gazePoint.GazeOrigin.x);
+        const yOriginExtent: any[] = d3.extent( gazeDataset, ( gazePoint: any ) => gazePoint.GazeOrigin.y);
+        const zOriginExtent: any[] = d3.extent( gazeDataset, ( gazePoint: any ) => gazePoint.GazeOrigin.z);
+
+        // computing direction extents
+        const xDirectionExtent: any[] = d3.extent( gazeDataset, ( gazePoint: any ) => gazePoint.GazeDirection.x);
+        const yDirectionExtent: any[] = d3.extent( gazeDataset, ( gazePoint: any ) => gazePoint.GazeDirection.y);
+        const zDirectionExtent: any[] = d3.extent( gazeDataset, ( gazePoint: any ) => gazePoint.GazeDirection.z); 
+
+        return { originExtents: [xOriginExtent, yOriginExtent, zOriginExtent], directionExtents: [xDirectionExtent, yDirectionExtent, zDirectionExtent] };
+    }
 
     // normalizes data between -1 and 1
     public static generate_point_position_array( data: any, attributeName: string = 'GazeOrigin' ): 
