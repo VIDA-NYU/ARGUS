@@ -22,7 +22,8 @@ export class Dataset {
     public rawDataset: any[] = [];   
 
     // array of positions
-    public positions: Float32Array | null = null;
+    // public positions: Float32Array | null = null;
+    public positions: number[] | null = null;
 
     // timestamp index
     public timestampToPoint: { [timestamp: number]: any } = {};

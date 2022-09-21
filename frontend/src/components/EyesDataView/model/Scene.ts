@@ -10,13 +10,15 @@ export interface Vector3D {
 
 export class Scene {
 
+    public animationID: any = 0;
+
     // container ref
     public container: HTMLElement;
 
     // scene elements
     public camera: THREE.PerspectiveCamera;
     public scene: THREE.Scene;
-    public renderer: THREE.Renderer;
+    public renderer: THREE.Renderer | null = null;
 
     // helper elements
     public gridPlane;
@@ -34,7 +36,6 @@ export class Scene {
     public pointSprite: any;
 
     constructor(){}
-
 
     public init( containerRef: { current: HTMLElement } ): void {
 
@@ -58,8 +59,8 @@ export class Scene {
     public highlight_current_gaze_point( origin: number[], direction: number[] = [] ){
 
         // remove object from scene
-        this.scene.remove( this.highlightedGazeOrigin );
-        this.scene.remove( this.highlighteGazeDirection );
+        // this.scene.remove( this.highlightedGazeOrigin );
+        // this.scene.remove( this.highlighteGazeDirection );
 
         // loading positions
         const pointgeometry = new THREE.BufferGeometry();
@@ -80,11 +81,17 @@ export class Scene {
         const linematerial = new THREE.LineBasicMaterial( { color: 0x0000ff } );
 
         const linepoints = [];
-        linepoints.push( new THREE.Vector3( origin[0], origin[1], origin[2] ) );
-        linepoints.push( new THREE.Vector3( direction[0], direction[1], direction[2] ) );
-        const linegeometry = new THREE.BufferGeometry().setFromPoints( linepoints );
+        const vectorOrigin = new THREE.Vector3( origin[0], origin[1], origin[2] );
+        const vectorDirection = new THREE.Vector3( direction[0], direction[1], direction[2] );
 
+        // adding points
+        linepoints.push( vectorOrigin );
+        linepoints.push( vectorDirection );
+        const linegeometry = new THREE.BufferGeometry().setFromPoints( linepoints );
+    
         const line = new THREE.Line( linegeometry, linematerial );
+        // line.scale.set( 0.3, 0.3, 0.3 );
+        // line.position.set( vectorOrigin.x, vectorOrigin.y, vectorOrigin.z )
         this.highlighteGazeDirection = line;
         this.scene.add( line );
 
@@ -93,15 +100,14 @@ export class Scene {
     // updates the gaze origin point cloud
     public update_gaze_history( positions: Float32Array ): void {
 
-
         // loading positions
         const pointgeometry = new THREE.BufferGeometry();
         pointgeometry.setAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
         pointgeometry.computeBoundingSphere();
 
         // setting sprint and color
-        const pointmaterial = new THREE.PointsMaterial( { size: 1, alphaTest: 0.5, map: this.pointSprite, transparent: true } );
-        pointmaterial.color.setHSL( 1.0, 0.3, 0.7 );
+        const pointmaterial = new THREE.PointsMaterial( { size: 1, alphaTest: 0.1, map: this.pointSprite, transparent: true } );
+        pointmaterial.color.setHSL( 0, 0.06, 0.84 );
 
         const points = new THREE.Points( pointgeometry, pointmaterial );
         this.scene.add( points );
@@ -113,7 +119,9 @@ export class Scene {
         if( planeGeometry ){
             // plane geometry
             const gridHelper = new THREE.GridHelper( 50, 50 );
+            // const gridHelper = new THREE.GridHelper( 2, 2 );
             gridHelper.position.set(0, -25.5, 0 );
+            // gridHelper.position.set(1.9, -0.5, 0.9 );
             this.scene.add( gridHelper );
         }
 
@@ -133,13 +141,18 @@ export class Scene {
 
     public render() {
 
-        requestAnimationFrame( () => this.render() );
+        this.animationID = requestAnimationFrame( () => this.render() );
     
         // required if controls.enableDamping or controls.autoRotate are set to true
         this.orbitControls.update();
     
         this.renderer.render( this.scene, this.camera );
 
+    }
+
+    public stop_animation(): void {
+
+        cancelAnimationFrame( this.animationID );
     }
 
 
@@ -164,8 +177,13 @@ export class Scene {
     private initialize_camera(): void {
 
         const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera( 75, 1600/600, 0.1, 1000 );
+        
+        // camera position grows towards outside the screen
         camera.position.z = 100;
         camera.position.y = -20;
+        // camera.position.z = 2;
+        // camera.position.y = -0.3;
+        // camera.position.x = 1.9;
 
         // saving ref
         this.camera = camera;

@@ -4,6 +4,7 @@ import { onProgressType } from './VideoDataView/VideoCard/VideoCard';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
+import { Button } from '@mui/material';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useToken } from '../api/TokenContext';
 import { getAudioPath, getEyeData, getHandData, getVideoPath, useDeleteRecording, useGetAllRecordings, useGetRecording } from '../api/rest';
@@ -44,12 +45,9 @@ function RecordingsDataView() {
     const [recordingName, setRecordingName] = React.useState<string>('');
     const [eyeData, setEyeData] = React.useState({});
     const [handData, setHandData] = React.useState({});
-
     const [openDelDialog, setOpenDelDialog] = React.useState(false);
     const [openConfDelDialog, setOpenConfDelDialog] = React.useState(false);
-
     const [delData, setDelData] = React.useState<DeleteInfo>({name: "", confirmation: false});
-
     const [timeDisplayFormat, setTimeDisplayFormat] = React.useState("normal");
     const [state, setState] = React.useState<MediaState>({
       pip: false,
@@ -100,6 +98,7 @@ function RecordingsDataView() {
     }, [recordingsList]);
 
     useEffect(() => {
+
       const fetchEyeData = async () => {
         try {
           const jsonFile = await getEyeData(recordingName);
@@ -109,6 +108,7 @@ function RecordingsDataView() {
                 setEyeData("404 Not Found. Eye data was not found.");
               }
       };
+
       const fetchHandData = async () => {
         try {
           const jsonFile = await getHandData(recordingName);
@@ -139,7 +139,7 @@ function RecordingsDataView() {
       }
     }, [deletedRecord]);
 
-    const handleChangeRecording = (event: SelectChangeEvent) => {
+    const handleChangeRecording = (event: SelectChangeEvent) => {      
       const index = Number(event.target.value);
       setRecordingID(index);
       recordings && setRecordingName(recordings[index]);
@@ -231,7 +231,6 @@ function RecordingsDataView() {
     const renderStreamings= () => {
       if (recordingData !== undefined && recordingData &&  recordingData.streams){
         return <>
-
           <VideoDataView 
             type={dataType.VIDEO} 
             data={recordingData} 
@@ -257,8 +256,7 @@ function RecordingsDataView() {
             data={eyeData} 
             title={"Eye Data"}
             recordingMetadata={recordingData}
-            currentState={state}
-            >  
+            currentState={state}>  
           </EyesDataView>
 
           <HandsDataView
@@ -266,7 +264,6 @@ function RecordingsDataView() {
             data={handData} 
             title={"Hands Data"}>
           </HandsDataView>
-          
           </>
       }
       return <></>;
@@ -293,14 +290,14 @@ function RecordingsDataView() {
           }
           </Select>
         </FormControl>
-        {/*
-        // Disable Delete recording
+        
+        {/* // Disable Delete recording
         <FormControl sx={{ m: 1, minWidth: 140 }} size="small">
           <Button variant="outlined" onClick={handleClickDelButton}  startIcon={<DeleteIcon />}>
             Delete
           </Button>
-        </FormControl>
-        */}
+        </FormControl> */}
+       
         <DeleteRecordingDialog
           id="delete-recording"
           keepMounted

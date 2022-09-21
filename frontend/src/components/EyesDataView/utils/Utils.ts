@@ -4,7 +4,8 @@ export class Utils {
 
     // normalizes data between -1 and 1
     public static generate_point_position_array( data: any, attributeName: string = 'GazeOrigin' ): 
-        {   positions: Float32Array, 
+        {   positions: number[], 
+            // positions: Float32Array, 
             extents: { [dimension: string]: number[] },
             scales: { [dimension: string]: number[] } } {
 
@@ -41,11 +42,14 @@ export class Utils {
             -base * (range / maxRange),
             base * (range / maxRange),
         ];
+
+     
         const xScale = makeScaleRange(xRange, halfCube);
         const yScale = makeScaleRange(yRange, halfCube);
         const zScale = makeScaleRange(zRange, halfCube);
 
-        const positions = new Float32Array(dataPoints.length * 3);
+        // const positions = new Float32Array(dataPoints.length * 3);
+        const positions: number[] = [];
         let dst = 0;
         dataPoints.forEach((d, i) => {
 
@@ -53,6 +57,10 @@ export class Utils {
             positions[dst++] = Utils.scaleLinear(vector[0], xExtent, xScale);
             positions[dst++] = Utils.scaleLinear(vector[1], yExtent, yScale);
             positions[dst++] = Utils.scaleLinear(vector[2], zExtent, zScale);
+
+            // positions[dst++] = vector[0];
+            // positions[dst++] = vector[1];
+            // positions[dst++] = vector[2];
 
         });
 
@@ -62,6 +70,7 @@ export class Utils {
 
     /** Compute the extent [minimum, maximum] of an array of numbers. */
     public static extent(data: number[]) {
+
         let minimum = Infinity;
         let maximum = -Infinity;
         for (let i = 0; i < data.length; i++) {

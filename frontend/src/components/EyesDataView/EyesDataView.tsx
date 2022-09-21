@@ -31,7 +31,7 @@ const EyesDataView = ({ type, title, data, recordingMetadata, currentState }: an
   const scene = useRef(null)
   const dataset = useRef(null);
 
-  useEffect( () => {
+  useEffect( () => {  
 
     if( dataset.current ){
 
@@ -49,22 +49,23 @@ const EyesDataView = ({ type, title, data, recordingMetadata, currentState }: an
 
   }, [currentState]) 
 
+
   useEffect( () => {
 
-    // once data comes to the component, we update the scene
-    if(data.length) {
+    if( data.length  ) {
 
       // creating dataset obj
       dataset.current = new Dataset( recordingMetadata, data );
+      console.log(dataset.current.transformationParams);
 
       // initializing scene
       scene.current = new Scene();
       scene.current.init( containerRef );
 
-      // adding helpers
+      // // adding helpers
       scene.current.add_scene_helpers( true );
 
-      // adding orbit controls
+      // // adding orbit controls
       scene.current.add_orbit_controls();
 
       // adding gaze history
