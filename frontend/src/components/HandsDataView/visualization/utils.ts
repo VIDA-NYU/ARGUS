@@ -1,5 +1,4 @@
 function computeFrameJointMovement(frameJoint0, frameJoint1){
-    console.log(frameJoint0, frameJoint1)
     let xMovement = frameJoint1.pose.position.x - frameJoint0.pose.position.x;
     let yMovement = frameJoint1.pose.position.y - frameJoint0.pose.position.y;
     let zMovement = frameJoint1.pose.position.z - frameJoint0.pose.position.z;
@@ -8,7 +7,6 @@ function computeFrameJointMovement(frameJoint0, frameJoint1){
 }
 
 function computeFrameHandMovement(frameHand0, frameHand1){
-    console.log(frameHand0)
 
     let accMovement = 0
     for (let jointIndex = 0; jointIndex < frameHand0.items.length; jointIndex++){
@@ -16,7 +14,6 @@ function computeFrameHandMovement(frameHand0, frameHand1){
         accMovement += jointMovement
     }
     let avgMovement = accMovement / frameHand0.items.length;
-    console.log(avgMovement)
     return avgMovement;
 
 }
@@ -36,7 +33,6 @@ function isEmpty(obj) {
     return Object.keys(obj).length === 0;
 }
 function computeHandsActivity(data){
-    console.log(data, isEmpty(data));
     if(isEmpty(data)){
         return [];
     }
@@ -52,4 +48,4 @@ function computeHandsActivity(data){
     return framesMovement
 }
 
-export {computeHandsActivity};
+export {computeHandsActivity, isEmpty};

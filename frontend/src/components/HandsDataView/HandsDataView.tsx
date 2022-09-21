@@ -12,6 +12,10 @@ import CardContent from "@mui/material/CardContent";
 import {HandsCanvas} from "./hand-data-vis/canvas";
 import {computeHandsActivity} from "./visualization/utils";
 import HandsActivityBarChart from "./visualization/activity-bar-chart";
+import {useEffect, useState} from "react";
+import { Dataset } from './model/dataset';
+import {useRef} from "react";
+import {isEmpty} from "./visualization/utils";
 
 const Container = styled("div")(({}) => ({
     display: "flex",
@@ -35,9 +39,30 @@ const JsonContent = styled("div")(({}) => ({
 }))
 
 
-const HandsDataView = ({ type, title, data, recordingName, state, onProgress, onSeek }: any) => {
+const HandsDataView = ({ type, title, data, recordingName, state, onProgress, onSeek, recordingMetaData }: any) => {
   let handsActivity = computeHandsActivity(data);
-  console.log(handsActivity);
+  const dataset = useRef(null);
+
+  const [frameData, setFrameData] = useState();
+    const [frameIndex, setFrameIndex] = useState<number>(0);
+
+
+  useEffect(() => {
+      if(!isEmpty(data)){
+          dataset.current = new Dataset( recordingMetaData, data );
+      }
+
+  }, [data])
+
+  useEffect(() => {
+      if(dataset.current){
+          const {element: currFrameData, index: currFrameIndex} = dataset.current.get_corresponding_timestamp( state.currentTime );
+            setFrameData(currFrameData);
+            setFrameIndex(currFrameIndex);
+      }
+  }, [state, dataset])
+
+
 
   return (
     <AccordionView title='Hands Data' height={300}>
@@ -50,7 +75,10 @@ const HandsDataView = ({ type, title, data, recordingName, state, onProgress, on
                       }}
                       title={"Overview"}></CardHeader>
                   <CardContent>
-                      <HandsCanvas state={state} variant={"overview"}  data={data}/>
+                      <HandsCanvas
+                          frameIndex={frameIndex}
+                          frameData={frameData}
+                          state={state} variant={"overview"}  data={data}/>
                   </CardContent>
               </Card>
               <Card
@@ -65,7 +93,10 @@ const HandsDataView = ({ type, title, data, recordingName, state, onProgress, on
                       }}
                       title={"Left Hand"}></CardHeader>
                   <CardContent>
-                      <HandsCanvas state={state} variant={"left"}  data={data}/>
+                      <HandsCanvas
+                          frameIndex={frameIndex}
+                          frameData={frameData}
+                          state={state} variant={"left"}  data={data}/>
                   </CardContent>
               </Card>
 
@@ -76,7 +107,10 @@ const HandsDataView = ({ type, title, data, recordingName, state, onProgress, on
                       }}
                       title={"Right Hand"}></CardHeader>
                   <CardContent>
-                      <HandsCanvas state={state} variant={"right"} data={data}/>
+                      <HandsCanvas
+                          frameIndex={frameIndex}
+                          frameData={frameData}
+                          state={state} variant={"right"} data={data}/>
                   </CardContent>
               </Card>
               <Card>

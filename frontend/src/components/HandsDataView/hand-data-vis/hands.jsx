@@ -99,11 +99,12 @@ function getPlayedIndex(played, seqLen){
 function HandsModel(props) {
 
 
-    let seq = getPlayedIndex(props.state.played, props.data.length);
+    // let seq = getPlayedIndex(props.state.played, props.data.length);
 
-    let frameData = props.data[seq % props.data.length];
+    // let frameData = props.data[seq % props.data.length];
 
-    let offsets = buildOffsets(props.data, seq);
+    let offsets = buildOffsets(props.data, props.frameIndex);
+    let frameData = props.frameData;
 
     let renderJointLink = (jointLink, offset) => {
         const points = [
