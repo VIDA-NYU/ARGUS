@@ -262,6 +262,7 @@ function RecordingsDataView() {
           <HandsDataView
             type={dataType.JSON} 
             data={handData}
+            recordingMetaData={recordingData}
             state={state}
             title={"Hands Data"}>
           </HandsDataView>
