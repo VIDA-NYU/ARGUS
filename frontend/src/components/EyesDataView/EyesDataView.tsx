@@ -6,144 +6,85 @@ import { Box } from '@mui/system';
 
 // temp
 import JSONPretty from 'react-json-pretty';
+import { Transformations } from './utils/Transformations';
 
 // react
-import { useEffect, useRef } from 'react';
-
-// third-party
-import * as THREE from 'three';
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-
+import { useEffect, useRef, useState } from 'react';
 
 // style
 import './EyesDataView.css'
-import { Transformations } from './utils/Transformations';
+
+// model
+import { Dataset } from './model/Dataset';
+import { Scene } from './model/Scene';
 
 interface EyesDataViewProps {
   points: any
 }
 
-const EyesDataView = ({ type, title, data, recordingName, state, onProgress, onSeek }: any) => {
+const EyesDataView = ({ type, title, data, recordingMetadata, currentState }: any) => {
 
   // DOM Refs
   const containerRef = useRef(null);
 
-  let camera, scene, renderer;
-  let points;
-  let controls;
+  // let scene: Scene | null = null;
+  const scene = useRef(null)
+  const dataset = useRef(null);
 
-  let currentPoints;
+  useEffect( () => {  
 
-  const initialize_scene = () => {
+    if( dataset.current ){
 
-    camera = new THREE.PerspectiveCamera( 75, 1600/600, 0.1, 1000 );
-    camera.position.z = 100;
+      // const gazePoint: any = 
+      const timestamp: number = dataset.current.get_corresponding_timestamp( currentState.currentTime );
+      
+      // gaze point is of type {'origin': {x: number, 'y': number, 'z': number }, 'direction': {x: number, 'y': number, 'z': number }}
+      const gazePoint: any = dataset.current.get_corresponding_point(timestamp);
+      // const gazePosition: number[] = dataset.current.transform_point_to_cube_coords(gazePoint.GazeOrigin);
+      // const gazeDirection: number[] = dataset.current.transform_point_to_cube_coords(gazePoint.GazeDirection);
 
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color( 'white' );
-    scene.fog = new THREE.Fog( 0x050505, 2000, 3500 );
+      const gazePosition: number[] = [gazePoint.GazeOrigin.x, gazePoint.GazeOrigin.y, gazePoint.GazeOrigin.z];
+      const gazeDirection: number[] = [gazePoint.GazeDirection.x, gazePoint.GazeDirection.y, gazePoint.GazeDirection.z];
 
-    // const geometry = new THREE.BoxGeometry( 51, 51, 51 );
-    // const material = new THREE.MeshBasicMaterial( {color: 'red', transparent: true, opacity: 0.5} );
-    // const cube = new THREE.Mesh( geometry, material );
-    // scene.add( cube );
+      // highlighting gaze position
+      scene.current.highlight_current_gaze_point( gazePosition, gazeDirection );
+    }
 
-    // const planegeometry = new THREE.PlaneGeometry( 50, 50 );
-    // const planematerial = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
-    // const plane = new THREE.Mesh( planegeometry, planematerial );
-    // plane.rotation.x = Math.PI / 2;
-    // plane.position.set(0, -25.5, 0 );
-    // scene.add( plane );
-
-    const helper = new THREE.GridHelper( 50, 50 );
-    helper.position.set(0, -25.5, 0 );
-    scene.add( helper );
-
-
-    // const axesHelper = new THREE.AxesHelper( 76 );
-    // scene.add( axesHelper );
-
-    renderer = new THREE.WebGLRenderer();
-    renderer.setPixelRatio( window.devicePixelRatio );
-    renderer.setSize( 1600, 600 );
-
-    containerRef.current.appendChild( renderer.domElement );
-
-    const pointgeometry = new THREE.BufferGeometry();
-
-    // getting normalized data
-    const arrays = Transformations.normalize_data( data );
-
-    pointgeometry.setAttribute( 'position', new THREE.Float32BufferAttribute( arrays.normalizedData, 3 ) );
-    pointgeometry.setAttribute( 'color', new THREE.Float32BufferAttribute( arrays.colors, 3 ) );
-    pointgeometry.computeBoundingSphere();
-
-
-    const pointmaterial = new THREE.PointsMaterial( { size: 1, vertexColors: true, transparent: true, opacity: 0.1 } );
-
-    points = new THREE.Points( pointgeometry, pointmaterial );
-    scene.add( points );
-
-    controls = new OrbitControls( camera, renderer.domElement );
-
-  };
-
-  const add_highlighted_point = () => {
-
-    scene.remove(currentPoints);
-
-    const pointgeometry = new THREE.BufferGeometry();
-
-    const pointPosition: number[] = [
-      Math.random()*50 - 25, -24, Math.random()*50 - 25, 
-    ]
-
-    pointgeometry.setAttribute( 'position', new THREE.Float32BufferAttribute( pointPosition, 3 ) );
-
-    const color = new THREE.Color();
-    const highlightcolors = [];
-    color.setRGB( 255, 0, 0 );
-    highlightcolors.push( color.r, color.g, color.b );
-    pointgeometry.setAttribute( 'color', new THREE.Float32BufferAttribute( highlightcolors, 3 ) );
-    const pointmaterial = new THREE.PointsMaterial( { size: 1, vertexColors: true } );
-
-    
-    currentPoints = new THREE.Points( pointgeometry, pointmaterial );
-    scene.add( currentPoints );
-
-  };
-
-  function animate() {
-
-    requestAnimationFrame( animate );
-  
-    // required if controls.enableDamping or controls.autoRotate are set to true
-    controls.update();
-  
-    renderer.render( scene, camera );
-  
-  }
+  }, [currentState]) 
 
 
   useEffect( () => {
 
-    if(data.length){
-      initialize_scene();
-      animate();
+    if( data.length  ) {
 
-      setInterval( () => {
-        add_highlighted_point();
-      }, 1000)
-    }
+      // creating dataset obj
+      dataset.current = new Dataset( recordingMetadata, data );
+      // console.log(dataset.current.transformationParams);
 
+      // initializing scene
+      scene.current = new Scene();
+      scene.current.init( containerRef, dataset.current.extents.originExtents);
+
+      // // adding helpers
+      scene.current.add_scene_helpers( true );
+
+      // // adding orbit controls
+      scene.current.add_orbit_controls();
+
+      // adding gaze history
+      scene.current.update_gaze_history( dataset.current.positions.originPositions );
+
+      // rendering scene
+      scene.current.render();
+
+    } 
     
-
   }, [data]);
 
   return (
     <AccordionView title='Eyes Data' height={600}>
         <Box sx={{ display: 'flex', width: '100%', height: '100%', overflow: 'auto' }}>
-          <div style={{width: '1600px', height: '600px'}} ref={containerRef}></div>
+          <div style={{width: '1600px', height: '600px'}} ref={containerRef} id='scenecontainer'></div>
         </Box>
     </AccordionView>
   )

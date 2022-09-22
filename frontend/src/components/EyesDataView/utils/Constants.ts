@@ -1,0 +1,1 @@
+export const CUBE_LENGTH: number = 50;

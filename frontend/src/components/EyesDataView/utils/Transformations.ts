@@ -1,34 +1,65 @@
-import * as d3 from 'd3';
-import * as THREE from 'three';
+import { Utils } from './Utils';
 
 export class Transformations {
 
     // normalizes data between -1 and 1
-    public static normalize_data( data: any ): {normalizedData: number[], colors: number[] } {
+    public static generate_point_position_array( data: any, attributeName: string = 'GazeOrigin' ): {positions: any, colors: any } {
 
-        // const max: number = d3.max( data, element => d3.max([element.GazeOrigin.x, element.GazeOrigin.y, element.GazeOrigin.z]));
-        // const min: number = d3.min( data, element => d3.min([element.GazeOrigin.x, element.GazeOrigin.y, element.GazeOrigin.z]));
-        // const scale: any = d3.scaleLinear().domain([min, max]).range([-25,25]);
+        // TODO: add this as a parameter to this function
+        const currentAttribute: string = attributeName;
 
-        const scaleX = d3.scaleLinear().domain(d3.extent(data,  element => {  return element.GazeOrigin.x} )).range([-25, 25]);
-        const scaleY = d3.scaleLinear().domain(d3.extent(data,  element => {  return element.GazeOrigin.y} )).range([-25, 25]);
-        const scaleZ = d3.scaleLinear().domain(d3.extent(data,  element => {  return element.GazeOrigin.z} )).range([-25, 25]);
+        const dataPoints: number[][] = [];
+        data.forEach( (point: any, index: number) => {
 
-        const normalizedData = [];
-        data.forEach( element => {
-            normalizedData.push(scaleX(element.GazeOrigin.x));
-            // normalizedData.push(scaleY(element.GazeOrigin.y));
-            normalizedData.push(-24);
-            normalizedData.push(scaleZ(element.GazeOrigin.z));
+            if( index % 4 === 0){
+                const current3DPoint: number[] = [ point[currentAttribute].x, point[currentAttribute].y, point[currentAttribute].z ];
+                dataPoints.push(current3DPoint);
+            }
+           
         });
 
-        const colors = [];
-        const color = new THREE.Color();
-        data.forEach( element => {
-            color.setRGB( 255, 0, 0 );
-            colors.push( color.r, color.g, color.b );
-        })
+        let xExtent = [0, 0];
+        let yExtent = [0, 0];
+        let zExtent = [0, 0];
 
-        return {normalizedData, colors};
+        // Determine max and min of each axis of our data.
+        xExtent = Utils.extent(dataPoints.map(p => p[0]));
+        yExtent = Utils.extent(dataPoints.map(p => p[1]));
+        zExtent = Utils.extent(dataPoints.map(p => p[2]!));
+
+        const getRange = (extent: number[]) => Math.abs(extent[1] - extent[0]);
+        const xRange = getRange(xExtent);
+        const yRange = getRange(yExtent);
+        const zRange = getRange(zExtent);
+        const maxRange = Math.max(xRange, yRange, zRange);
+
+
+        const halfCube = 50 / 2;
+        const makeScaleRange = (range: number, base: number) => [
+        -base * (range / maxRange),
+        base * (range / maxRange),
+        ];
+        const xScale = makeScaleRange(xRange, halfCube);
+        const yScale = makeScaleRange(yRange, halfCube);
+        const zScale = makeScaleRange(zRange, halfCube);
+
+        const positions = new Float32Array(dataPoints.length * 3);
+        const colors = new Float32Array(dataPoints.length * 3);
+        let dst = 0;
+        let cst = 0;
+        dataPoints.forEach((d, i) => {
+
+            const vector = dataPoints[i];
+            positions[dst++] = Utils.scaleLinear(vector[0], xExtent, xScale);
+            positions[dst++] = -24;
+            positions[dst++] = Utils.scaleLinear(vector[2]!, zExtent, zScale);
+
+            // colors
+            colors[cst++] = 255;
+            colors[cst++] = 0;
+            colors[cst++] = 0;
+        });
+
+        return {positions, colors};
     } 
 }
