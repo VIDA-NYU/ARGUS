@@ -22,6 +22,10 @@ const leftColor = "steelblue"
 const rightColor = "pink"
 
 
+function computePercentage(d, index, data){
+    return Math.round(100 * d.frame/data.length)
+}
+
 function HandsActivityBarChart({data}: HandsActivityBarChartProps){
 
     const svgRef = useRef(null);
@@ -47,7 +51,7 @@ function HandsActivityBarChart({data}: HandsActivityBarChartProps){
     let contentWidth = 230;
 
     const xScale = d3.scaleLinear()
-        .domain(d3.extent(data, d=>d.frame))
+        .domain(d3.extent(data, (d, i) => d.frame))
         .range([0, contentWidth]);
 
 
@@ -64,7 +68,7 @@ function HandsActivityBarChart({data}: HandsActivityBarChartProps){
 
         if(xAxisElm){
             xAxisElm
-                .call(d3.axisBottom(xScale).tickFormat(d3.format("d")));
+                .call(d3.axisBottom(xScale).tickFormat(value => d3.format("d")(value) + "%"));
         }
 
         if(yAxisElm){
@@ -83,7 +87,7 @@ function HandsActivityBarChart({data}: HandsActivityBarChartProps){
                 // @ts-ignore
                 .attr("d", d3.line()
                     // @ts-ignore
-                        .x(function(d) { return xScale(d.frame) })
+                        .x(function(d) {  return xScale(d.frame) })
                     // @ts-ignore
                         .y(function(d) { return yScale(d.movement.left) })
                 )
@@ -96,7 +100,7 @@ function HandsActivityBarChart({data}: HandsActivityBarChartProps){
                 // @ts-ignore
                 .attr("d", d3.line()
                     // @ts-ignore
-                    .x(function(d) {  return xScale(d.frame) })
+                    .x(function(d, i) {  return xScale(d.frame) })
                     // @ts-ignore
                     .y(function(d) { return yScale(d.movement.right) })
                 )
@@ -147,7 +151,7 @@ function HandsActivityBarChart({data}: HandsActivityBarChartProps){
                 mouseHoverElm.attr("transform", `translate(${xScale(mouseFrame)}, 0)`);
                 mouseHoverLeftCircleElm.attr("cy", yScale(leftValue));
                 mouseHoverRightCircleElm.attr("cy", yScale(rightValue));
-                mouseHoverTextLine0Elm.text(`frame: ${mouseFrame}`);
+                mouseHoverTextLine0Elm.text(`video: ${mouseFrame}%`);
                 mouseHoverTextLine1Elm.text(`left hand: ${leftValue.toFixed(2)}`);
                 mouseHoverTextLine2Elm.text(`right hand: ${rightValue.toFixed(2)}`);
                 mouseHoverTextElm
