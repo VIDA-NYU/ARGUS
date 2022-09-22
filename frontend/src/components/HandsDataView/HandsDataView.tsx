@@ -10,7 +10,7 @@ import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
 import {HandsCanvas} from "./hand-data-vis/canvas";
-import {computeHandsActivity} from "./visualization/utils";
+import {computeHandsActivity, sampleArray} from "./visualization/utils";
 import HandsActivityBarChart from "./visualization/activity-bar-chart";
 import {useEffect, useState} from "react";
 import { Dataset } from './model/dataset';
@@ -38,8 +38,10 @@ const JsonContent = styled("div")(({}) => ({
     left: 0
 }))
 
+const Activity_Sample_Rate = 30;
 
 const HandsDataView = ({ type, title, data, recordingName, state, onProgress, onSeek, recordingMetaData }: any) => {
+  // let sampledData = sampleArray(data, Activity_Sample_Rate);
   let handsActivity = computeHandsActivity(data);
   const dataset = useRef(null);
 

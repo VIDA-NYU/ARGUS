@@ -17,6 +17,7 @@ import AudioDataView from './AudioDataView/AudioDataView';
 import VideoDataView from './VideoDataView/VideoDataView';
 import EyesDataView from './EyesDataView/EyesDataView';
 import HandsDataView from './HandsDataView/HandsDataView';
+import {sampleArray} from "./HandsDataView/visualization/utils";
 
 
 export interface MediaState {
@@ -112,7 +113,7 @@ function RecordingsDataView() {
       const fetchHandData = async () => {
         try {
           const jsonFile = await getHandData(recordingName);
-          setHandData(jsonFile.slice(0, 20));
+          setHandData(sampleArray(jsonFile, 25));
         } catch (error) {
           // console.log("error", error);
           setHandData("404 Not Found. Hand data was not found.");
