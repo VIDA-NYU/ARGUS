@@ -103,7 +103,7 @@ const HandsDataView = ({type, title, data, recordingName, state, onProgress, onS
 
     if (isEmpty(data) || isEmpty(recordingMetaData) || !recordingMetaData['first-entry']) {
         return (
-            <DefaultHandsView data={data}></DefaultHandsView>
+            <DefaultHandsView data={processedData}></DefaultHandsView>
         )
     }
 

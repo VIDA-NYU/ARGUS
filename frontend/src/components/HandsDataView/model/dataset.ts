@@ -70,9 +70,7 @@ export class Dataset {
         const currentTimestamp: number = Math.floor(parseInt(rawInitialTimestamp) + timestamp * 1000);
 
         const datasetTimestamp = this.timestampTree.find(currentTimestamp);
-        // console.log(this.timestampToPoint, datasetTimestamp, this.timestampToPoint[datasetTimestamp]);
         let datasetItem = this.timestampToPoint[datasetTimestamp];
-        console.log(datasetItem, "item");
         if(!datasetItem){
             return {
                 element: undefined,
