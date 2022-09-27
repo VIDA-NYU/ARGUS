@@ -64,7 +64,7 @@ export class Dataset {
 
     }
 
-    public get_corresponding_timestamp(timestamp: number): number {
+    public get_corresponding_timestamp(timestamp: number) {
 
         const rawInitialTimestamp: string = this.recordingMetadata['first-entry'].split('-')[0]
         const currentTimestamp: number = Math.floor(parseInt(rawInitialTimestamp) + timestamp * 1000);
@@ -72,6 +72,13 @@ export class Dataset {
         const datasetTimestamp = this.timestampTree.find(currentTimestamp);
         // console.log(this.timestampToPoint, datasetTimestamp, this.timestampToPoint[datasetTimestamp]);
         let datasetItem = this.timestampToPoint[datasetTimestamp];
+        console.log(datasetItem, "item");
+        if(!datasetItem){
+            return {
+                element: undefined,
+                index: -1
+            }
+        }
         return datasetItem
         // return this.timestampTree.find(currentTimestamp);
 

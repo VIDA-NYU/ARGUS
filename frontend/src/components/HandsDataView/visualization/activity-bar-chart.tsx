@@ -116,7 +116,12 @@ function HandsActivityBarChart({data}: HandsActivityBarChartProps){
         const [xCord,yCord] = d3.pointer(mouse);
         const ratio = xCord / contentWidth;
         const mouseX = minX + Math.round(ratio * (maxX - minX));
-        const mouseFrame = data.find(d => d.frame === mouseX).frame;
+
+        let mouseFrameData = data.find(d => d.frame === mouseX);
+        let mouseFrame = 0;
+        if(mouseFrameData){
+            mouseFrame = mouseFrameData.frame;
+        }
         return mouseFrame;
     }
 

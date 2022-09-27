@@ -92,4 +92,37 @@ function sampleArray(data, sampleRate){
     return sampledArray;
 }
 
-export {computeHandsActivity, isEmpty, sampleArray};
+function preprocessIfJSON(dataItem){
+    if(typeof dataItem === "string") {
+        return JSON.parse(dataItem)
+    }else{
+        return dataItem;
+    }
+}
+
+function preprocessData(data){
+    if(isEmpty(data)){
+        return data;
+    }
+    const targetLen = 100;
+    let sampleRate = Math.ceil(data.length / targetLen);
+    data = sampleArray(data, sampleRate)
+
+    let processedData = data.map(d => {
+        if(typeof d.left === "string"){
+            let left = JSON.parse(d.left);
+            let right = JSON.parse(d.right);
+            let processedItem = {
+                ...d,
+                left,
+                right
+            }
+            return processedItem;
+        } else{
+            return d
+        }
+    })
+    return processedData;
+}
+
+export {computeHandsActivity, isEmpty, sampleArray, preprocessData};

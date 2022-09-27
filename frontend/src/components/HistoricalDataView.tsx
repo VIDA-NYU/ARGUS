@@ -113,7 +113,7 @@ function RecordingsDataView() {
       const fetchHandData = async () => {
         try {
           const jsonFile = await getHandData(recordingName);
-          setHandData(sampleArray(jsonFile, 25));
+          setHandData(jsonFile);
         } catch (error) {
           // console.log("error", error);
           setHandData("404 Not Found. Hand data was not found.");
