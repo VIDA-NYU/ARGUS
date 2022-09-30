@@ -32,8 +32,8 @@ export const Login = ({ username, password }: LoginCredential) => {
 const ListValues = ({list}: {list: string []}) => {
     return (
         <>{
-            list.map((value: string) => (
-            <li>{value}</li>
+            list.map((value: string, index: number) => (
+            <li key={'key'+ index}>{value}</li>
         ))}</>
     )
 }

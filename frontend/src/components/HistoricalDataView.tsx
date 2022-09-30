@@ -4,6 +4,7 @@ import { onProgressType } from './VideoDataView/VideoCard/VideoCard';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
+import { Button } from '@mui/material';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useToken } from '../api/TokenContext';
 import { getAudioPath, getEyeData, getHandData, getVideoPath, useDeleteRecording, useGetAllRecordings, useGetRecording } from '../api/rest';
@@ -17,6 +18,7 @@ import AudioDataView from './AudioDataView/AudioDataView';
 import VideoDataView from './VideoDataView/VideoDataView';
 import EyesDataView from './EyesDataView/EyesDataView';
 import HandsDataView from './HandsDataView/HandsDataView';
+import {sampleArray} from "./HandsDataView/visualization/utils";
 
 
 export interface MediaState {
@@ -44,12 +46,9 @@ function RecordingsDataView() {
     const [recordingName, setRecordingName] = React.useState<string>('');
     const [eyeData, setEyeData] = React.useState({});
     const [handData, setHandData] = React.useState({});
-
     const [openDelDialog, setOpenDelDialog] = React.useState(false);
     const [openConfDelDialog, setOpenConfDelDialog] = React.useState(false);
-
     const [delData, setDelData] = React.useState<DeleteInfo>({name: "", confirmation: false});
-
     const [timeDisplayFormat, setTimeDisplayFormat] = React.useState("normal");
     const [state, setState] = React.useState<MediaState>({
       pip: false,
@@ -100,19 +99,21 @@ function RecordingsDataView() {
     }, [recordingsList]);
 
     useEffect(() => {
+
       const fetchEyeData = async () => {
         try {
           const jsonFile = await getEyeData(recordingName);
-          setEyeData(jsonFile.slice(0, 20));
+          setEyeData(jsonFile);
         } catch (error) {
                 // console.log("error", error);
                 setEyeData("404 Not Found. Eye data was not found.");
               }
       };
+
       const fetchHandData = async () => {
         try {
           const jsonFile = await getHandData(recordingName);
-          setHandData(jsonFile.slice(0, 20));
+          setHandData(jsonFile);
         } catch (error) {
           // console.log("error", error);
           setHandData("404 Not Found. Hand data was not found.");
@@ -139,7 +140,7 @@ function RecordingsDataView() {
       }
     }, [deletedRecord]);
 
-    const handleChangeRecording = (event: SelectChangeEvent) => {
+    const handleChangeRecording = (event: SelectChangeEvent) => {      
       const index = Number(event.target.value);
       setRecordingID(index);
       recordings && setRecordingName(recordings[index]);
@@ -161,7 +162,6 @@ function RecordingsDataView() {
     };
 
     const handleProgress  = (changeState: onProgressType) => {
-      console.log('Handling progress..');
 
       const newDuration = changeState.totalDuration;
       // We only want to update time slider if we are not currently seeking
@@ -232,7 +232,6 @@ function RecordingsDataView() {
     const renderStreamings= () => {
       if (recordingData !== undefined && recordingData &&  recordingData.streams){
         return <>
-
           <VideoDataView 
             type={dataType.VIDEO} 
             data={recordingData} 
@@ -256,15 +255,18 @@ function RecordingsDataView() {
           <EyesDataView 
             type={dataType.JSON} 
             data={eyeData} 
-            title={"Eye Data"}>  
+            title={"Eye Data"}
+            recordingMetadata={recordingData}
+            currentState={state}>  
           </EyesDataView>
 
           <HandsDataView
             type={dataType.JSON} 
-            data={handData} 
+            data={handData}
+            recordingMetaData={recordingData}
+            state={state}
             title={"Hands Data"}>
           </HandsDataView>
-          
           </>
       }
       return <></>;
@@ -291,14 +293,14 @@ function RecordingsDataView() {
           }
           </Select>
         </FormControl>
-        {/*
-        // Disable Delete recording
+        
+        {/* // Disable Delete recording
         <FormControl sx={{ m: 1, minWidth: 140 }} size="small">
           <Button variant="outlined" onClick={handleClickDelButton}  startIcon={<DeleteIcon />}>
             Delete
           </Button>
-        </FormControl>
-        */}
+        </FormControl> */}
+       
         <DeleteRecordingDialog
           id="delete-recording"
           keepMounted

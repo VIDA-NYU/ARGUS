@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Alert, Box, Button, Paper } from '@mui/material';
+import { Alert, Box, Button, Paper, Typography, Chip } from '@mui/material';
 import { useToken } from '../api/TokenContext';
 import { Login } from './RecipesView';
 import { TEST_PASS, TEST_USER } from '../config';
@@ -12,31 +12,31 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import LoadingButton from '@mui/lab/LoadingButton';
 import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
 import StopCircleIcon from '@mui/icons-material/StopCircle';
-import { getLiveVideo, useGetCurrentRecordingInfo, useGetRecording, useStartRecording, useStopRecording, useRecordingControls } from '../api/rest';
-import { RequestStatus, responseServer } from '../api/types';
-import { LogsView, ImageView } from './LiveStream';
+import { useRecordingControls } from '../api/rest';
+
 import { useGetRecipes } from '../api/rest';
 import { useCurrentRecipe } from '../api/rest';
 
-let interval = null;
+import { StreamView } from './StreamDataView/LiveStream';
+import { ImageView } from './StreamDataView/ImageView';
+import { ClipOutputsLiveView } from './StreamDataView/PerceptionOutputsView';
+import { ReasoningOutputsView } from './StreamDataView/ReasoningOutputsView';
 
-// the app - once you're authenticated
-function LiveVideo() {
+
+const RecordingControls = () => {
   const { recordingId, recordingData, recordingDataError, startError, stopError, finishedRecording, startRecording, stopRecording } = useRecordingControls();
-
   const formatRecording = (recordingData) => recordingData?.name && <>
     Recording name: {recordingData.name}<br/>
     Duration: {recordingData.duration} <br/>
     First Entry Time: {recordingData["first-entry-time"]} <br/>
     Last Entry Time: {recordingData["last-entry-time"]}
   </>;
-
   return (
-    <div className="mt-2 mr-2 ml-2">
-      <Box sx={{ '& > button': { m: 1 } }}>
+    <Box>
+      <Box sx={{ '& > button': { mt: 2, mb: 2, mr: 2 } }}>
         <LoadingButton
           startIcon={<VideocamOutlinedIcon />}
-          size="small"
+          size="medium"
           onClick={() => startRecording()}
           loading={!!recordingId}
           loadingIndicator="Recording…"
@@ -46,7 +46,7 @@ function LiveVideo() {
         </LoadingButton>
         <Button
           startIcon={<StopCircleIcon />}
-          size="small"
+          size="medium"
           color="primary"
           onClick={() => stopRecording()}
           variant="contained"
@@ -54,23 +54,15 @@ function LiveVideo() {
         >
           Stop Recording
         </Button>
+        <Box style={{margin: 22}}>
+          {startError && <Alert severity="error">We couldn't connect with the server. Please try again!<br/><pre>{startError.response.data}</pre></Alert>}
+          {stopError && <Alert severity="error">Server Connection Issues: Please click again on the 'Stop Recording' button to finish your recording!<br/><pre>{stopError.response.data}</pre></Alert>}
+          {recordingDataError && <Alert severity="error">Error retrieving recording data: {recordingDataError}</Alert>}
+          {recordingData && <Alert severity="success">SUCCESSFUL server connection. The video is being recorded.<br/><br/>{formatRecording(recordingData)}</Alert>}
+          {finishedRecording && <Alert severity="success">Your recording was saved.<br/><br/>{formatRecording(finishedRecording)}</Alert>}
+        </Box>
       </Box>
-      <Box style={{margin: 22}}>
-        {startError && <Alert severity="error">We couldn't connect with the server. Please try again!<br/><pre>{startError.response.data}</pre></Alert>}
-        {stopError && <Alert severity="error">Server Connection Issues: Please click again on the 'Stop Recording' button to finish your recording!<br/><pre>{stopError.response.data}</pre></Alert>}
-        {recordingDataError && <Alert severity="error">Error retrieving recording data: {recordingDataError}</Alert>}
-        {recordingData && <Alert severity="success">SUCCESSFUL server connection. The video is being recorded.<br/><br/>{formatRecording(recordingData)}</Alert>}
-        {finishedRecording && <Alert severity="success">Your recording was saved.<br/><br/>{formatRecording(finishedRecording)}</Alert>}
-      </Box>
-      <div style={{margin: 22, width: 720}}>
-        <div><span style={{fontWeight: "bold"}}>Live View</span></div>
-        <RecipePicker />
-        <ImageView streamId='main' />
-        <LogsView streamId={'clip:action:steps'} formatter={str => (<ClipOutputsView data={JSON.parse(str)} />)} />
-        <LogsView streamId={'reasoning'} />
-        <LogsView streamId={'detic:image'} />
-      </div>
-    </div>
+    </Box>  
   )
 }
 
@@ -97,24 +89,62 @@ const RecipePicker = () => {
   )
 }
 
-interface ClipOutputsViewProps { data: { [key: string]: number; } }
-
-const ClipOutputsView = ({ data }: ClipOutputsViewProps) => {
-  return (<ul>
-    {Object.entries(data).sort(([ta, sa], [tb,sb]) => ( sb-sa )).filter(x => x[1] > 0.1).map(([text, similarity]) => (
-      <li key={text}><b>{text}</b>: {(similarity*100).toFixed(2)}</li>
-    ))}
-  </ul>)
+function LiveVideo() {
+  return (
+    <Box>
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(6, minmax(0, 1fr))',
+          gap: 1,
+          gridTemplateRows: 'auto',
+          gridTemplateAreas: {
+            md: `
+              "H H H H H H"
+              "H H H H H H"
+              "M M M M r r"
+              "M M M M r r"
+              "M M M M b b"
+              "M M M M b b"
+              "g g g g g g"
+              "c c d d e e"
+          `,
+          xs: `
+              "H H H H H H"
+              "H H H H H H"
+              "M M M M M M"
+              "M M M M M M"
+              "M M M M M M"
+              "M M M M M M"
+              "g g g g g g"
+              "a a a b b b"
+              "e e e e e e"
+              "c c c d d d"
+          `
+          },
+        }}>
+        <Box sx={{ gridArea: 'H' }}><RecordingControls /></Box>
+        <RecipePicker />
+        <Box sx={{ gridArea: 'M' }}><ImageView streamId='main' boxStreamId='detic:image' confidence={0.5} debugMode={false}/></Box>
+        <Box sx={{ gridArea: 'b' }}>
+          <StreamView utf streamId={'clip:action:steps'}>
+            {data => (<Box pt={4}><ClipOutputsLiveView data={JSON.parse(data)} /></Box>)}
+          </StreamView>
+        </Box>
+        <Box sx={{ gridArea: 'r' }}>
+          <StreamView utf streamId={'reasoning'} showStreamId={true} showTime={false}>
+            {data => (<Box><ReasoningOutputsView data={JSON.parse(data)} /></Box>)}
+          </StreamView>
+        </Box>
+      </Box>
+    </Box>
+  )
 }
 
 // looks at the token and will either ask for login or go to app - (can replace with react router)
 const MainVideo = () => {
   const { token } = useToken();
-  return <Box display='flex' justifyContent='center' alignItems='center' height='100%'>
-    <Paper>
-      {token ? <LiveVideo /> : <Login username={TEST_USER} password={TEST_PASS} />}
-    </Paper>
-  </Box>
+  return token ? <LiveVideo /> : <Login username={TEST_USER} password={TEST_PASS} />
 }
 
-export default MainVideo;
+export default LiveVideo;
