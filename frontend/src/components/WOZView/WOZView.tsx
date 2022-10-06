@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, Box, Button, Paper, Typography, Chip } from '@mui/material';
 import { useToken } from '../../api/TokenContext';
 import { Login } from '../RecipesView';
@@ -27,14 +27,16 @@ interface RecipeData {
 
 function WOZView() {
 
-  const { token, fetchAuth } = useToken();
-  const {response: recipeData} = useGetRecipeInfo(token, fetchAuth);
-  // console.log(recipeData);
+  const [ recipeData, setRecipeData ] = useState<RecipeData>();
+
 
   const RecipePicker = () => {
     const { token, fetchAuth } = useToken();
     const { response: recipes } = useGetRecipes(token, fetchAuth);
     const { response: recipe, setRecipe, setting } = useCurrentRecipe();
+    const index = recipes && recipes.findIndex(item => item._id === recipe);
+    setRecipeData(recipes[index]);
+
     return (
       <FormControl sx={{ m: 1, minWidth: 340 }} size="small">
         <InputLabel id="recipe-selector-label">Select Recipe</InputLabel>
@@ -112,12 +114,6 @@ function WOZView() {
       </Box>
     </Box>
   )
-}
-
-// looks at the token and will either ask for login or go to app - (can replace with react router)
-const MainVideo = () => {
-  const { token } = useToken();
-  return token ? <WOZView /> : <Login username={TEST_USER} password={TEST_PASS} />
 }
 
 export default WOZView;
