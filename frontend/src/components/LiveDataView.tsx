@@ -4,13 +4,13 @@ import { useToken } from '../api/TokenContext';
 import { Login } from './RecipesView';
 import { TEST_PASS, TEST_USER } from '../config';
 
+
 import LoadingButton from '@mui/lab/LoadingButton';
 import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
 import StopCircleIcon from '@mui/icons-material/StopCircle';
 import { useRecordingControls } from '../api/rest';
-import { RequestStatus, responseServer } from '../api/types';
+
 import { StreamView } from './StreamDataView/LiveStream';
-import { DeticHandsChart } from './StreamDataView/LiveCharts';
 import { ImageView } from './StreamDataView/ImageView';
 import { ClipOutputsLiveView } from './StreamDataView/PerceptionOutputsView';
 import { ReasoningOutputsView } from './StreamDataView/ReasoningOutputsView';
@@ -18,7 +18,12 @@ import { ReasoningOutputsView } from './StreamDataView/ReasoningOutputsView';
 
 const RecordingControls = () => {
   const { recordingId, recordingData, recordingDataError, startError, stopError, finishedRecording, startRecording, stopRecording } = useRecordingControls();
-  
+  const formatRecording = (recordingData) => recordingData?.name && <>
+    Recording name: {recordingData.name}<br/>
+    Duration: {recordingData.duration} <br/>
+    First Entry Time: {recordingData["first-entry-time"]} <br/>
+    Last Entry Time: {recordingData["last-entry-time"]}
+  </>;
   return (
     <Box>
       <Box sx={{ '& > button': { mt: 2, mb: 2, mr: 2 } }}>
@@ -42,20 +47,15 @@ const RecordingControls = () => {
         >
           Stop Recording
         </Button>
-        {startError && <Alert severity="error">We couldn't connect with the server. Please try again!<br/><pre>{''+startError}</pre></Alert>}
-        {stopError && <Alert severity="error">Server Connection Issues: Please click again on the 'Stop Recording' button to finish your recording!<br/><pre>{''+stopError}</pre></Alert>}
-        {recordingDataError && <Alert severity="error">Error retrieving recording data: {''+recordingDataError}</Alert>}
-        {recordingData && <Alert severity="success">SUCCESSFUL server connection. The video is being recorded.<br/>{recordingData?.name && <>
-          Recording: <b>{recordingData.name}</b> - &nbsp;
-          <b>started:</b> {parseTime(recordingData["first-entry-time"])} &nbsp;
-        </>}</Alert>}
-        {finishedRecording && <Alert severity="success">Your recording was saved.<br/>{finishedRecording?.name && <>
-          Recording: <b>{finishedRecording.name}</b> -  &nbsp;
-          <b>started:</b> {parseTime(finishedRecording["first-entry-time"])} &nbsp;
-          <b>ended:</b> {parseTime(finishedRecording["last-entry-time"])} &nbsp;
-        </>}</Alert>}
+        <Box style={{margin: 22}}>
+          {startError && <Alert severity="error">We couldn't connect with the server. Please try again!<br/><pre>{startError.response.data}</pre></Alert>}
+          {stopError && <Alert severity="error">Server Connection Issues: Please click again on the 'Stop Recording' button to finish your recording!<br/><pre>{stopError.response.data}</pre></Alert>}
+          {recordingDataError && <Alert severity="error">Error retrieving recording data: {recordingDataError}</Alert>}
+          {recordingData && <Alert severity="success">SUCCESSFUL server connection. The video is being recorded.<br/><br/>{formatRecording(recordingData)}</Alert>}
+          {finishedRecording && <Alert severity="success">Your recording was saved.<br/><br/>{formatRecording(finishedRecording)}</Alert>}
+        </Box>
       </Box>
-    </Box>
+    </Box>  
   )
 }
 const parseTime = (tstr) => new Date(Date.parse(tstr + ' GMT')).toLocaleTimeString()

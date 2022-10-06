@@ -56,6 +56,37 @@ export function useGetRecipes(token, fetchAuth) {
     };
 }
 
+/* fetch current recipe info */
+export function useCurrentRecipe() {
+    const { fetchAuth } = useToken();
+    // get the authenticated fetch function
+    const fetcher = (url: string) => fetchAuth && fetchAuth(url).then((res) => res.json());
+    // query the streamings endpoint (only if we have a token)
+    const uid: Key = fetchAuth && `${API_URL}/sessions/recipe`;
+    const { data: response, error, mutate } = useSWR(uid, fetcher);
+
+    const [ setting, setSetting ] = useState(false);
+
+    return {
+        data: response && response.data,
+        response,
+        error,
+        setting,
+        setRecipe: (recipe) => {
+            setSetting(true)
+            fetchAuth && (
+                recipe ? 
+                fetchAuth(`${API_URL}/sessions/recipe/${recipe}`, {method: 'PUT'})
+                    .then(r=>{ setSetting(false); mutate() })
+                    .catch(e=>setSetting(e))
+                : 
+                fetchAuth(`${API_URL}/sessions/recipe`, {method: 'DELETE'})
+                    .then(r=>{ setSetting(false); mutate() })
+                    .catch(e=>setSetting(e))
+            )
+        }
+    }
+}
 
 /* fetch one recipe */
 export function useGetRecipeInfo(token, fetchAuth) {

@@ -50,7 +50,7 @@ export const ReasoningOutputsWOZView = ({ data, recipe }) => {
     const step_id_previous = (step_id -1).toString();
     const step_id_next = (step_id +1).toString();
     return <Box display='flex' flexDirection='column' pt={0} mr={2} ml={2}>
-      <span><b>RECIPE STEPS</b></span>
+      <span style={{paddingBottom: 7}} ><b>{recipe.name} Recipe Steps</b></span>
       <span><b>Current Step: </b>{current_step} - <b>  Status:</b> {step_status}</span>
       {recipe && recipe.instructions && <ListSteps list={recipe.instructions} completedStep={step_id}/>}
       <Box>
