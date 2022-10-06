@@ -4,18 +4,11 @@ import { useToken } from '../api/TokenContext';
 import { Login } from './RecipesView';
 import { TEST_PASS, TEST_USER } from '../config';
 
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 import LoadingButton from '@mui/lab/LoadingButton';
 import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
 import StopCircleIcon from '@mui/icons-material/StopCircle';
 import { useRecordingControls } from '../api/rest';
-
-import { useGetRecipes } from '../api/rest';
-import { useCurrentRecipe } from '../api/rest';
 
 import { StreamView } from './StreamDataView/LiveStream';
 import { ImageView } from './StreamDataView/ImageView';
@@ -65,29 +58,7 @@ const RecordingControls = () => {
     </Box>  
   )
 }
-
-const RecipePicker = () => {
-  const { token, fetchAuth } = useToken();
-  const { response: recipes } = useGetRecipes(token, fetchAuth);
-  const { response: recipe, setRecipe, setting } = useCurrentRecipe();
-  return (
-    <FormControl sx={{ m: 1, minWidth: 340 }} size="small">
-      <InputLabel id="recipe-selector-label">Select Recipe</InputLabel>
-      {setting === true ? 'Setting...'  : <Select
-        labelId="recipe-selector-label"
-        id="recipe-selector"
-        value={recipe||''}
-        label="Select Recipe"
-        onChange={e => setRecipe(e.target.value)}
-      >
-      {recipes && recipes.map(r => (
-        <MenuItem key={r.name} value={r._id}>{r.name}</MenuItem>
-      ))}
-      <MenuItem value={''}>--</MenuItem>
-      </Select>}
-    </FormControl>
-  )
-}
+const parseTime = (tstr) => new Date(Date.parse(tstr + ' GMT')).toLocaleTimeString()
 
 function LiveVideo() {
   return (
@@ -124,7 +95,6 @@ function LiveVideo() {
           },
         }}>
         <Box sx={{ gridArea: 'H' }}><RecordingControls /></Box>
-        <RecipePicker />
         <Box sx={{ gridArea: 'M' }}><ImageView streamId='main' boxStreamId='detic:image' confidence={0.5} debugMode={false}/></Box>
         <Box sx={{ gridArea: 'b' }}>
           <StreamView utf streamId={'clip:action:steps'}>

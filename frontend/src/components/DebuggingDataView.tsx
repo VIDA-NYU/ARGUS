@@ -1,64 +1,10 @@
 import React, { useEffect } from 'react';
 import { Alert, Box, Button, Paper, Typography, Chip } from '@mui/material';
-import { useToken } from '../api/TokenContext';
-import { Login } from './RecipesView';
-import { TEST_PASS, TEST_USER } from '../config';
-
-import LoadingButton from '@mui/lab/LoadingButton';
-import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
-import StopCircleIcon from '@mui/icons-material/StopCircle';
-import { useRecordingControls } from '../api/rest';
-import { RequestStatus, responseServer } from '../api/types';
 import { StreamView } from './StreamDataView/LiveStream';
 import { DeticHandsChart } from './StreamDataView/LiveCharts';
 import { ImageView } from './StreamDataView/ImageView';
 import { ClipOutputsView } from './StreamDataView/PerceptionOutputsView';
 import { ReasoningOutputsView } from './StreamDataView/ReasoningOutputsView';
-
-
-const RecordingControls = () => {
-  const { recordingId, recordingData, recordingDataError, startError, stopError, finishedRecording, startRecording, stopRecording } = useRecordingControls();
-  
-  return (
-    <Box>
-      <Box sx={{ '& > button': { m: 1 } }}>
-        <LoadingButton
-          startIcon={<VideocamOutlinedIcon />}
-          size="small"
-          onClick={() => startRecording()}
-          loading={!!recordingId}
-          loadingIndicator="Recording…"
-          variant="contained"
-        >
-          Start Recordings
-        </LoadingButton>
-        <Button
-          startIcon={<StopCircleIcon />}
-          size="small"
-          color="primary"
-          onClick={() => stopRecording()}
-          variant="contained"
-          disabled={!recordingId}
-        >
-          Stop Recording
-        </Button>
-        {startError && <Alert severity="error">We couldn't connect with the server. Please try again!<br/><pre>{''+startError}</pre></Alert>}
-        {stopError && <Alert severity="error">Server Connection Issues: Please click again on the 'Stop Recording' button to finish your recording!<br/><pre>{''+stopError}</pre></Alert>}
-        {recordingDataError && <Alert severity="error">Error retrieving recording data: {''+recordingDataError}</Alert>}
-        {recordingData && <Alert severity="success">SUCCESSFUL server connection. The video is being recorded.<br/>{recordingData?.name && <>
-          Recording: <b>{recordingData.name}</b> - &nbsp;
-          <b>started:</b> {parseTime(recordingData["first-entry-time"])} &nbsp;
-        </>}</Alert>}
-        {finishedRecording && <Alert severity="success">Your recording was saved.<br/>{finishedRecording?.name && <>
-          Recording: <b>{finishedRecording.name}</b> -  &nbsp;
-          <b>started:</b> {parseTime(finishedRecording["first-entry-time"])} &nbsp;
-          <b>ended:</b> {parseTime(finishedRecording["last-entry-time"])} &nbsp;
-        </>}</Alert>}
-      </Box>
-    </Box>
-  )
-}
-const parseTime = (tstr) => new Date(Date.parse(tstr + ' GMT')).toLocaleTimeString()
 
 function DebuggingDataView() {
   return (
@@ -92,7 +38,6 @@ function DebuggingDataView() {
           `
           },
         }}>
-        {/* <Box sx={{ gridArea: 'H' }}><RecordingControls /></Box> */}
         <Box sx={{ gridArea: 'M' }}><ImageView streamId='main' boxStreamId='detic:image' confidence={0.5} debugMode={true}/></Box>
         <Box sx={{ gridArea: 'a' }}>
           <StreamView utf streamId={'egovlp:action:steps'}>
@@ -119,12 +64,6 @@ function DebuggingDataView() {
       </Box>
     </Box>
   )
-}
-
-// looks at the token and will either ask for login or go to app - (can replace with react router)
-const MainVideo = () => {
-  const { token } = useToken();
-  return token ? <DebuggingDataView /> : <Login username={TEST_USER} password={TEST_PASS} />
 }
 
 export default DebuggingDataView;

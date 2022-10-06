@@ -3,10 +3,15 @@ import { Alert, Box, Button, Paper, Typography, Chip } from '@mui/material';
 import { useToken } from '../../api/TokenContext';
 import { Login } from '../RecipesView';
 import { TEST_PASS, TEST_USER } from '../../config';
-import { useGetRecipeInfo} from '../../api/rest';
+import { useCurrentRecipe, useGetRecipeInfo, useGetRecipes} from '../../api/rest';
 import { StreamView } from '../StreamDataView/LiveStream';
 import { ImageView } from '../StreamDataView/ImageView';
 import { ReasoningOutputsWOZView } from '../StreamDataView/ReasoningOutputsView';
+
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 interface RecipeData {
   _id: string,
@@ -26,6 +31,28 @@ function WOZView() {
   const {response: recipeData} = useGetRecipeInfo(token, fetchAuth);
   // console.log(recipeData);
 
+  const RecipePicker = () => {
+    const { token, fetchAuth } = useToken();
+    const { response: recipes } = useGetRecipes(token, fetchAuth);
+    const { response: recipe, setRecipe, setting } = useCurrentRecipe();
+    return (
+      <FormControl sx={{ m: 1, minWidth: 340 }} size="small">
+        <InputLabel id="recipe-selector-label">Select Recipe</InputLabel>
+        {setting === true ? 'Setting...'  : <Select
+          labelId="recipe-selector-label"
+          id="recipe-selector"
+          value={recipe||''}
+          label="Select Recipe"
+          onChange={e => setRecipe(e.target.value)}
+        >
+        {recipes && recipes.map(r => (
+          <MenuItem key={r.name} value={r._id}>{r.name}</MenuItem>
+        ))}
+        <MenuItem value={''}>--</MenuItem>
+        </Select>}
+      </FormControl>
+    )
+  }
   return (
     <Box>
       <Box
@@ -62,6 +89,7 @@ function WOZView() {
         <Box sx={{ gridArea: 'H' }}>
           <Box sx={{ '& > button': { mt: 2, mb: 2, mr: 2 } }}>
             <b>RECIPE: {recipeData && recipeData.name}</b>
+            <RecipePicker />
           </Box>
         </Box>
         <Box sx={{ gridArea: 'r' }}>
