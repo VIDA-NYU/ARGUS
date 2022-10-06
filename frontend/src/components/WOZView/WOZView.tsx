@@ -90,7 +90,6 @@ function WOZView() {
         }}>
         <Box sx={{ gridArea: 'H' }}>
           <Box sx={{ '& > button': { mt: 2, mb: 2, mr: 2 } }}>
-            <b>RECIPE: {recipeData && recipeData.name}</b>
             <RecipePicker />
           </Box>
         </Box>
