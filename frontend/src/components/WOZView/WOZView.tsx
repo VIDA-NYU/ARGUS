@@ -35,7 +35,7 @@ function WOZView() {
     const { response: recipes } = useGetRecipes(token, fetchAuth);
     const { response: recipe, setRecipe, setting } = useCurrentRecipe();
     const index = recipes && recipes.findIndex(item => item._id === recipe);
-    setRecipeData(recipes[index]);
+    if (recipes) { setRecipeData(recipes[index]);}
 
     return (
       <FormControl sx={{ m: 1, minWidth: 340 }} size="small">
