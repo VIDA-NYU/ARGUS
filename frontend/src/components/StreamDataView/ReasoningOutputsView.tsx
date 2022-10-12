@@ -7,6 +7,7 @@ import { useRecordingControls, useStreamData } from '../../api/rest';
 import DoneIcon from '@mui/icons-material/Done';
 import RotateLeftIcon from '@mui/icons-material/RotateLeft';
 import { blue, green } from '@mui/material/colors';
+import WozStatusComp from "../WOZView/woz-status";
 import { StreamView } from './LiveStream';
 import RestaurantOutlinedIcon from '@mui/icons-material/RestaurantOutlined';
 import LunchDiningOutlinedIcon from '@mui/icons-material/LunchDiningOutlined';
@@ -32,7 +33,7 @@ interface RenderedObjLabel {
   total: number
 }
 
-let entities: Entities [] = []; 
+let entities: Entities [] = [];
 let flag = true;
 export const ReasoningOutputsView = ({ data }) => {
     const { step_id, step_status, step_description, error_status, error_description } = data || {};
@@ -72,10 +73,10 @@ const EntitiesView = ({data, step_id}: {data: ObjLabel [], step_id:number}) => {
   });
   var detectedObjects = Object.keys(listLabels).length>0 && Object.keys(listLabels).map((element:string, index: number) => {
     var label= element + ":" + listLabels[element];
-    return <Chip label={label} size="small" /> 
+    return <Chip label={label} size="small" />
     });
   let current_entities = (entities.length > 0 && step_id !== undefined) ? entities[step_id].step_entities.ingredients.concat(entities[step_id].step_entities.tools)  : [];
-  
+
   var targetObjects = current_entities.length>0 && current_entities.map((element, index) => {
     var iconType = index < entities[step_id].step_entities.ingredients.length ? <LunchDiningOutlinedIcon /> : <RestaurantOutlinedIcon />;
     return <Chip icon={iconType} label={element} size="small" color={Object.keys(listLabels).includes(element) ? "success" : "default"} />;
