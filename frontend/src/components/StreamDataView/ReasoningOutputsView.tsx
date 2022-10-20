@@ -109,7 +109,10 @@ const ListSteps = ({list, completedStep}: {list: string [], completedStep: numbe
       </ol>
   )
 }
-export const ReasoningOutputsWOZView = ({ data, recipe }) => {
+export const ReasoningOutputsWOZView = ({ data, recipe, reasoningFrameData,
+                                            egovlpActionFrameData, clipActionFrameData,
+                                            worldFrameData
+                                        }) => {
     const { step_id, step_status, step_description, error_status, error_description } = data || {};
     // let step_id = 0;
     const current_step = step_id + 1;
@@ -120,7 +123,17 @@ export const ReasoningOutputsWOZView = ({ data, recipe }) => {
       <span style={{paddingBottom: 7}} ><b>{recipe && recipe.name} Recipe Steps</b></span>
       <span><b>Current Step: </b>{current_step} - <b>  Status:</b> {step_status}</span>
       {recipe && recipe.instructions && <ListSteps list={recipe.instructions} completedStep={step_id}/>}
-      <Box>
+      {/*<span><b>RECIPE STEPS</b></span>*/}
+      {/*<span><b>Current Step: </b>{current_step} - <b>  Status:</b> {step_status}</span>*/}
+        {recipe && <WozStatusComp
+            worldFrameData={worldFrameData}
+            egovlpActionFrameData={egovlpActionFrameData}
+            clipActionFrameData={clipActionFrameData}
+            reasoningFrameData={reasoningFrameData}
+            recipe={recipe} currentStep={2}></WozStatusComp>}
+        {recipe && recipe.instructions && <ListSteps list={recipe.instructions} completedStep={step_id}/>}
+
+        <Box>
         <Button onClick={() => setStep({ step_id_s: step_id_previous})} variant="contained" style={{margin: 6}}><ArrowBackIcon /> Previous Step</Button>
         <Button  onClick={() => setStep({ step_id_s: step_id_next})} variant="contained"><ArrowForwardIcon />Next Step</Button>
       </Box> 
