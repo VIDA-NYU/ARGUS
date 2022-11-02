@@ -30,7 +30,7 @@ export const DeticHandsChart = ({ data, maxLen=100, height=100 }) => {
                 </LineChart>
                 </ResponsiveContainer>
                 </Grid>
-                <Grid item style={{marginTop:'-21px', marginLeft:'825px'}}>
+                <Grid item style={{marginTop:'-21px', marginLeft:'20%'}}>
                 <span>Hand Detection Confidence over the Time</span>
                 </Grid>
             </Grid>

@@ -13,12 +13,23 @@ export const ReasoningOutputsView = ({ data }) => {
     const { setStep } = useRecordingControls();
     const current_step = step_id + 1; // Reasoning handles indexes, so we need to add 1 to communicate the user they are in the first (1) step.
     return <Box display='flex' flexDirection='column' pt={5} mr={2} ml={2}>
-      <span><b>Current Step:</b>{current_step}</span>
+      <span><b>Current Step:</b> {current_step}</span>
       {/* <span><b>Current Step:</b>{step_id || ' No active step.'}</span> */}
       <span><b>Description:</b> {step_description || 'No active step.'}</span>
       <span><b>Status:</b> {step_status}</span>
       <br/>
-      <span><b>Errors:</b> {error_description || 'No errors.'}</span>
+      <span><b>Errors:</b> {error_description || 'No errors.'}</span><br/>
+      <span><b>Entities:</b></span>
+      <Box sx={{ gridArea: 'e', height: 50,}}>
+        <StreamView utf streamId={DETIC_IMAGE_STREAM} showStreamId={false} showTime={false}>
+          {data => (<Box><EntitiesView data={JSON.parse(data)} step_id={step_id} /></Box>)}
+        </StreamView>
+      </Box>
+      <Box sx={{ gridArea: 'z', height: 0,}}>
+        <StreamView utf streamId={REASONING_ENTITIES_STREAM} showStreamId={false} showTime={false} showStreamStatus={false}>
+          {(data ) => { if(data){ entities = JSON.parse(data); flag = false;}}}
+        </StreamView>
+      </Box>
     </Box>
 
 }

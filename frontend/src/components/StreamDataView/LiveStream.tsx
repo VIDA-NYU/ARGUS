@@ -35,20 +35,22 @@ overflow: auto;
 font-size: 0.7em;
 `
 
-export const StreamInfo = ({ sid, time, data, readyState, children }) => {
+export const StreamInfo = ({ sid, time, displayStatus=true, data, readyState, children }) => {
     const openNoData = readyState == ReadyState.OPEN && !data;
     return <Box sx={{ position: 'relative', maxWidth: '100%' }}>
         <Box display='flex' sx={{ gap: '0.5em', zIndex: 1, position: 'absolute' }}>
             {sid && <Chip label={sid} size="small" color='primary' />}
             {time && <Chip label={new Date(time).toLocaleString()} size="small" />}
         </Box>
-    <Badge color={openNoData ? 'secondary' : STATUS_COLOR[readyState]} badgeContent={
+        {
+        displayStatus && <Badge color={openNoData ? 'secondary' : STATUS_COLOR[readyState]} badgeContent={
         <Tooltip title={openNoData ? 'Open - no data' : STATUS_MSG[readyState]} placement='top'><span style={{opacity: 0}}>0</span></Tooltip>
-    } sx={{display: 'block', '& .MuiBadge-badge': {height: '10px', minWidth: '10px'}}}>
-        <Box>
-        {children}
-        </Box>
-    </Badge>
+        } sx={{display: 'block', '& .MuiBadge-badge': {height: '10px', minWidth: '10px'}}}>
+            <Box>
+            {children}
+            </Box>
+        </Badge>
+        }
 </Box>
 }
 
@@ -56,11 +58,11 @@ const FORMATTERS = {
     prettyJSON,
 }
 
-export const StreamView = ({ streamId, parse=null, children=null, showStreamId=true, showTime=true, ...rest }) => {
+export const StreamView = ({ streamId, parse=null, children=null, showStreamId=true, showTime=true, showStreamStatus=true, ...rest }) => {
     parse = (typeof parse === 'string') ? FORMATTERS[parse] : parse;
     const { sid, time, data, readyState } = useStreamData({ streamId, parse, ...rest })
     return (
-        <StreamInfo sid={showStreamId ? sid||streamId : null} time={showTime ? time : null} data={data} readyState={readyState}>
+        <StreamInfo sid={showStreamId ? sid||streamId : null} time={showTime ? time : null} displayStatus={showStreamStatus} data={data} readyState={readyState}>
             {children ? children(data, time, sid) : <CodeBlock>{data}</CodeBlock>}
         </StreamInfo>
     )
