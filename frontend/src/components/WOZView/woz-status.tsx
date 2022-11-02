@@ -25,6 +25,7 @@ import ErrorIcon from '@mui/icons-material/Error';
 import NextPlanRoundedIcon from '@mui/icons-material/NextPlanRounded';
 import AnnotationControlComp from "./annotation-comps/annotation-control-comp";
 import {AnnotationContext} from "./annotation/provider";
+import ObjectPanelContainer from "./object-comps/object-panel-container";
 
 interface WozStatusCompStatus {
     recipe: Recipe,
@@ -172,6 +173,13 @@ export default function WozStatusComp({
                     ></AnnotationControlComp>
                 )}
             </AnnotationContext.Consumer>
+
+            { recipe && <AnnotationContext.Consumer>
+                {({}) => (
+                    <ObjectPanelContainer recipe={recipe} detectedObjects={worldFrameData ? worldFrameData.data.map(d => d.label) : []}/>
+                )}
+            </AnnotationContext.Consumer>}
+
             <Card>
                 <CardHeader title={"Reasoning"}>
 
