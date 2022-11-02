@@ -49,11 +49,6 @@ function DebuggingDataView() {
             {data => (<Box pt={4}><ClipOutputsView data={JSON.parse(data)} /></Box>)}
           </StreamView>
         </Box>
-        <Box sx={{ gridArea: 'b' }}>
-          <StreamView utf streamId={CLIP_ACTION_STEPS_STREAM}>
-            {data => (<Box pt={4}><ClipOutputsView data={JSON.parse(data)} /></Box>)}
-          </StreamView>
-        </Box>
         <Box sx={{ gridArea: 'g' }}>
         <StreamView utf streamId={DETIC_HANDS_STREAM} showStreamId={false} showTime={false}>
             {(data, time) => <DeticHandsChart data={{ ...JSON.parse(data), time }} />}
