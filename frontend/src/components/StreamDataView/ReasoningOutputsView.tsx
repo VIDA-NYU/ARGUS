@@ -152,8 +152,8 @@ export const ReasoningOutputsWOZView = ({
             clipActionFrameData={clipActionFrameData}
             reasoningFrameData={reasoningFrameData}
             recipe={recipe} currentStep={2}></WozStatusComp>}
-        {recipe && recipe.instructions &&
-            <RecipeTextComp recipeInstructions={recipe.instructions} currentStep={machinePredictedStep}/>}
+        {/*{recipe && recipe.instructions &&*/}
+        {/*    <RecipeTextComp recipeInstructions={recipe.instructions} currentStep={machinePredictedStep}/>}*/}
         {/*{recipe && recipe.instructions && <ListSteps list={recipe.instructions} completedStep={step_id}/>}*/}
         <AnnotationContext.Consumer>
             {

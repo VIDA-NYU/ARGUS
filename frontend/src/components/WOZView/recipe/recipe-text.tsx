@@ -26,7 +26,8 @@ export default function RecipeTextComp({recipeInstructions, currentStep}: Recipe
                     aria-controls="panel1a-content"
                     id="panel1a-header"
                 >
-                    <Typography>Step {currentStep}: {recipeInstructions[currentStep]}</Typography>
+                    <Typography variant={"body1"}> All Steps</Typography>
+                    {/*<Typography>Step {currentStep}: {recipeInstructions[currentStep]}</Typography>*/}
                 </AccordionSummary>
                 <AccordionDetails>
                     <List>

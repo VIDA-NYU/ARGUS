@@ -9,6 +9,8 @@ import {addStepToAnnotation, computeCurrentStep, computeCurrentStepSpentTime} fr
 import {useAnnotationContext} from "../annotation/provider";
 import {AnnotationData} from "../annotation/types";
 import RecipeProgressComp from "./recipe-progress";
+import RecipeTextComp from "../recipe/recipe-text";
+import React from "react";
 
 interface AnnotationControlProps {
     mode: "auto" | "manual",
@@ -20,13 +22,16 @@ interface AnnotationControlProps {
     errorStatus: boolean
 };
 
-const CardContentContainer = styled("div")({
+const CardContentAnnotationRow = styled("div")({
     display: "flex",
     flexDirection: "row",
     width: "100%",
-    alignItems: "stretch"
+    alignItems: "stretch",
 })
 
+const Container = styled("div")({
+    marginBottom: 10
+})
 
 function computeStepProgressValueByTime(progressTime){
     return 1 - 1 / (progressTime + 1)
@@ -62,13 +67,19 @@ export default function AnnotationControlComp({mode, recipe, state,
     let stepProgressValue = computeStepProgressValueByTime(currentStepSpentTime);
 
     return (
-          <Card
-            sx={{
-                marginBottom: 2
-            }}
+          <Container
           >
-              <CardContent>
-                  <CardContentContainer>
+
+            <Card
+                sx={{marginBottom: 1}}
+            >
+
+              <CardContent
+                sx={{paddingRight: 0,
+                    // paddingBottom: 0, paddingTop: 0, marginBottom: 0
+              }}
+              >
+                  <CardContentAnnotationRow>
                       <AnnotationRecipeStepList
                           currentTime={currentTime}
                           annotationData={annotationData}
@@ -86,8 +97,13 @@ export default function AnnotationControlComp({mode, recipe, state,
                         numberSteps={recipe.instructions.length}
                         currentStep={currentStep}
                       />
-                  </CardContentContainer>
+                  </CardContentAnnotationRow>
+
               </CardContent>
-          </Card>
+
+                </Card>
+                  {recipe && <RecipeTextComp recipeInstructions={recipe.instructions} currentStep={currentStep}/>}
+
+          </Container>
       )
 }

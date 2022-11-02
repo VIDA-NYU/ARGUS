@@ -25,6 +25,7 @@ export default function RecipeProgressComp({currentStep, numberSteps}: RecipePro
                     width={barWidth}
                     height={"100%"}
                     fill={blueGrey[100]}
+                    rx={5}
                 >
 
                 </rect>
@@ -34,6 +35,7 @@ export default function RecipeProgressComp({currentStep, numberSteps}: RecipePro
                     width={barWidth}
                     height={`${Math.floor(progressValue * 100)}%`}
                     fill={blueGrey[500]}
+                    rx={5}
                 >
                 </rect>
             </g>
