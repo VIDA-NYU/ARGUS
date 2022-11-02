@@ -47,6 +47,7 @@ export enum streamingType {
     MIC = 'mic0', // microphone
     EYE = 'eye', // eye
     HAND = 'hand', // hand
+    POINTCLOUD = 'pointcloud'
 }
 
 export enum RequestStatus {

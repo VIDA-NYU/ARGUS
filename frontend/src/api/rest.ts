@@ -292,6 +292,13 @@ export async function getHandData (recordingName) {
     return response;
 }
 
+export async function getPointCloudData(recordingName) {
+    // const url ="https://api.ptg.poly.edu/recordings/static/coffee-test-1/pointcloud.json";
+    const url = API_URL +  RECORDINGS_STATIC_PATH + `${recordingName}/pointcloud.json`;
+    const response = await fetch(url).then((res) => res.json());
+    return response;
+}
+
 export async function getAllRecordings(token, fetchAuth) {
     // query the streamings endpoint (only if we have a token)
     const uid: Key = token && `${API_URL}/recordings`;
