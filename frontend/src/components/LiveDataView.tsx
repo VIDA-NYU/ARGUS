@@ -96,25 +96,9 @@ function LiveVideo() {
         }}>
         <Box sx={{ gridArea: 'H' }}><RecordingControls /></Box>
         <Box sx={{ gridArea: 'M' }}><ImageView streamId={MAIN_STREAM} boxStreamId={DETIC_IMAGE_STREAM} confidence={0.5} debugMode={false}/></Box>
-        <Box sx={{ gridArea: 'b' }}>
-          <StreamView utf streamId={CLIP_ACTION_STEPS_STREAM}>
-            {data => (<Box pt={4}><ClipOutputsLiveView data={JSON.parse(data)} /></Box>)}
-          </StreamView>
-        </Box>
-        <Box sx={{ gridArea: 'r' }}>
-          <StreamView utf streamId={REASONING_CHECK_STREAM} showStreamId={true} showTime={false}>
-            {data => (<Box><ReasoningOutputsView data={JSON.parse(data)} /></Box>)}
-          </StreamView>
-        </Box>
       </Box>
     </Box>
   )
-}
-
-// looks at the token and will either ask for login or go to app - (can replace with react router)
-const MainVideo = () => {
-  const { token } = useToken();
-  return token ? <LiveVideo /> : <Login username={TEST_USER} password={TEST_PASS} />
 }
 
 export default LiveVideo;
