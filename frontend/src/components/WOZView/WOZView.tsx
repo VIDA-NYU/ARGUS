@@ -21,6 +21,7 @@ import {getActionData, useGetRecordingJson} from "./utils/rest";
 import {MemoryReplayView} from "../memory-view/memory-replay-view";
 import TemporalOverview from "./overview/temporal-overview";
 import Card from "@mui/material/Card";
+import {AnnotationProvider} from "./annotation/provider";
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -204,17 +205,18 @@ function WOZView() {
         setState({...state, seeking: false});
     };
 
-
     return (
-    <Box>
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(6, minmax(0, 1fr))',
-          gap: 1,
-          gridTemplateRows: 'auto',
-          gridTemplateAreas: {
-            md: `
+        <AnnotationProvider>
+
+        <Box>
+            <Box
+                sx={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(6, minmax(0, 1fr))',
+                    gap: 1,
+                    gridTemplateRows: 'auto',
+                    gridTemplateAreas: {
+                        md: `
               "H H H H H H"
               "H H H H H H"
               "M M M r r r"
@@ -224,7 +226,7 @@ function WOZView() {
               "g g g g c c"
               "g g g g c c"
           `,
-          xs: `
+                        xs: `
               "H H H H H H"
               "H H H H H H"
               "M M M M M M"
@@ -245,12 +247,13 @@ function WOZView() {
         </Box>
         <Box sx={{ gridArea: 'r' }}>
           <StreamView utf streamId={REASONING_CHECK_STREAM} showStreamId={false} showTime={false}>
-            {data => (<Box><ReasoningOutputsWOZView
+            {data => (<Box>{reasoningFrameData && <ReasoningOutputsWOZView
                 clipActionFrameData={clipActionFrameData}
                 egovlpActionFrameData={egovlpActionFrameData}
                 reasoningFrameData={reasoningFrameData}
                 worldFrameData={boundingBoxFrameData}
-                recipe={recipeData} data={JSON.parse(data)} /></Box>)}
+                state={state}
+                recipe={recipeData} data={JSON.parse(data)} />}</Box>)}
           </StreamView>
         </Box>
         <Box sx={{ gridArea: 'c' }}>
@@ -324,11 +327,11 @@ function WOZView() {
                     />
                 </Box>
 
-                {/*<Box sx={{gridArea: 'c'}}>*/}
-                {/*            <Card>*/}
-                {/*                <MemoryReplayView memoryFrameData={memoryFrameData} eyeFrameData={eyeFrameData}/>*/}
-                {/*            </Card>*/}
-                {/*</Box>*/}
+                <Box sx={{gridArea: 'c'}}>
+                            <Card>
+                                {/*<MemoryReplayView memoryFrameData={memoryFrameData} eyeFrameData={eyeFrameData}/>*/}
+                            </Card>
+                </Box>
                 <Box sx={{ gridArea: 'g' }}>
                     {
                         recordingData && boundingBoxData && reasoningData && clipActionData && <TemporalOverview
@@ -342,6 +345,8 @@ function WOZView() {
                 </Box>
             </Box>
         </Box>
+
+        </AnnotationProvider>
     )
 }
 

@@ -5,6 +5,7 @@ import {extractIndividualActionData, preprocessTimestampData} from "./preprocess
 import {schemeGnBu, interpolateTurbo, interpolateBuPu} from "d3-scale-chromatic";
 import {Tooltip} from "react-svg-tooltip"
 import Card from "@mui/material/Card";
+import ActionRow from "./action-row";
 
 const Container = styled(Card)({})
 
@@ -40,7 +41,6 @@ const yAxisLabelOffsetY = 6;
 const xAxisY = 300;
 
 
-
 export default function TemporalOverview({reasoningData, boundingBoxData, clipActionData, recordingMeta, state}) {
     const visRef = useRef(null);
     const xAxisRef = useRef(null);
@@ -54,9 +54,21 @@ export default function TemporalOverview({reasoningData, boundingBoxData, clipAc
 
     const reasoningCellData = preprocessTimestampData(reasoningData, recordingMeta, playedTimes);
     const humanCellData = playedTimes.map((d, i) => {
+        let stepId = 0;
+        if (i < 8) {
+            stepId = 0;
+        } else if (i < 16) {
+            stepId = 1;
+        } else if (i < 20) {
+            stepId = 2;
+        } else if (i < 25) {
+            stepId = i - 18
+        } else {
+            stepId = 7;
+        }
         return {
-            step_id: 0
-        };
+            step_id: stepId,
+        }
     })
 
     const clipActionTimedData = preprocessTimestampData(clipActionData, recordingMeta, playedTimes)
@@ -66,6 +78,7 @@ export default function TemporalOverview({reasoningData, boundingBoxData, clipAc
     const actionLabelRef1 = useRef(null);
     const actionLabelRef2 = useRef(null);
     const actionLabelRef3 = useRef(null);
+    const actionCellHeight = 5;
 
     const actionLabelRefs = [actionLabelRef0, actionLabelRef1, actionLabelRef2, actionLabelRef3];
 
@@ -77,50 +90,13 @@ export default function TemporalOverview({reasoningData, boundingBoxData, clipAc
     }, []);
 
     let renderAction = (timedData, index) => {
-        let actionRef = actionLabelRefs[index];
+        let transform = `translate(${0}, ${index * actionCellHeight * 1.2})`;
         return (
-            <g
-                transform={`translate(${0}, ${index * 30})`}
-            >
-                <text
-                    ref={actionRef}
-                    x={0}
-                    y={cellSize / 2 + yAxisLabelOffsetY}
-                > A{index}
-                </text>
-                <g
-                    transform={`translate(${yAxisLabelWidth}, 0)`}
-                >
-
-                    {
-                        playedTimes.map((playedTime, i) => {
-                            return (
-                                <g
-                                    transform={`translate(${xScale(playedTime)}, ${0})`}
-                                >
-                                    <rect
-                                        x={0}
-                                        y={0}
-                                        width={cellSize}
-                                        height={cellSize}
-                                        fill={interpolateBuPu(timedData.data[i])}
-                                    >
-                                    </rect>
-
-                                </g>
-                            )
-                        })
-                    }
-                </g>
-
-                <Tooltip triggerRef={actionRef}>
-                    <rect x={2} y={2} width={420} height={30} rx={.5} ry={.5} fill='#e3e3e3'/>
-                    <text x={10} y={25} fontSize={20} fill='black'> {timedData.label} </text>
-                </Tooltip>
-
-
-            </g>
-
+            <ActionRow transform={transform} cellSize={cellSize}
+                       yAxisLabelOffsetY={yAxisLabelOffsetY} yAxisLabelWidth={yAxisLabelWidth}
+                       index={index} xScale={xScale}
+                       actionCellHeight={actionCellHeight}
+                       playedTimes={playedTimes} timedData={timedData}></ActionRow>
         )
     }
 
@@ -128,11 +104,20 @@ export default function TemporalOverview({reasoningData, boundingBoxData, clipAc
         return (<g
             transform={`translate(0, 120)`}
         >
-            {
-                timedDataList.slice(0, 4).map((timedData, i) => {
-                    return renderAction(timedData, i);
-                })
-            }
+            <text
+                x={0}
+                y={cellSize / 2 + yAxisLabelOffsetY + actionCellHeight * 1.2 * timedDataList.length/2}
+            >
+                Actions
+            </text>
+            <g>
+                {
+                    timedDataList.map((timedData, i) => {
+                        return renderAction(timedData, i);
+                    })
+                }
+            </g>
+
         </g>)
     }
 
@@ -203,9 +188,9 @@ export default function TemporalOverview({reasoningData, boundingBoxData, clipAc
                                             >
                                             </rect>
                                             <text
-                                                x={cellSize/2 - 4}
-                                                y={cellSize/2 + yAxisLabelOffsetY}
-                                                fill={reasoningCellData[i].step_id< 4 ? "#333333": "white"}
+                                                x={cellSize / 2 - 4}
+                                                y={cellSize / 2 + yAxisLabelOffsetY}
+                                                fill={reasoningCellData[i].step_id < 4 ? "#333333" : "white"}
                                             >
                                                 {reasoningCellData[i].step_id}
                                             </text>
@@ -245,9 +230,9 @@ export default function TemporalOverview({reasoningData, boundingBoxData, clipAc
                                             >
                                             </rect>
                                             <text
-                                                x={cellSize/2 - 4}
-                                                y={cellSize/2 + yAxisLabelOffsetY}
-                                                fill={humanCellData[i].step_id < 4 ? "#333333": "white"}
+                                                x={cellSize / 2 - 4}
+                                                y={cellSize / 2 + yAxisLabelOffsetY}
+                                                fill={humanCellData[i].step_id < 4 ? "#333333" : "white"}
                                             >
                                                 {humanCellData[i].step_id}
                                             </text>

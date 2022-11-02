@@ -11,4 +11,6 @@ export const CLIP_ACTION_STEPS_STREAM = 'clip:action:steps';
 export const DETIC_HANDS_STREAM = 'detic:hands';
 export const MAIN_STREAM = 'main';
 
+export const RECORDINGS_UPLOAD_PATh = "/recordings/upload/"
+
 // export {API_URL, RECORDINGS_STATIC_PATH, TEST_USER, TEST_PASS};

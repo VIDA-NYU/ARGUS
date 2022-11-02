@@ -1,5 +1,6 @@
-import {API_URL, RECORDINGS_STATIC_PATH} from "../../../config";
+import {API_URL, RECORDINGS_STATIC_PATH, RECORDINGS_UPLOAD_PATh} from "../../../config";
 import {useState} from "react";
+import data from "bootstrap/js/src/dom/data";
 
 function getJsonUrl(recordingName, filename){
     return `https://api.ptg.poly.edu/recordings/static/${recordingName}/${filename}.json`
@@ -25,4 +26,23 @@ export function useGetRecordingJson(recordingName, filename) {
         setData(result);
     });
     return {data};
+}
+
+export function uploadAnnotation(recordingName, annotationData){
+
+    let formData = new FormData();
+    let annotationBlob = new Blob([JSON.stringify(annotationData, null, 2)], {
+        type: "application/json",
+    });
+
+    formData.append('file', annotationBlob);
+
+    const url = API_URL + RECORDINGS_UPLOAD_PATh + `${recordingName}/annotation.json`;
+    const response = fetch(url, {
+        method: "POST",
+        body: formData
+    }).then((res) => res.json()).then(res=> {
+
+    });
+    return response
 }

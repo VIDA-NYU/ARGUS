@@ -15,7 +15,7 @@ import Fab from '@mui/material/Fab';
 import CheckIcon from '@mui/icons-material/Check';
 import SaveIcon from '@mui/icons-material/Save';
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import React from "react";
+import React, {useState} from "react";
 import Checkbox from '@mui/material/Checkbox';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
@@ -149,6 +149,7 @@ export default function WozStatusComp({currentStep, recipe,
     const subSteps = [
         "pick up the knife", "pick up the towel", "wipe the knife with the paper"
     ]
+
 
     return (
         <div>
