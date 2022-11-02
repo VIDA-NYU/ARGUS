@@ -1,9 +1,10 @@
 
 
 interface AnnotationReasoningStep {
-    type: "new_step",
+    type: "new_step" | "revert" | "machine_step" | "human_go_prev" | "human_go_next",
     time: number,
-    step: number
+    step: number,
+    prev: number,
 }
 
 
@@ -17,4 +18,4 @@ interface AnnotationProviderState {
 }
 
 
-export type {AnnotationData, AnnotationProviderState}
+export type {AnnotationData, AnnotationProviderState, AnnotationReasoningStep}

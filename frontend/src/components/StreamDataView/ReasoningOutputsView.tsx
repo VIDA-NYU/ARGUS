@@ -146,6 +146,7 @@ export const ReasoningOutputsWOZView = ({
       {/*<span><b>RECIPE STEPS</b></span>*/}
       {/*<span><b>Current Step: </b>{current_step} - <b>  Status:</b> {step_status}</span>*/}
         {recipe && <WozStatusComp
+            state={state}
             worldFrameData={worldFrameData}
             egovlpActionFrameData={egovlpActionFrameData}
             clipActionFrameData={clipActionFrameData}
@@ -169,7 +170,8 @@ export const ReasoningOutputsWOZView = ({
                                     reasoningSteps: [...prevData.reasoningSteps, {
                                         type: "new_step",
                                         time: state.currentTime,
-                                        step: currentUserStep + 1
+                                        step: currentUserStep + 1,
+                                        prev: -1,
                                     }]
                                 }
                             )

@@ -5,7 +5,7 @@ import {AnnotationData, AnnotationProviderState} from "./types";
 export const AnnotationContext = createContext<AnnotationProviderState>(
     {
         annotationData: createInitialAnnotationData(),
-        setAnnotationData: () => {},
+        setAnnotationData: (newAnnotationData) => {},
     });
 
 export const useAnnotationContext = () => useContext(AnnotationContext);

@@ -34,4 +34,17 @@ function useVideoTime (currentTime, data, recordingMetaData){
     }
 }
 
-export {useVideoTime}
+function extractTimestampValue(timestampStr){
+    return parseInt(timestampStr.split('-')[0])
+}
+
+function convertTimestampToVideoTime(timestamp, videoEntryTimestamp){
+
+    let videoEntryTimestampValue = extractTimestampValue(videoEntryTimestamp);
+    let timestampValueToUse = extractTimestampValue(timestamp);
+
+    return (timestampValueToUse - videoEntryTimestampValue) / 1000;
+
+}
+
+export {useVideoTime, convertTimestampToVideoTime}

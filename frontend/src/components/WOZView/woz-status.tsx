@@ -9,7 +9,7 @@ import Slider from '@mui/material/Slider';
 import MuiInput from '@mui/material/Input';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
-import { green } from '@mui/material/colors';
+import {green} from '@mui/material/colors';
 import Button from '@mui/material/Button';
 import Fab from '@mui/material/Fab';
 import CheckIcon from '@mui/icons-material/Check';
@@ -23,6 +23,8 @@ import {ClipOutputsView} from "../StreamDataView/PerceptionOutputsView";
 import ErrorIcon from '@mui/icons-material/Error';
 
 import NextPlanRoundedIcon from '@mui/icons-material/NextPlanRounded';
+import AnnotationControlComp from "./annotation-comps/annotation-control-comp";
+import {AnnotationContext} from "./annotation/provider";
 
 interface WozStatusCompStatus {
     recipe: Recipe,
@@ -30,14 +32,15 @@ interface WozStatusCompStatus {
     reasoningFrameData: any,
     clipActionFrameData: any,
     egovlpActionFrameData: any,
-    worldFrameData: any
+    worldFrameData: any,
+    state: any
 }
 
-const ReasoningNextStepRow = styled("div")( {
-    flexDirection: "row"
+const ReasoningNextStepRow = styled("div")({
+        flexDirection: "row"
     }
 );
-const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
+const label = {inputProps: {'aria-label': 'Checkbox demo'}};
 
 const SubStepRowContainer = styled("div")(() => ({
     flexDirection: "row",
@@ -48,7 +51,7 @@ const SubStepRowContainer = styled("div")(() => ({
 const SubStepRow = ({subStepInstruction}) => {
     return (
         <SubStepRowContainer>
-            <Checkbox {...label} size={"small"} defaultChecked />
+            <Checkbox {...label} size={"small"} defaultChecked/>
             <Typography display="inline" variant={"body2"}>
                 {subStepInstruction}
             </Typography>
@@ -58,13 +61,13 @@ const SubStepRow = ({subStepInstruction}) => {
 
 const ErrorBar = ({error}) => {
     return (
-        <Chip label={error} />
+        <Chip label={error}/>
 
     )
 
 }
 
-const ErrorCompContainer = styled("div")(()=>({
+const ErrorCompContainer = styled("div")(() => ({
     flexDirection: "row",
 }))
 const ErrorComp = () => {
@@ -95,7 +98,7 @@ const ObjectListComp = ({objects}) => {
 
             <Stack alignItems={"center"} direction="row" spacing={1}>
                 <Typography display={"inline"} variant={"body1"}>
-                   Objects
+                    Objects
                 </Typography>
                 {objects.map(error => (
                     <ErrorBar error={error}></ErrorBar>
@@ -115,7 +118,7 @@ const ActionComp = ({action}) => {
 
             <Stack alignItems={"center"} direction="row" spacing={1}>
                 <Typography display={"inline"} variant={"body1"}>
-                   Action
+                    Action
                 </Typography>
                 <Typography variant={"body1"}>
                     {
@@ -129,10 +132,12 @@ const ActionComp = ({action}) => {
 
 const iconOffset = 480;
 
-export default function WozStatusComp({currentStep, recipe,
+export default function WozStatusComp({
+                                          currentStep, recipe, state,
                                           reasoningFrameData, egovlpActionFrameData,
                                           worldFrameData,
-                                          clipActionFrameData}:
+                                          clipActionFrameData
+                                      }:
                                           WozStatusCompStatus) {
 
     const buttonSx = {
@@ -150,9 +155,23 @@ export default function WozStatusComp({currentStep, recipe,
         "pick up the knife", "pick up the towel", "wipe the knife with the paper"
     ]
 
+    const handleClickNext = () => {
+
+    }
+
+    let errorStatus = reasoningFrameData && reasoningFrameData.error_status
 
     return (
         <div>
+            <AnnotationContext.Consumer>
+                {({annotationData, setAnnotationData}) => (
+                    <AnnotationControlComp mode={"auto"} recipe={recipe} state={state}
+                                           annotationData={annotationData}
+                                           setAnnotationData={setAnnotationData}
+                                           errorStatus={errorStatus}
+                    ></AnnotationControlComp>
+                )}
+            </AnnotationContext.Consumer>
             <Card>
                 <CardHeader title={"Reasoning"}>
 
@@ -160,7 +179,7 @@ export default function WozStatusComp({currentStep, recipe,
                 <CardContent>
                     <ReasoningNextStepRow>
 
-                        <Box sx={{ m: 1, position: 'relative', paddingBottom: 4 }}>
+                        <Box sx={{m: 1, position: 'relative', paddingBottom: 4}}>
                             {/*<Fab*/}
                             {/*    aria-label="save"*/}
                             {/*    color="primary"*/}
@@ -187,6 +206,7 @@ export default function WozStatusComp({currentStep, recipe,
                                     zIndex: 1,
                                 }}
                                 fontSize={"large"}
+                                onClick={handleClickNext}
                             >
 
                             </NextPlanRoundedIcon>
@@ -206,7 +226,7 @@ export default function WozStatusComp({currentStep, recipe,
                             <ErrorIcon
                                 fontSize={"large"}
                                 sx={{
-                                    color: (reasoningFrameData && reasoningFrameData.error_status)?"red": "gray",
+                                    color: (reasoningFrameData && reasoningFrameData.error_status) ? "red" : "gray",
                                     position: 'absolute',
                                     top: -11 - 3,
                                     left: 60 + iconOffset,
@@ -222,8 +242,8 @@ export default function WozStatusComp({currentStep, recipe,
                                     left: 1
                                 }}
                                 display={"inline"} variant={"body1"}>
-                                Step.{ reasoningFrameData && reasoningFrameData['step_id']}: {reasoningFrameData && recipe.instructions[reasoningFrameData['step_id']]}
-                        </Typography>
+                                Step.{reasoningFrameData && reasoningFrameData['step_id']}: {reasoningFrameData && recipe.instructions[reasoningFrameData['step_id']]}
+                            </Typography>
                         </Box>
 
                     </ReasoningNextStepRow>
@@ -236,7 +256,8 @@ export default function WozStatusComp({currentStep, recipe,
                     <ClipOutputsView data={clipActionFrameData}/>
                     {/*<ActionComp action={"put-into cupcake liner, mug"}></ActionComp>*/}
                     {/*<ErrorComp></ErrorComp>*/}
-                    <ObjectListComp objects={worldFrameData?worldFrameData.data.map(d=>d.label):[]}></ObjectListComp>
+                    <ObjectListComp
+                        objects={worldFrameData ? worldFrameData.data.map(d => d.label) : []}></ObjectListComp>
                 </CardContent>
             </Card>
 

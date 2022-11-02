@@ -21,7 +21,9 @@ import {getActionData, useGetRecordingJson} from "./utils/rest";
 import {MemoryReplayView} from "../memory-view/memory-replay-view";
 import TemporalOverview from "./overview/temporal-overview";
 import Card from "@mui/material/Card";
-import {AnnotationProvider} from "./annotation/provider";
+import {AnnotationContext, AnnotationProvider, useAnnotationContext} from "./annotation/provider";
+import {createAnnotationDataWithMachineReasoning, isAnnotationEmpty} from "./annotation/utils";
+import MachineReasoningInitializer from "./annotation/machine-reasoning-initializer";
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -38,7 +40,6 @@ interface RecipeData {
     tools: string [],
     tools_simple: string []
 }
-
 
 
 function WOZView() {
@@ -114,24 +115,39 @@ function WOZView() {
     }, [])
 
     const {data: actionData} = useGetRecordingJson(recordingID, "egovlp:action:steps");
-    const {frameIndex: actionFrameIndex, frameData: actionFrameData} = useVideoTime(currentTime, actionData, recordingData)
+    const {
+        frameIndex: actionFrameIndex,
+        frameData: actionFrameData
+    } = useVideoTime(currentTime, actionData, recordingData)
 
     let egovlpActionFrameData = actionFrameData;
 
     const {data: clipActionData} = useGetRecordingJson(recordingID, "clip:action:steps");
-    const {frameIndex: clipActionFrameIndex, frameData: clipActionFrameData} = useVideoTime(currentTime, clipActionData, recordingData)
+    const {
+        frameIndex: clipActionFrameIndex,
+        frameData: clipActionFrameData
+    } = useVideoTime(currentTime, clipActionData, recordingData)
 
     const {data: memoryData} = useGetRecordingJson(recordingID, "detic:memory");
-    const {frameIndex: memoryFrameIndex, frameData: memoryFrameData} = useVideoTime(currentTime, memoryData, recordingData);
+    const {
+        frameIndex: memoryFrameIndex,
+        frameData: memoryFrameData
+    } = useVideoTime(currentTime, memoryData, recordingData);
 
     const {data: eyeData} = useGetRecordingJson(recordingID, "eye");
     const {frameIndex: eyeFrameIndex, frameData: eyeFrameData} = useVideoTime(currentTime, eyeData, recordingData);
 
     const {data: reasoningData} = useGetRecordingJson(recordingID, "reasoning");
-    const {frameIndex: reasoningFrameIndex, frameData: reasoningFrameData} = useVideoTime(currentTime, reasoningData, recordingData);
+    const {
+        frameIndex: reasoningFrameIndex,
+        frameData: reasoningFrameData
+    } = useVideoTime(currentTime, reasoningData, recordingData);
 
     const {data: boundingBoxData} = useGetRecordingJson(recordingID, "detic:world");
-    const {frameIndex: boundingBoxFrameIndex, frameData: boundingBoxFrameData} = useVideoTime(currentTime, boundingBoxData, recordingData);
+    const {
+        frameIndex: boundingBoxFrameIndex,
+        frameData: boundingBoxFrameData
+    } = useVideoTime(currentTime, boundingBoxData, recordingData);
 
 
     const handleProgress = (changeState: onProgressType) => {
@@ -205,18 +221,33 @@ function WOZView() {
         setState({...state, seeking: false});
     };
 
+    const {annotationData, setAnnotationData} = useAnnotationContext();
+
+    useEffect(() => {
+
+    }, [reasoningData, recordingData])
+
+
     return (
         <AnnotationProvider>
-
-        <Box>
-            <Box
-                sx={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(6, minmax(0, 1fr))',
-                    gap: 1,
-                    gridTemplateRows: 'auto',
-                    gridTemplateAreas: {
-                        md: `
+            <AnnotationContext.Consumer>
+                {
+                    ({annotationData, setAnnotationData}) => (
+                        <MachineReasoningInitializer
+                            recordingMeta={recordingData} reasoningData={reasoningData}
+                            annotationData={annotationData} setAnnotationData={setAnnotationData}/>
+                    )
+                }
+            </AnnotationContext.Consumer>
+            <Box>
+                <Box
+                    sx={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(6, minmax(0, 1fr))',
+                        gap: 1,
+                        gridTemplateRows: 'auto',
+                        gridTemplateAreas: {
+                            md: `
               "H H H H H H"
               "H H H H H H"
               "M M M r r r"
@@ -226,7 +257,7 @@ function WOZView() {
               "g g g g c c"
               "g g g g c c"
           `,
-                        xs: `
+                            xs: `
               "H H H H H H"
               "H H H H H H"
               "M M M M M M"
@@ -327,24 +358,24 @@ function WOZView() {
                     />
                 </Box>
 
-                <Box sx={{gridArea: 'c'}}>
-                            <Card>
-                                {/*<MemoryReplayView memoryFrameData={memoryFrameData} eyeFrameData={eyeFrameData}/>*/}
-                            </Card>
-                </Box>
-                <Box sx={{ gridArea: 'g' }}>
-                    {
-                        recordingData && boundingBoxData && reasoningData && clipActionData && <TemporalOverview
-                            state={state}
-                            clipActionData={clipActionData}
-                            reasoningData={reasoningData}
-                            boundingBoxData={boundingBoxData}
-                            recordingMeta={recordingData}
-                        ></TemporalOverview>
-                    }
+                    <Box sx={{gridArea: 'c'}}>
+                        <Card>
+                            {/*<MemoryReplayView memoryFrameData={memoryFrameData} eyeFrameData={eyeFrameData}/>*/}
+                        </Card>
+                    </Box>
+                    <Box sx={{gridArea: 'g'}}>
+                        {
+                            recordingData && boundingBoxData && reasoningData && clipActionData && <TemporalOverview
+                                state={state}
+                                clipActionData={clipActionData}
+                                reasoningData={reasoningData}
+                                boundingBoxData={boundingBoxData}
+                                recordingMeta={recordingData}
+                            ></TemporalOverview>
+                        }
+                    </Box>
                 </Box>
             </Box>
-        </Box>
 
         </AnnotationProvider>
     )
