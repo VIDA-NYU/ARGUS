@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Alert, Box, Button, Paper, Typography, Chip } from '@mui/material';
 import { useToken } from '../api/TokenContext';
 import { Login } from './RecipesView';
-import { TEST_PASS, TEST_USER } from '../config';
+import { REASONING_CHECK_STREAM, CLIP_ACTION_STEPS_STREAM, DETIC_IMAGE_STREAM, MAIN_STREAM, TEST_PASS, TEST_USER } from '../config';
 
 
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -95,14 +95,14 @@ function LiveVideo() {
           },
         }}>
         <Box sx={{ gridArea: 'H' }}><RecordingControls /></Box>
-        <Box sx={{ gridArea: 'M' }}><ImageView streamId='main' boxStreamId='detic:image' confidence={0.5} debugMode={false}/></Box>
+        <Box sx={{ gridArea: 'M' }}><ImageView streamId={MAIN_STREAM} boxStreamId={DETIC_IMAGE_STREAM} confidence={0.5} debugMode={false}/></Box>
         <Box sx={{ gridArea: 'b' }}>
-          <StreamView utf streamId={'clip:action:steps'}>
+          <StreamView utf streamId={CLIP_ACTION_STEPS_STREAM}>
             {data => (<Box pt={4}><ClipOutputsLiveView data={JSON.parse(data)} /></Box>)}
           </StreamView>
         </Box>
         <Box sx={{ gridArea: 'r' }}>
-          <StreamView utf streamId={'reasoning'} showStreamId={true} showTime={false}>
+          <StreamView utf streamId={REASONING_CHECK_STREAM} showStreamId={true} showTime={false}>
             {data => (<Box><ReasoningOutputsView data={JSON.parse(data)} /></Box>)}
           </StreamView>
         </Box>
