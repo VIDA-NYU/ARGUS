@@ -133,6 +133,18 @@ const ActionComp = ({action}) => {
 
 const iconOffset = 480;
 
+const RowComponent = styled("div")({
+    display: "flex",
+    flexDirection: "row",
+    marginBottom: 3
+})
+
+const ObjectCompContainer = styled("div")({
+    flexBasis: 4,
+    flexGrow: 4,
+    marginRight: 8
+})
+
 export default function WozStatusComp({
                                           currentStep, recipe, state,
                                           reasoningFrameData, egovlpActionFrameData,
@@ -174,100 +186,26 @@ export default function WozStatusComp({
                 )}
             </AnnotationContext.Consumer>
 
-            { recipe && <AnnotationContext.Consumer>
-                {({}) => (
-                    <ObjectPanelContainer recipe={recipe} detectedObjects={worldFrameData ? worldFrameData.data.map(d => d.label) : []}/>
-                )}
-            </AnnotationContext.Consumer>}
 
-            <Card>
-                <CardHeader title={"Reasoning"}>
+            <RowComponent>
+                { recipe && <ObjectCompContainer><AnnotationContext.Consumer>
+                    {({}) => (
+                        <ObjectPanelContainer recipe={recipe} detectedObjects={worldFrameData ? worldFrameData.data.map(d => d.label) : []}/>
+                    )}
+                </AnnotationContext.Consumer> </ObjectCompContainer>}
+                <Card sx={{
+                    flexBasis: 2,
+                    flexGrow: 2,
+                }}>
+                    <CardHeader title={"Reasoning"} titleTypographyProps={{variant: "body1"}}>
 
-                </CardHeader>
-                <CardContent>
-                    <ReasoningNextStepRow>
+                    </CardHeader>
+                    <CardContent>
+                        <ClipOutputsView data={clipActionFrameData}/>
+                    </CardContent>
+                </Card>
 
-                        <Box sx={{m: 1, position: 'relative', paddingBottom: 4}}>
-                            {/*<Fab*/}
-                            {/*    aria-label="save"*/}
-                            {/*    color="primary"*/}
-                            {/*    sx={{*/}
-                            {/*        ...buttonSx,*/}
-                            {/*        position: 'absolute',*/}
-                            {/*        top: -5.5 - 7,*/}
-                            {/*        left: -6 + iconOffset,*/}
-                            {/*        zIndex: 1,*/}
-                            {/*    }}*/}
-                            {/*    size={"small"}*/}
-                            {/*>*/}
-                            {/*    <ArrowForwardIcon*/}
-                            {/*        width={10}*/}
-                            {/*    />*/}
-                            {/*</Fab>*/}
-                            <NextPlanRoundedIcon
-                                aria-label="save"
-                                color="success"
-                                sx={{
-                                    position: 'absolute',
-                                    top: -5.5 - 7,
-                                    left: -6 + iconOffset,
-                                    zIndex: 1,
-                                }}
-                                fontSize={"large"}
-                                onClick={handleClickNext}
-                            >
-
-                            </NextPlanRoundedIcon>
-                            <CircularProgress
-                                size={42}
-                                value={95}
-                                variant="determinate"
-                                sx={{
-                                    // color: "gray",
-                                    color: green[500],
-                                    position: 'absolute',
-                                    top: -11 - 5,
-                                    left: -10 + iconOffset,
-                                    zIndex: 1,
-                                }}
-                            />
-                            <ErrorIcon
-                                fontSize={"large"}
-                                sx={{
-                                    color: (reasoningFrameData && reasoningFrameData.error_status) ? "red" : "gray",
-                                    position: 'absolute',
-                                    top: -11 - 3,
-                                    left: 60 + iconOffset,
-                                    zIndex: 1,
-                                }}
-                            >
-
-                            </ErrorIcon>
-                            <Typography
-                                sx={{
-                                    position: 'absolute',
-                                    top: -5.5,
-                                    left: 1
-                                }}
-                                display={"inline"} variant={"body1"}>
-                                Step.{reasoningFrameData && reasoningFrameData['step_id']}: {reasoningFrameData && recipe.instructions[reasoningFrameData['step_id']]}
-                            </Typography>
-                        </Box>
-
-                    </ReasoningNextStepRow>
-                    <div>
-                        {
-                            // subSteps.map(step => (<SubStepRow subStepInstruction={step}></SubStepRow>))
-                        }
-
-                    </div>
-                    <ClipOutputsView data={clipActionFrameData}/>
-                    {/*<ActionComp action={"put-into cupcake liner, mug"}></ActionComp>*/}
-                    {/*<ErrorComp></ErrorComp>*/}
-                    <ObjectListComp
-                        objects={worldFrameData ? worldFrameData.data.map(d => d.label) : []}></ObjectListComp>
-                </CardContent>
-            </Card>
+            </RowComponent>
 
         </div>
     )

@@ -10,12 +10,12 @@ import ActionRow from "./action-row";
 const Container = styled(Card)({})
 
 const xCellNumber = 50;
-const chartWidth = 1200;
-const chartHeight = 400;
+const chartWidth = 1020;
+const chartHeight = 280;
 const cellMargin = 5;
 
 function computeCellSize(cellNumber, width) {
-    let cellSize = 20;
+    let cellSize = 18;
     return {
         cellSize, cellMargin
     }
@@ -38,7 +38,7 @@ const chartErrorHighlightColor = "red";
 const yAxisLabelWidth = 70;
 const yAxisLabelOffsetY = 6;
 
-const xAxisY = 300;
+const xAxisY = 240;
 
 
 export default function TemporalOverview({reasoningData, boundingBoxData, clipActionData, recordingMeta, state}) {
@@ -257,7 +257,7 @@ export default function TemporalOverview({reasoningData, boundingBoxData, clipAc
                             x={0}
                             y={0}
                             width={2}
-                            height={300}
+                            height={xAxisY}
                         ></rect>
                     </g>
                 </g>

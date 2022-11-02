@@ -19,7 +19,8 @@ export default function ObjectPanelContainer ({recipe, detectedObjects}: ObjectP
 
     return (
         <Container>
-            <ObjectListComp title={"Tools"} recipeObjectStatusList={recipeObjectStatusIndex.tools} />
+            <ObjectListComp
+                title={"Tools"} recipeObjectStatusList={recipeObjectStatusIndex.tools} />
             <ObjectListComp title={"Ingredients"} recipeObjectStatusList={recipeObjectStatusIndex.ingredients} />
         </Container>
     )

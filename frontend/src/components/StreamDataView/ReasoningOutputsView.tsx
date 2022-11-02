@@ -155,37 +155,37 @@ export const ReasoningOutputsWOZView = ({
         {/*{recipe && recipe.instructions &&*/}
         {/*    <RecipeTextComp recipeInstructions={recipe.instructions} currentStep={machinePredictedStep}/>}*/}
         {/*{recipe && recipe.instructions && <ListSteps list={recipe.instructions} completedStep={step_id}/>}*/}
-        <AnnotationContext.Consumer>
-            {
-                ({annotationData, setAnnotationData}) => (
-                    <Box>
-                        <Button onClick={() => setStep({step_id_s: step_id_previous})} variant="contained"
-                                style={{margin: 6}}><ArrowBackIcon/> Previous Step</Button>
-                        <Button onClick={() => {
-                            setStep({step_id_s: step_id_next});
-                            let prevData = annotationData;
-                            setAnnotationData(
-                                {
-                                    ...prevData,
-                                    reasoningSteps: [...prevData.reasoningSteps, {
-                                        type: "new_step",
-                                        time: state.currentTime,
-                                        step: currentUserStep + 1,
-                                        prev: -1,
-                                    }]
-                                }
-                            )
-                            setCurrentUserStep(currentUserStep + 1);
-                            console.log(prevData);
+        {/*<AnnotationContext.Consumer>*/}
+        {/*    {*/}
+        {/*        ({annotationData, setAnnotationData}) => (*/}
+        {/*            <Box>*/}
+        {/*                <Button onClick={() => setStep({step_id_s: step_id_previous})} variant="contained"*/}
+        {/*                        style={{margin: 6}}><ArrowBackIcon/> Previous Step</Button>*/}
+        {/*                <Button onClick={() => {*/}
+        {/*                    setStep({step_id_s: step_id_next});*/}
+        {/*                    let prevData = annotationData;*/}
+        {/*                    setAnnotationData(*/}
+        {/*                        {*/}
+        {/*                            ...prevData,*/}
+        {/*                            reasoningSteps: [...prevData.reasoningSteps, {*/}
+        {/*                                type: "new_step",*/}
+        {/*                                time: state.currentTime,*/}
+        {/*                                step: currentUserStep + 1,*/}
+        {/*                                prev: -1,*/}
+        {/*                            }]*/}
+        {/*                        }*/}
+        {/*                    )*/}
+        {/*                    setCurrentUserStep(currentUserStep + 1);*/}
+        {/*                    console.log(prevData);*/}
 
-                        }} variant="contained"><ArrowForwardIcon/>Next Step</Button>
-                        <Button onClick={() => {
-                            uploadAnnotation("ethan_mugcake_0", {"test": "a"})
-                        }}> Save </Button>
-                    </Box>
-                )
-            }
-        </AnnotationContext.Consumer>
+        {/*                }} variant="contained"><ArrowForwardIcon/>Next Step</Button>*/}
+        {/*                <Button onClick={() => {*/}
+        {/*                    uploadAnnotation("ethan_mugcake_0", {"test": "a"})*/}
+        {/*                }}> Save </Button>*/}
+        {/*            </Box>*/}
+        {/*        )*/}
+        {/*    }*/}
+        {/*</AnnotationContext.Consumer>*/}
 
     </Box>
 

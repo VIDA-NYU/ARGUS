@@ -13,7 +13,7 @@ interface ObjectListProps {
 
 const Container = styled("div")(
     {
-        marginBottom: 5
+        marginBottom: 7
     }
 )
 
