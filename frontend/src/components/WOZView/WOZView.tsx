@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Alert, Box, Button, Paper, Typography, Chip } from '@mui/material';
 import { useToken } from '../../api/TokenContext';
 import { Login } from '../RecipesView';
-import { TEST_PASS, TEST_USER } from '../../config';
+import { DETIC_IMAGE_STREAM, MAIN_STREAM, REASONING_CHECK_STREAM, TEST_PASS, TEST_USER } from '../../config';
 import { useCurrentRecipe, useGetRecipeInfo, useGetRecipes} from '../../api/rest';
 import { StreamView } from '../StreamDataView/LiveStream';
 import { ImageView } from '../StreamDataView/ImageView';
@@ -94,7 +94,7 @@ function WOZView() {
           </Box>
         </Box>
         <Box sx={{ gridArea: 'r' }}>
-          <StreamView utf streamId={'reasoning'} showStreamId={false} showTime={false}>
+          <StreamView utf streamId={REASONING_CHECK_STREAM} showStreamId={false} showTime={false}>
             {data => (<Box><ReasoningOutputsWOZView recipe={recipeData} data={JSON.parse(data)} /></Box>)}
           </StreamView>
         </Box>
@@ -109,7 +109,7 @@ function WOZView() {
           </>
           </Box>
         </Box>
-        <Box sx={{ gridArea: 'M' }}><ImageView streamId='main' boxStreamId='detic:image' confidence={0.5} debugMode={false}/></Box>
+        <Box sx={{ gridArea: 'M' }}><ImageView streamId={MAIN_STREAM} boxStreamId={DETIC_IMAGE_STREAM} confidence={0.5} debugMode={false}/></Box>
       </Box>
     </Box>
   )
