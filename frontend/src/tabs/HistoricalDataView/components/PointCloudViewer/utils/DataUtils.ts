@@ -37,6 +37,7 @@ export class DataUtils {
 
         const points: number[][] = [];
         const normals: number[][] = [];
+        const timestamps: number[] = [];
 
         dataset.forEach( (point: GazePointCloudRaw) => {
 
@@ -44,12 +45,17 @@ export class DataUtils {
             const currentPoint: number[] = [ point.GazeOrigin.x, point.GazeOrigin.y, (-1)*point.GazeOrigin.z ];
             const currentNormal: number[] = [ point.GazeDirection.x, point.GazeDirection.y, (-1)*point.GazeDirection.z ];
 
+            // parsing timestamp
+            const currentTimestamp: number = parseInt(point.timestamp.split('-')[0]); 
+
             // adding points and normal to arrays
-            points.push(currentPoint);
+            points.push( currentPoint );
             normals.push( currentNormal );
+            timestamps.push( currentTimestamp );
+
         });
 
-        return new GazePointCloud(points, normals);
+        return new GazePointCloud(points, normals, timestamps);
 
     } 
 }

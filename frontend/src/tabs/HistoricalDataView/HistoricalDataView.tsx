@@ -12,7 +12,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { MediaState, DeleteInfo } from './types/types';
 
 // API imports
-import { useGetAllRecordings, useGetRecording, useDeleteRecording, getPointCloudData, getEyeData  } from '../../api/rest';
+import { useGetAllRecordings, useGetRecording, useDeleteRecording, getPointCloudData, getEyeData, getIMUAccelData, getIMUGyroData, getIMUMagData  } from '../../api/rest';
 import { useToken } from '../../api/TokenContext';
 import { dataType, RequestStatus, streamingType } from '../../api/types';
 
@@ -21,6 +21,7 @@ import Controls from '../../components/Controls';
 
 // local components
 import PointCloudViewer from './components/PointCloudViewer/PointCloudViewer';
+import IMUDataView from './components/IMUViewer/IMUViewer';
 
 // helpers
 import { formatTotalDuration, format  } from '../../components/Helpers';
@@ -40,8 +41,11 @@ const HistoricalDataView = () => {
     const [recordings, setRecordings] = React.useState([]);
     const [recordingID, setRecordingID] = React.useState<number>(0);
     const [recordingName, setRecordingName] = React.useState<string>('');
-    const [eyeData, setEyeData] = React.useState({});
-    const [handData, setHandData] = React.useState({});
+    // const [eyeData, setEyeData] = React.useState({});
+    // const [handData, setHandData] = React.useState({});
+
+    const [ imudata, setIMUData ] = React.useState([]);
+
     const [pointCloudData, setPointCloudData] = React.useState({});
     const [openDelDialog, setOpenDelDialog] = React.useState(false);
     const [openConfDelDialog, setOpenConfDelDialog] = React.useState(false);
@@ -52,7 +56,6 @@ const HistoricalDataView = () => {
       playing: false,
       controls: false,
       light: false,
-
       played: 0,
       duration: 0,
       playbackRate: 1.0,
@@ -99,23 +102,50 @@ const HistoricalDataView = () => {
 
       const fetchPointCloudData = async() => {
         try {
-          const jsonFile = await getPointCloudData(recordingName);
-          setPointCloudData(jsonFile);
+          const pointCloudJSONFile = await getPointCloudData(recordingName);
+          const gazePointClouJSONFile = await getEyeData(recordingName);
+          setPointCloudData({ 'world': pointCloudJSONFile, 'gaze': gazePointClouJSONFile });
         } catch (error) {
-                // console.log("error", error);
-                setPointCloudData("404 Not Found. Point Cloud data was not found.");
+          // console.log("error", error);
+          setPointCloudData("404 Not Found. Point Cloud data was not found.");
         }
       };
 
-      const fetchEyeData = async () => {
-        try {
-          const jsonFile = await getEyeData(recordingName);
-          setEyeData(jsonFile);
-        } catch (error) {
-                // console.log("error", error);
-                setEyeData("404 Not Found. Eye data was not found.");
-              }
-      };
+      const fetchIMUData = async() => {
+
+        try{
+          const imuAccelJSONFile = await getIMUAccelData(recordingName);
+          const imuGyroJSONFile = await getIMUGyroData(recordingName);
+          const imuMagJSONFile = await getIMUMagData(recordingName);
+          setIMUData([imuAccelJSONFile, imuGyroJSONFile, imuMagJSONFile ] );
+        } catch( error ){
+
+          console.log('Error retrieving IMU data');
+          setIMUData([])
+
+        }
+
+      }
+
+      // const fetchPointCloudData = async() => {
+      //   try {
+      //     const jsonFile = await getPointCloudData(recordingName);
+      //     setPointCloudData(jsonFile);
+      //   } catch (error) {
+      //           // console.log("error", error);
+      //           setPointCloudData("404 Not Found. Point Cloud data was not found.");
+      //   }
+      // };
+
+      // const fetchEyeData = async () => {
+      //   try {
+      //     const jsonFile = await getEyeData(recordingName);
+      //     setEyeData(jsonFile);
+      //   } catch (error) {
+      //           // console.log("error", error);
+      //           setEyeData("404 Not Found. Eye data was not found.");
+      //         }
+      // };
 
       // const fetchHandData = async () => {
       //   try {
@@ -128,8 +158,16 @@ const HistoricalDataView = () => {
       // };
 
       if (recordingData && recordingData.streams){
-        Object.keys(recordingData.streams).includes(streamingType.POINTCLOUD) && fetchPointCloudData();
-        Object.keys(recordingData.streams).includes(streamingType.EYE) && fetchEyeData();
+        Object.keys(recordingData.streams).includes(streamingType.POINTCLOUD) && 
+        Object.keys(recordingData.streams).includes(streamingType.EYE) && 
+        fetchPointCloudData();
+
+        Object.keys(recordingData.streams).includes(streamingType.IMUACCEL) &&
+        Object.keys(recordingData.streams).includes(streamingType.IMUGYRO) &&
+        Object.keys(recordingData.streams).includes(streamingType.IMUMAG) &&
+        fetchIMUData();
+
+        // Object.keys(recordingData.streams).includes(streamingType.EYE) && fetchEyeData();
         // Object.keys(recordingData.streams).includes(streamingType.HAND) && fetchHandData();
       }
 
@@ -326,7 +364,7 @@ const HistoricalDataView = () => {
 
             <div className="layer-wrapper">
 
-                <div className="layer-component" style={{ backgroundColor: 'green'}}>
+                <div className="layer-component">
                   <VideoDataView 
                     type={dataType.VIDEO} 
                     data={recordingData} 
@@ -339,12 +377,21 @@ const HistoricalDataView = () => {
                 </div>
 
                 <div className="layer-component">
-                  <PointCloudViewer worldPointCloudData={pointCloudData}></PointCloudViewer>
+                  <PointCloudViewer
+                    pointCloudRawData={pointCloudData}
+                    videoState={state}
+                    recordingMetadata={recordingData}
+                    // worldPointCloudData={pointCloudData}
+                    // gazePointCloudData={eyeData}
+                    >
+                  </PointCloudViewer>
                 </div>
 
             </div>
 
-            <div className="layer-wrapper"></div>
+            <div className="layer-wrapper">
+                <IMUDataView data={imudata} recordingName={recordingName}></IMUDataView>
+            </div>
             
         </div>
     );

@@ -22,30 +22,60 @@ export class Dataset {
 
     constructor(){}
 
-    public async initialize_dataset( worldPointCloudRaw: WorldPointCloudRaw[], gazePointCloudRaw: any = [] ): Promise<any> {
+    public initialize_world_pointcloud_dataset( worldPointCloudRaw: WorldPointCloudRaw[] ): void {
+        this.worldPointCloud = this.parse_world_point_cloud( worldPointCloudRaw );
+    }
+
+    public initialize_gaze_point_cloud_dataset( gazePointCloudRaw: GazePointCloudRaw[] ): void {
+        this.gazePointCloud = this.parse_gaze_point_cloud( gazePointCloudRaw );
+    }
+
+    // public async initialize_dataset( worldPointCloudRaw: WorldPointCloudRaw[] = [], gazePointCloudRaw: GazePointCloudRaw[] = [] ): Promise<any> {
         
-        console.log('downloading...');
-        // const worldPointCloudRaw: WorldPointCloudRaw[] = await StreamAPI.get_scene_point_cloud();
-        // const gazePointCloudRaw: any = await StreamAPI.get_gaze_point_cloud();
+    //     console.log('downloading...');
+    //     // const worldPointCloudRaw: WorldPointCloudRaw[] = await StreamAPI.get_scene_point_cloud();
+    //     // const gazePointCloudRaw: any = await StreamAPI.get_gaze_point_cloud();
 
-        console.log('parsing...');
-        const [worldPointCloud, gazePointCloud]: [WorldPointCloud, GazePointCloud] = this.parse_point_clouds( worldPointCloudRaw, gazePointCloudRaw );
+    //     if( worldPointCloudRaw.length > 0 ){
+    //         this.worldPointCloud = this.parse_world_point_cloud( worldPointCloudRaw );
+    //     }
+
+    //     if( gazePointCloudRaw.length > 0 ){
+    //         this.gazePointCloud = this.parse_gaze_point_cloud( gazePointCloudRaw );
+    //     }
+
+    //     // console.log('parsing...');
+    //     // const [worldPointCloud, gazePointCloud]: [WorldPointCloud, GazePointCloud] = this.parse_point_clouds( worldPointCloudRaw, gazePointCloudRaw );
         
-        // saving datasets
-        this.worldPointCloud = worldPointCloud;
-        this.gazePointCloud = gazePointCloud;
+    //     // // saving datasets
+    //     // this.worldPointCloud = worldPointCloud;
+    //     // this.gazePointCloud = gazePointCloud;
 
-    }   
+    // }   
 
-    public parse_point_clouds( worldPointCloudRaw: WorldPointCloudRaw[] = [], gazePointCloudRaw: GazePointCloudRaw[] = [] ): [WorldPointCloud, GazePointCloud] {
+    public parse_gaze_point_cloud( gazePointCloudRaw: GazePointCloudRaw[] = [] ): GazePointCloud {
 
-        // Scene Point Cloud  Summaries
-        const worldPointCloud: WorldPointCloud = DataUtils.parse_world_point_cloud_data( worldPointCloudRaw );
         const gazePointCloud: GazePointCloud = DataUtils.parse_gaze_point_cloud_data( gazePointCloudRaw );
-
-        return [worldPointCloud, gazePointCloud];
-
+        return gazePointCloud;
 
     }
+
+    public parse_world_point_cloud( worldPointCloudRaw: WorldPointCloudRaw[] = [] ): WorldPointCloud {
+        
+        const worldPointCloud: WorldPointCloud = DataUtils.parse_world_point_cloud_data( worldPointCloudRaw );
+        return worldPointCloud;
+
+    }
+
+    // public parse_point_clouds( worldPointCloudRaw: WorldPointCloudRaw[] = [], gazePointCloudRaw: GazePointCloudRaw[] = [] ): [WorldPointCloud, GazePointCloud] {
+
+    //     // Scene Point Cloud  Summaries
+    //     const worldPointCloud: WorldPointCloud = DataUtils.parse_world_point_cloud_data( worldPointCloudRaw );
+    //     const gazePointCloud: GazePointCloud = DataUtils.parse_gaze_point_cloud_data( gazePointCloudRaw );
+
+    //     return [worldPointCloud, gazePointCloud];
+
+
+    // }
 
 }
