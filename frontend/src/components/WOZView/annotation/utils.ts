@@ -6,7 +6,8 @@ export function createInitialAnnotationData(): AnnotationData{
         reasoningSteps: [],
         meta: {
             mode: "offline",
-            id: "ethan_mugcake_0"
+            id: "ethan_mugcake_0",
+            recipeID: "mugcake"
         }
     }
 }

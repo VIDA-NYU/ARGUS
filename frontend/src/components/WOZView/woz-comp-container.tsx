@@ -29,6 +29,7 @@ interface WozCompContainerProps {
     state: any
     recordingID: string,
     recordingList: Array<string>,
+    recipeIDList: Array<string>,
     recordingData: any,
     reasoningData: any,
     reasoningFrameData: any,
@@ -49,7 +50,7 @@ interface WozCompContainerProps {
 const Container = styled("div")({});
 
 export default function WozCompContainer({
-                                             state, recordingID, recordingList,
+                                             state, recordingID, recordingList, recipeIDList,
                                              recordingData, reasoningData, reasoningFrameData, recipeData,
                                              boundingBoxData, boundingBoxFrameData,
                                              egovlpActionData, egovlpActionFrameData,
@@ -108,6 +109,7 @@ export default function WozCompContainer({
                     <Box sx={{ gridArea: 'r' }}>
                         <StreamView utf streamId={REASONING_CHECK_STREAM} showStreamId={false} showTime={false}>
                             {data => (<Box>{reasoningFrameData && <ReasoningOutputsWOZView
+                                recipeIDList={recipeIDList}
                                 clipActionFrameData={clipActionFrameData}
                                 egovlpActionFrameData={egovlpActionFrameData}
                                 reasoningFrameData={reasoningFrameData}

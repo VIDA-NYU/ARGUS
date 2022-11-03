@@ -42,6 +42,9 @@ interface WozDataConsumerProps {
 
 export default function WozDataConsumer({annotationData, setAnnotationData}: WozDataConsumerProps) {
     const {token, fetchAuth} = useToken();
+
+    const {response: recipeList} = useGetRecipes(token, fetchAuth);
+    const recipeIDList = recipeList? recipeList.map(d => d._id) : [];
     const {response: recordingList} = useGetAllRecordings(token, fetchAuth);
     const {response: recipeDataResponse} = useGetRecipeInfo(token, fetchAuth, "mugcake");
 
@@ -165,6 +168,7 @@ export default function WozDataConsumer({annotationData, setAnnotationData}: Woz
             state={state}
             recordingID={recordingID}
             recordingList={recordingList}
+            recipeIDList={recipeIDList}
             recordingData={recordingData}
             recipeData={recipeData}
             reasoningData={reasoningData}

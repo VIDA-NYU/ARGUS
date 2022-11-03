@@ -9,7 +9,8 @@ interface AnnotationReasoningStep {
 
 interface AnnotationMeta {
     mode: "undefined" | "offline" | "online",
-    id: string
+    id: string,
+    recipeID: string
 }
 
 

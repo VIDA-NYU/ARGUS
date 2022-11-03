@@ -8,19 +8,21 @@ import {uploadAnnotation} from "../utils/rest";
 interface SessionControlGroupProps {
     annotationData: AnnotationData,
     setAnnotationData: (value: AnnotationData) => void,
-    recordingList: Array<string>
+    recordingList: Array<string>,
+    recipeIDList: Array<string>
 }
 
 const Container = styled("div")({
     display: "flex",
     flexDirection: "column",
-    marginRight: 6,
+    marginRight: 15,
     flexBasis: 3,
     flexGrow: 3,
-    alignItems: "stretch"
+    alignItems: "stretch",
+    justifyContent: "space-between"
 })
 
-export default function SessionControlGroup({annotationData, setAnnotationData, recordingList}: SessionControlGroupProps){
+export default function SessionControlGroup({annotationData, setAnnotationData, recordingList, recipeIDList}: SessionControlGroupProps){
     const setAnnotationMeta = (newMeta: AnnotationMeta) => {
         setAnnotationData({
             ...annotationData,
@@ -44,6 +46,7 @@ export default function SessionControlGroup({annotationData, setAnnotationData, 
                 annotationMeta={annotationData.meta}
                 setAnnotationMeta={setAnnotationMeta}
                 recordingList={recordingList}
+                recipeIDList={recipeIDList}
             />
             <SessionControlPanel
                 onResettingAnnotation={handleResettingAnnotationData}

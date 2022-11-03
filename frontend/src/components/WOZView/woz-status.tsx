@@ -38,7 +38,8 @@ interface WozStatusCompStatus {
     egovlpActionFrameData: any,
     worldFrameData: any,
     state: any,
-    recordingList: Array<string>
+    recordingList: Array<string>,
+    recipeIDList: Array<string>
 }
 
 const ReasoningNextStepRow = styled("div")({
@@ -154,7 +155,8 @@ export default function WozStatusComp({
                                           currentStep, recipe, state,
                                           reasoningFrameData, egovlpActionFrameData,
                                           worldFrameData,
-                                          clipActionFrameData, recordingList
+                                          clipActionFrameData, recordingList,
+                                          recipeIDList
                                       }:
                                           WozStatusCompStatus) {
 
@@ -189,6 +191,7 @@ export default function WozStatusComp({
                             annotationData={annotationData}
                             setAnnotationData={setAnnotationData}
                             recordingList={recordingList}
+                            recipeIDList={recipeIDList}
                         />
                         <AnnotationControlComp mode={"auto"} recipe={recipe} state={state}
                                                annotationData={annotationData}

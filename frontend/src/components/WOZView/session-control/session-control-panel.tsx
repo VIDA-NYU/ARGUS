@@ -8,7 +8,9 @@ interface SessionControlPanelProps {
 }
 
 
-const Container = styled("div")({});
+const Container = styled("div")({
+    flexBasis: 2,
+});
 
 const Content = styled("div")(
     {
