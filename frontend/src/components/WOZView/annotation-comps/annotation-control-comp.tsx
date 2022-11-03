@@ -9,8 +9,8 @@ import {addStepToAnnotation, computeCurrentStep, computeCurrentStepSpentTime} fr
 import {useAnnotationContext} from "../annotation/provider";
 import {AnnotationData} from "../annotation/types";
 import RecipeProgressComp from "./recipe-progress";
-import RecipeTextComp from "../recipe/recipe-text";
 import React from "react";
+import {useRecordingControls} from "../../../api/rest";
 
 interface AnnotationControlProps {
     mode: "auto" | "manual",
@@ -30,37 +30,48 @@ const CardContentAnnotationRow = styled("div")({
 })
 
 const Container = styled("div")({
-    marginBottom: 10,
+    // marginBottom: 10,
     flexBasis: 8,
     flexGrow: 7
 })
 
-function computeStepProgressValueByTime(progressTime){
+function computeStepProgressValueByTime(progressTime) {
     return 1 - 1 / (progressTime + 1)
 }
-const progressThreshold = 5/6;
 
-export default function AnnotationControlComp({mode, recipe, state,
-                                              annotationData, setAnnotationData,
-                                                errorStatus
-                                              }: AnnotationControlProps){
+const progressThreshold = 5 / 6;
+
+export default function AnnotationControlComp({
+                                                  mode, recipe, state,
+                                                  annotationData, setAnnotationData,
+                                                  errorStatus
+                                              }: AnnotationControlProps) {
+
+    const {setStep} = useRecordingControls();
 
     let currentTime = state.currentTime;
 
     let currentStep = computeCurrentStep(annotationData, 0, currentTime);
 
     const handleGoingPrevStep = (time: number) => {
-        if(currentStep > 0){
+        if (currentStep > 0) {
+            if(annotationData.meta.mode === "online"){
+                setStep({step_id_s: (currentStep - 1).toString()});
+            }
             setAnnotationData(addStepToAnnotation(annotationData, "human_go_prev", time, currentStep, currentStep - 1));
-        }else{
-            alert("It is the initial step!")
+
+        } else {
+            alert("It is the initial step!");
         }
     }
 
     const handleGoingNextStep = (time: number) => {
-        if(currentStep < recipe.instructions.length - 1){
+        if (currentStep < recipe.instructions.length - 1) {
+            if(annotationData.meta.mode === "online"){
+                setStep({step_id_s: (currentStep + 1).toString()});
+            }
             setAnnotationData(addStepToAnnotation(annotationData, "human_go_next", time, currentStep, currentStep + 1));
-        } else{
+        } else {
             alert("Reaching the final step!")
         }
     }
@@ -69,43 +80,40 @@ export default function AnnotationControlComp({mode, recipe, state,
     let stepProgressValue = computeStepProgressValueByTime(currentStepSpentTime);
 
     return (
-          <Container
-          >
-
+        <Container
+        >
             <Card
                 sx={{marginBottom: 1}}
             >
-
-              <CardContent
-                sx={{paddingRight: 0,
-                    // paddingBottom: 0, paddingTop: 0, marginBottom: 0
-              }}
-              >
-                  <CardContentAnnotationRow>
-                      <AnnotationRecipeStepList
-                          currentTime={currentTime}
-                          annotationData={annotationData}
-                          recipe={recipe} currentStep={currentStep}
-                        stepProgress={stepProgressValue}
-                      />
-                      <AnnotationControlButtonGroup
-                          handleGoingNextStep={handleGoingNextStep}
+                <CardContent
+                    sx={{
+                        paddingRight: 0,
+                        // paddingBottom: 0, paddingTop: 0, marginBottom: 0
+                    }}
+                >
+                    <CardContentAnnotationRow>
+                        <AnnotationRecipeStepList
+                            currentTime={currentTime}
+                            annotationData={annotationData}
+                            recipe={recipe} currentStep={currentStep}
+                            stepProgress={stepProgressValue}
+                        />
+                        <AnnotationControlButtonGroup
+                            handleGoingNextStep={handleGoingNextStep}
                             handleGoingPrevStep={handleGoingPrevStep}
-                          currentTime={currentTime}
-                          errorStatus={errorStatus}
-                          recommendingGoingNext={stepProgressValue > progressThreshold}
-                      />
-                      <RecipeProgressComp
-                        numberSteps={recipe.instructions.length}
-                        currentStep={currentStep}
-                      />
-                  </CardContentAnnotationRow>
+                            currentTime={currentTime}
+                            errorStatus={errorStatus}
+                            recommendingGoingNext={stepProgressValue > progressThreshold}
+                        />
+                        <RecipeProgressComp
+                            numberSteps={recipe.instructions.length}
+                            currentStep={currentStep}
+                        />
+                    </CardContentAnnotationRow>
 
-              </CardContent>
+                </CardContent>
+            </Card>
 
-                </Card>
-                  {recipe && <RecipeTextComp recipeInstructions={recipe.instructions} currentStep={currentStep}/>}
-
-          </Container>
-      )
+        </Container>
+    )
 }

@@ -18,6 +18,9 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import {useFrameData, useRecordingData, useRecordingFrameData, useStreamFrameData} from "./utils/data-hook";
+import eyesDataView from "../EyesDataView/EyesDataView";
+
 
 interface RecipeData {
     _id: string,
@@ -37,14 +40,18 @@ interface WozDataConsumerProps {
     setAnnotationData: (newData: AnnotationData) => void
 }
 
-export default function WozDataConsumer({annotationData, setAnnotationData}: WozDataConsumerProps){
+export default function WozDataConsumer({annotationData, setAnnotationData}: WozDataConsumerProps) {
     const {token, fetchAuth} = useToken();
+    const {response: recordingList} = useGetAllRecordings(token, fetchAuth);
     const {response: recipeDataResponse} = useGetRecipeInfo(token, fetchAuth, "mugcake");
 
     const [ recipeData, setRecipeData ] = useState<RecipeData>();
     const recordingID = annotationData.meta.id;
 
-    const {response: recordingData} = useGetRecording(token, fetchAuth, recordingID);
+    const {
+        egovlpActionData, clipActionData, recordingData,
+        reasoningData, boundingBoxData, memoryData, eyeData
+    } = useRecordingData(recordingID, token, fetchAuth);
 
     const RecipePicker = () => {
         const { token, fetchAuth } = useToken();
@@ -72,7 +79,8 @@ export default function WozDataConsumer({annotationData, setAnnotationData}: Woz
         )
     }
 
-    const {state,
+    const {
+        state,
         controlsRef, playerContainerRef, playerRef, canvasRef,
         toggleFullScreen, totalDurationValue, timeDisplayFormat,
         elapsedTime,
@@ -95,42 +103,20 @@ export default function WozDataConsumer({annotationData, setAnnotationData}: Woz
         currentTime,
     } = state;
 
-    const {response: recordingList} = useGetAllRecordings(token, fetchAuth);
-    const {data: actionData} = useGetRecordingJson(recordingID, "egovlp:action:steps");
-    const {
-        frameIndex: actionFrameIndex,
-        frameData: actionFrameData
-    } = useVideoTime(currentTime, actionData, recordingData)
 
-    let egovlpActionFrameData = actionFrameData;
-    let egovlpActionData = actionData;
-    const {data: clipActionData} = useGetRecordingJson(recordingID, "clip:action:steps");
-    const {
-        frameIndex: clipActionFrameIndex,
-        frameData: clipActionFrameData
-    } = useVideoTime(currentTime, clipActionData, recordingData)
+    // const {
+    //     clipActionFrameData,
+    //     eyeFrameData
+    // } = useRecordingFrameData(
+    //     currentTime, recordingData, reasoningData, memoryData,
+    //     boundingBoxData, egovlpActionData, clipActionData, eyeData
+    // )
 
-    const {data: memoryData} = useGetRecordingJson(recordingID, "detic:memory");
-    const {
-        frameIndex: memoryFrameIndex,
-        frameData: memoryFrameData
-    } = useVideoTime(currentTime, memoryData, recordingData);
-
-    const {data: eyeData} = useGetRecordingJson(recordingID, "eye");
-    const {frameIndex: eyeFrameIndex, frameData: eyeFrameData} = useVideoTime(currentTime, eyeData, recordingData);
-
-    const {data: reasoningData} = useGetRecordingJson(recordingID, "reasoning");
-    const {
-        frameIndex: reasoningFrameIndex,
-        frameData: reasoningFrameData
-    } = useVideoTime(currentTime, reasoningData, recordingData);
-
-    const {data: boundingBoxData} = useGetRecordingJson(recordingID, "detic:world");
-    const {
-        frameIndex: boundingBoxFrameIndex,
-        frameData: boundingBoxFrameData
-    } = useVideoTime(currentTime, boundingBoxData, recordingData);
-
+    // const {
+    //     reasoningFrameData, egovlpActionFrameData, memoryFrameData, boundingBoxFrameData
+    // } = useStreamFrameData();
+    const {reasoningFrameData, egovlpActionFrameData, clipActionFrameData, boundingBoxFrameData, memoryFrameData, eyeFrameData} = useFrameData(annotationData.meta.mode,currentTime, recordingData, reasoningData, memoryData,
+        boundingBoxData, egovlpActionData, clipActionData, eyeData );
 
     const videoPlayer = (<ReplayPlayer
         type={dataType.VIDEO}

@@ -10,6 +10,8 @@ import Card from "@mui/material/Card";
 import TemporalOverview from "./overview/temporal-overview";
 import React, {ReactElement} from "react";
 import {REASONING_CHECK_STREAM} from "../../config";
+import {ImageView} from '../StreamDataView/ImageView';
+
 
 interface RecipeData {
     _id: string,
@@ -52,9 +54,8 @@ export default function WozCompContainer({
                                              boundingBoxData, boundingBoxFrameData,
                                              egovlpActionData, egovlpActionFrameData,
                                              clipActionData, clipActionFrameData, videoPlayer, videoControls,
-                                            recipePicker
+                                             recipePicker
                                          }: WozCompContainerProps) {
-
 
     return (
         <Container>
@@ -116,15 +117,25 @@ export default function WozCompContainer({
                                 recipe={recipeData} data={JSON.parse(data)} />}</Box>)}
                         </StreamView>
                     </Box>
-                    <Box sx={{gridArea: 'M'}}>
-                        {recordingData && videoPlayer }
-                        {/*<ImageView streamId='replay:detic:image' boxStreamId='debug' confidence={0.5} debugMode={false}/>*/}
-                    </Box>
-                    <Box
-                        sx={{gridArea: "N"}}
-                    >
-                        {videoControls}
-                    </Box>
+                    <AnnotationContext.Consumer>
+                        {({annotationData}) => (
+                            <Box sx={{gridArea: 'M'}}>
+                                {/*{recordingData && videoPlayer }*/}
+                                {annotationData.meta.mode === "offline" && recordingData && videoPlayer}
+                                { annotationData.meta.mode === "online" && <ImageView streamId='main' boxStreamId='debug' confidence={0.5} debugMode={false}/>}
+                            </Box>
+                        )}
+
+                    </AnnotationContext.Consumer>
+                    <AnnotationContext.Consumer>
+                        {({annotationData}) => (
+                            <Box
+                                sx={{gridArea: "N"}}
+                            >
+                                {annotationData.meta.mode === "offline" && videoControls}
+                            </Box>
+                        )}
+                    </AnnotationContext.Consumer>
                     <Box sx={{ gridArea: 'c' }}>
                         <Box  pt={2} mr={2} ml={2} >
                             <span><b>INGREDIENTS</b></span>
@@ -136,17 +147,24 @@ export default function WozCompContainer({
                             </>
                         </Box>
                     </Box>
-                    <Box sx={{gridArea: 'g'}}>
+                    <AnnotationContext.Consumer>
                         {
-                            recordingData && boundingBoxData && reasoningData && clipActionData && <TemporalOverview
-                                state={state}
-                                clipActionData={clipActionData}
-                                reasoningData={reasoningData}
-                                boundingBoxData={boundingBoxData}
-                                recordingMeta={recordingData}
-                            ></TemporalOverview>
+                            ({annotationData}) => (
+                                <Box sx={{gridArea: 'g'}}>
+                                    {
+                                        annotationData.meta.mode === "offline" && recordingData && boundingBoxData && reasoningData && clipActionData && <TemporalOverview
+                                            state={state}
+                                            clipActionData={clipActionData}
+                                            reasoningData={reasoningData}
+                                            boundingBoxData={boundingBoxData}
+                                            recordingMeta={recordingData}
+                                        ></TemporalOverview>
+                                    }
+                                </Box>
+                            )
                         }
-                    </Box>
+                    </AnnotationContext.Consumer>
+
                 </Box>
             </Box>
         </Container>

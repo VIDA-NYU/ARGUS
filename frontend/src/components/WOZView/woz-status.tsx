@@ -27,6 +27,8 @@ import AnnotationControlComp from "./annotation-comps/annotation-control-comp";
 import {AnnotationContext} from "./annotation/provider";
 import ObjectPanelContainer from "./object-comps/object-panel-container";
 import SessionControlGroup from "./session-control/session-control-group";
+import RecipeTextComp from "./recipe/recipe-text";
+
 
 interface WozStatusCompStatus {
     recipe: Recipe,
@@ -138,7 +140,7 @@ const iconOffset = 480;
 const RowComponent = styled("div")({
     display: "flex",
     flexDirection: "row",
-    marginBottom: 3,
+    marginBottom: "10px",
     alignItems: "stretch",
 })
 
@@ -198,12 +200,13 @@ export default function WozStatusComp({
                 )}
             </AnnotationContext.Consumer>
 
+            {recipe && <RowComponent> <RecipeTextComp recipeInstructions={recipe.instructions} currentStep={currentStep}/></RowComponent>}
 
             <RowComponent>
                 {recipe && <ObjectCompContainer><AnnotationContext.Consumer>
                     {({}) => (
                         <ObjectPanelContainer recipe={recipe}
-                                              detectedObjects={worldFrameData ? worldFrameData.data.map(d => d.label) : []}/>
+                                              detectedObjects={worldFrameData && worldFrameData.data ? worldFrameData.data.map(d => d.label) : []}/>
                     )}
                 </AnnotationContext.Consumer> </ObjectCompContainer>}
                 <Card sx={{
