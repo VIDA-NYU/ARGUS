@@ -19,7 +19,7 @@ interface AnnotationControlProps {
     // machineReasoningStep: number,
     annotationData: AnnotationData,
     setAnnotationData: (newAnnotationData: AnnotationData) => void,
-    errorStatus: boolean
+    errorStatus: boolean,
 };
 
 const CardContentAnnotationRow = styled("div")({
@@ -30,7 +30,9 @@ const CardContentAnnotationRow = styled("div")({
 })
 
 const Container = styled("div")({
-    marginBottom: 10
+    marginBottom: 10,
+    flexBasis: 8,
+    flexGrow: 7
 })
 
 function computeStepProgressValueByTime(progressTime){

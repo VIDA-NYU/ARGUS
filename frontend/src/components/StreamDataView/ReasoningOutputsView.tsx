@@ -124,7 +124,7 @@ const ListSteps = ({list, completedStep}: { list: string [], completedStep: numb
 export const ReasoningOutputsWOZView = ({
                                             data, recipe, reasoningFrameData,
                                             egovlpActionFrameData, clipActionFrameData,
-                                            worldFrameData, state
+                                            worldFrameData, state, recordingList
                                         }) => {
     const {step_id, step_status, step_description, error_status, error_description} = data || {};
     // let step_id = 0;
@@ -151,6 +151,7 @@ export const ReasoningOutputsWOZView = ({
             egovlpActionFrameData={egovlpActionFrameData}
             clipActionFrameData={clipActionFrameData}
             reasoningFrameData={reasoningFrameData}
+            recordingList={recordingList}
             recipe={recipe} currentStep={2}></WozStatusComp>}
         {/*{recipe && recipe.instructions &&*/}
         {/*    <RecipeTextComp recipeInstructions={recipe.instructions} currentStep={machinePredictedStep}/>}*/}

@@ -26,6 +26,7 @@ import NextPlanRoundedIcon from '@mui/icons-material/NextPlanRounded';
 import AnnotationControlComp from "./annotation-comps/annotation-control-comp";
 import {AnnotationContext} from "./annotation/provider";
 import ObjectPanelContainer from "./object-comps/object-panel-container";
+import SessionControlGroup from "./session-control/session-control-group";
 
 interface WozStatusCompStatus {
     recipe: Recipe,
@@ -34,7 +35,8 @@ interface WozStatusCompStatus {
     clipActionFrameData: any,
     egovlpActionFrameData: any,
     worldFrameData: any,
-    state: any
+    state: any,
+    recordingList: Array<string>
 }
 
 const ReasoningNextStepRow = styled("div")({
@@ -136,7 +138,8 @@ const iconOffset = 480;
 const RowComponent = styled("div")({
     display: "flex",
     flexDirection: "row",
-    marginBottom: 3
+    marginBottom: 3,
+    alignItems: "stretch",
 })
 
 const ObjectCompContainer = styled("div")({
@@ -149,7 +152,7 @@ export default function WozStatusComp({
                                           currentStep, recipe, state,
                                           reasoningFrameData, egovlpActionFrameData,
                                           worldFrameData,
-                                          clipActionFrameData
+                                          clipActionFrameData, recordingList
                                       }:
                                           WozStatusCompStatus) {
 
@@ -176,21 +179,31 @@ export default function WozStatusComp({
 
     return (
         <div>
+
             <AnnotationContext.Consumer>
                 {({annotationData, setAnnotationData}) => (
-                    <AnnotationControlComp mode={"auto"} recipe={recipe} state={state}
-                                           annotationData={annotationData}
-                                           setAnnotationData={setAnnotationData}
-                                           errorStatus={errorStatus}
-                    ></AnnotationControlComp>
+                    <RowComponent>
+                        <SessionControlGroup
+                            annotationData={annotationData}
+                            setAnnotationData={setAnnotationData}
+                            recordingList={recordingList}
+                        />
+                        <AnnotationControlComp mode={"auto"} recipe={recipe} state={state}
+                                               annotationData={annotationData}
+                                               setAnnotationData={setAnnotationData}
+                                               errorStatus={errorStatus}
+                        ></AnnotationControlComp>
+                    </RowComponent>
+
                 )}
             </AnnotationContext.Consumer>
 
 
             <RowComponent>
-                { recipe && <ObjectCompContainer><AnnotationContext.Consumer>
+                {recipe && <ObjectCompContainer><AnnotationContext.Consumer>
                     {({}) => (
-                        <ObjectPanelContainer recipe={recipe} detectedObjects={worldFrameData ? worldFrameData.data.map(d => d.label) : []}/>
+                        <ObjectPanelContainer recipe={recipe}
+                                              detectedObjects={worldFrameData ? worldFrameData.data.map(d => d.label) : []}/>
                     )}
                 </AnnotationContext.Consumer> </ObjectCompContainer>}
                 <Card sx={{

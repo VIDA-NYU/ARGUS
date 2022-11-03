@@ -3,11 +3,15 @@ import {convertTimestampToVideoTime} from "../utils/video-time";
 
 export function createInitialAnnotationData(): AnnotationData{
     return {
-        reasoningSteps: []
+        reasoningSteps: [],
+        meta: {
+            mode: "offline",
+            id: "ethan_mugcake_0"
+        }
     }
 }
 
-export function createAnnotationDataWithMachineReasoning(machineReasoningData, videoEntryTime){
+export function initializeAnnotationDataWithMachineReasoning(uninitializedAnnotation: AnnotationData, machineReasoningData, videoEntryTime): AnnotationData{
     let currStep = 0;
 
     let effectiveReasoningSteps: Array<AnnotationReasoningStep> = []
@@ -26,7 +30,8 @@ export function createAnnotationDataWithMachineReasoning(machineReasoningData, v
     }
 
     return {
-        reasoningSteps: effectiveReasoningSteps
+        reasoningSteps: effectiveReasoningSteps,
+        meta: uninitializedAnnotation.meta
     }
 }
 
@@ -59,6 +64,7 @@ export function computeCurrentStep(annotationData: AnnotationData, machineReason
 
 export function addStepToAnnotation(originalAnnotation, annotationType, annotationTime, prevStep, step): AnnotationData{
     return {
+        ...originalAnnotation,
         reasoningSteps: [...originalAnnotation.reasoningSteps, {
             type: annotationType,
             time: annotationTime,

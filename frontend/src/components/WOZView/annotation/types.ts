@@ -7,10 +7,16 @@ interface AnnotationReasoningStep {
     prev: number,
 }
 
+interface AnnotationMeta {
+    mode: "undefined" | "offline" | "online",
+    id: string
+}
+
 
 interface AnnotationData {
-    reasoningSteps: Array<AnnotationReasoningStep>
-};
+    reasoningSteps: Array<AnnotationReasoningStep>,
+    meta: AnnotationMeta
+}
 
 interface AnnotationProviderState {
     annotationData: AnnotationData,
@@ -18,4 +24,4 @@ interface AnnotationProviderState {
 }
 
 
-export type {AnnotationData, AnnotationProviderState, AnnotationReasoningStep}
+export type {AnnotationData, AnnotationProviderState, AnnotationReasoningStep, AnnotationMeta}

@@ -1,5 +1,5 @@
 import {useEffect} from "react";
-import {createAnnotationDataWithMachineReasoning, isAnnotationEmpty} from "./utils";
+import {initializeAnnotationDataWithMachineReasoning, isAnnotationEmpty} from "./utils";
 import {AnnotationData} from "./types";
 
 interface MachineReasoningInitializerProps {
@@ -14,7 +14,7 @@ export default function MachineReasoningInitializer({reasoningData, recordingMet
     MachineReasoningInitializerProps){
     useEffect(() => {
         if (reasoningData && isAnnotationEmpty(annotationData) && recordingMeta) {
-            let newAnnotationData = createAnnotationDataWithMachineReasoning(reasoningData, recordingMeta['first-entry']);
+            let newAnnotationData = initializeAnnotationDataWithMachineReasoning(annotationData, reasoningData, recordingMeta['first-entry']);
             setAnnotationData(newAnnotationData)
         }
     }, [reasoningData, recordingMeta])
