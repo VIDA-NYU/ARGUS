@@ -37,12 +37,14 @@ export function uploadAnnotation(recordingName, annotationData){
 
     formData.append('file', annotationBlob);
 
-    const url = API_URL + RECORDINGS_UPLOAD_PATh + `${recordingName}/annotation.json`;
+    const url = API_URL + RECORDINGS_UPLOAD_PATh + `${recordingName}/annotation-v1.json?overwrite=true`;
     const response = fetch(url, {
         method: "POST",
-        body: formData
-    }).then((res) => res.json()).then(res=> {
-
+        body: formData,
+    }).then((res) => {
+        return res.json()
+    }).then(res=> {
+        return res
     });
     return response
 }

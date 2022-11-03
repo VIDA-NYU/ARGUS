@@ -2,6 +2,8 @@ import {styled} from "@mui/material";
 import SessionControlPanel from "./session-control-panel";
 import SessionSelectionPanel from "./session-selection-panel";
 import {AnnotationData, AnnotationMeta} from "../annotation/types";
+import {resetHumanAnnotation} from "../annotation/utils";
+import {uploadAnnotation} from "../utils/rest";
 
 interface SessionControlGroupProps {
     annotationData: AnnotationData,
@@ -26,6 +28,16 @@ export default function SessionControlGroup({annotationData, setAnnotationData, 
         })
     }
 
+    const handleResettingAnnotationData = () => {
+        setAnnotationData(resetHumanAnnotation(annotationData));
+    }
+
+    const handleSavingAnnotationData = () => {
+        uploadAnnotation(annotationData.meta.id, annotationData).then(r => {
+            alert("Annotation saved!");
+        })
+    }
+
     return (
         <Container>
             <SessionSelectionPanel
@@ -33,7 +45,10 @@ export default function SessionControlGroup({annotationData, setAnnotationData, 
                 setAnnotationMeta={setAnnotationMeta}
                 recordingList={recordingList}
             />
-            <SessionControlPanel/>
+            <SessionControlPanel
+                onResettingAnnotation={handleResettingAnnotationData}
+                onSavingAnnotation={handleSavingAnnotationData}
+            />
         </Container>
     )
 }

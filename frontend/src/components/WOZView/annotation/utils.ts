@@ -99,3 +99,10 @@ export function computeCurrentStepSpentTime(annotationData, currentTime){
     let latestStepChangeTime = computeLatestStepChangeTime(annotationData, currentTime);
     return currentTime - latestStepChangeTime;
 }
+
+export function resetHumanAnnotation(annotationData: AnnotationData){
+    return {
+        ...annotationData,
+        reasoningSteps: annotationData.reasoningSteps.filter(d => d.type === "machine_step")
+    }
+}
