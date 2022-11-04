@@ -21,7 +21,8 @@ import Controls from '../../components/Controls';
 
 // local components
 import PointCloudViewer from './components/PointCloudViewer/PointCloudViewer';
-import IMUDataView from './components/IMUViewer/IMUViewer';
+// import IMUDataView from './components/IMUViewer/IMUViewer';
+import IMUDataView from './components/IMUViewer2/IMUViewer2';
 
 // helpers
 import { formatTotalDuration, format  } from '../../components/Helpers';
@@ -117,7 +118,8 @@ const HistoricalDataView = () => {
           const imuAccelJSONFile = await getIMUAccelData(recordingName);
           const imuGyroJSONFile = await getIMUGyroData(recordingName);
           const imuMagJSONFile = await getIMUMagData(recordingName);
-          setIMUData([imuAccelJSONFile, imuGyroJSONFile, imuMagJSONFile ] );
+          
+          setIMUData([ imuAccelJSONFile, imuGyroJSONFile, imuMagJSONFile ] );
         } catch( error ){
 
           console.log('Error retrieving IMU data');
@@ -390,7 +392,7 @@ const HistoricalDataView = () => {
             </div>
 
             <div className="layer-wrapper">
-                <IMUDataView data={imudata} recordingName={recordingName}></IMUDataView>
+                <IMUDataView data={imudata}></IMUDataView>
             </div>
             
         </div>

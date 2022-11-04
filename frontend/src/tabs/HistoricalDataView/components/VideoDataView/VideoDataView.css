@@ -1,0 +1,34 @@
+.video-card-container{
+
+    display: flex;
+    flex: 1;
+
+}
+
+.side-column{
+
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 20%;
+}
+
+.main-column{
+
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 60%;
+}
+
+.top-video{
+
+    width: 100%;
+    height: 100%;
+}
+
+.bottom-video{
+
+    width: 100%;
+    height: 100%;
+}

@@ -17,7 +17,8 @@ import AccordionView from '../../../../templates/AccordionView/AccordionView';
 import { streamingType } from '../../../../api/types';
 
 // styles
-import './VideoCard/VideoCard.css'
+import './VideoCard/VideoCard.css';
+import './VideoDataView.css';
 
 const VideoDataView = ({ type, title, data, recordingName, state, onProgress, onSeek }: any ) => {
     
@@ -34,12 +35,54 @@ const VideoDataView = ({ type, title, data, recordingName, state, onProgress, on
     return (
 
         <div className="video-card-container">
-            <VideoCard 
-                title={videoStreamings['main']} 
-                state={state}
-                onSeek={res => onSeek(res)} 
-                onProgress={(res) => onProgress(res)} 
-                path={getVideoPath(recordingName, 'main')} />
+
+            <div className="side-column">
+                <div className="top-video">
+                    <VideoCard 
+                        title={videoStreamings['glf']} 
+                        state={state}
+                        onSeek={res => onSeek(res)} 
+                        onProgress={(res) => onProgress(res)} 
+                        path={getVideoPath(recordingName, 'glf')} />
+                </div>
+                <div className="bottom-video">
+                    <VideoCard 
+                        title={videoStreamings['gll']} 
+                        state={state}
+                        onSeek={res => onSeek(res)} 
+                        onProgress={(res) => onProgress(res)} 
+                        path={getVideoPath(recordingName, 'gll')} />
+                </div>
+            </div>
+
+            <div className="main-column">
+                <VideoCard 
+                    title={videoStreamings['main']} 
+                    state={state}
+                    onSeek={res => onSeek(res)} 
+                    onProgress={(res) => onProgress(res)} 
+                    path={getVideoPath(recordingName, 'main')} />
+            </div>
+
+            <div className="side-column">
+                <div className="top-video">
+                    <VideoCard 
+                        title={videoStreamings['grf']} 
+                        state={state}
+                        onSeek={res => onSeek(res)} 
+                        onProgress={(res) => onProgress(res)} 
+                        path={getVideoPath(recordingName, 'grf')} />
+                </div>
+                <div className="bottom-video">
+                    <VideoCard 
+                        title={videoStreamings['grr']} 
+                        state={state}
+                        onSeek={res => onSeek(res)} 
+                        onProgress={(res) => onProgress(res)} 
+                        path={getVideoPath(recordingName, 'grr')} />
+                </div>
+            </div>
+
         </div>
 
         // <AccordionView title='Cameras' height={300}>

@@ -104,7 +104,7 @@ const IMUDataView = ({ data, recordingName }: any) => {
 
         if(data.length > 0){
 
-            let sampledData = sampleArray(data, Activity_Sample_Rate);
+            // let sampledData = sampleArray(data, Activity_Sample_Rate);
             console.log("Entered IMUDataView")
             let processedAccelData = preprocessData(data[0], recordingName);
             console.log("processedAccelData:")
@@ -162,17 +162,17 @@ const IMUDataView = ({ data, recordingName }: any) => {
 
         <ComponentContainer>
 
-            <ChartContainer>
+            {/* <ChartContainer>
                 <IMUActivityBarChart data={imuaccelData}></IMUActivityBarChart>
-            </ChartContainer>
+            </ChartContainer> */}
 
-            <ChartContainer>
+            {/* <ChartContainer>
                 <IMUActivityBarChart data={imuaGyroData}></IMUActivityBarChart>
             </ChartContainer>
 
             <ChartContainer>
                 <IMUActivityBarChart data={imuMagData}></IMUActivityBarChart>
-            </ChartContainer>
+            </ChartContainer> */}
 
         </ComponentContainer>
 
