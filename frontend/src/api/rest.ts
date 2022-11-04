@@ -89,11 +89,14 @@ export function useCurrentRecipe() {
 }
 
 /* fetch one recipe */
-export function useGetRecipeInfo(token, fetchAuth) {
+export function useGetRecipeInfo(token, fetchAuth, recipeName=undefined) {
+    if(!recipeName){
+        recipeName = "pinwheels"
+    }
     // get the authenticated fetch function
     const fetcher = (url: string) => fetchAuth(url).then((res) => res.json());
     // query the streamings endpoint (only if we have a token)
-    const uid: Key = token && `${API_URL}/recipes/pinwheels`;
+    const uid: Key = token && `${API_URL}/recipes/${recipeName}`;
     const { data: response, error } = useSWR(uid, fetcher);
     return {
         data: response && response.data,

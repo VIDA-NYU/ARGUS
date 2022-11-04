@@ -57,7 +57,7 @@ export default function DashboardTabs() {
           <Tab label="Historical Data" {...a11yProps(1)} />
           <Tab label="Recipe Collection" {...a11yProps(2)} />
           <Tab label="Debuging Models" {...a11yProps(3)} />
-          <Tab label="Wizard of OZ" {...a11yProps(4)} />
+          <Tab label="Intervenor" {...a11yProps(4)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
