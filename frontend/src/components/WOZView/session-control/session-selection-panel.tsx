@@ -94,6 +94,7 @@ export default function SessionSelectionPanel({annotationMeta, setAnnotationMeta
                     />
                     <SelectorColumn>
                         <StyledFormControl
+                            disabled={annotationMeta.mode === "online"}
                             variant="standard"
                             fullWidth>
                             <InputLabel id="demo-simple-select-label">Recording</InputLabel>

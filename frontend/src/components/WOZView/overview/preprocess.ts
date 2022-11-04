@@ -1,15 +1,14 @@
 import {useEffect, useRef, useState} from "react";
 import {Dataset} from "../../HandsDataView/model/dataset";
 
-function preprocessTimestampData (data, recordingMetaData, playedTimes){
+function preprocessTimestampData (data, recordingMetaData, playedTimes, totalDuration){
 
     let dataset = new Dataset(recordingMetaData, data);
     const result = []
 
     const rawFirstEntryTimestamp: string = recordingMetaData['first-entry'].split('-')[0]
     const rawLastEntryTimestamp: string = recordingMetaData["last-entry"].split('-')[0]
-    const duration = parseInt(rawLastEntryTimestamp) - parseInt(rawFirstEntryTimestamp);
-
+    const duration = totalDuration && parseInt(totalDuration) ? totalDuration * 1000: parseInt(rawLastEntryTimestamp) - parseInt(rawFirstEntryTimestamp)
     for(let playedTime of playedTimes){
         let currentTime = playedTime * duration / 1000;
 

@@ -1,5 +1,6 @@
 import {AnnotationData, AnnotationMeta, AnnotationReasoningStep} from "./types";
 import {convertTimestampToVideoTime, extractTimestampValue} from "../utils/video-time";
+import videoDataView from "../../VideoDataView/VideoDataView";
 
 export function createInitialAnnotationData(): AnnotationData{
     return {
@@ -62,6 +63,7 @@ export function computeCurrentStep(annotationData: AnnotationData, machineReason
     let effectiveAnnotationSteps = [...annotationData.reasoningSteps.filter(step => step.time <= currentTime)];
     effectiveAnnotationSteps.sort((a, b) => a.time - b.time)
     let currStep = 0;
+
     for(let annotationReasoningStep of effectiveAnnotationSteps){
         if(annotationReasoningStep.type === "machine_step"){
             currStep = annotationReasoningStep.step;

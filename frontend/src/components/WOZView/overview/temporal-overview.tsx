@@ -86,10 +86,10 @@ export default function TemporalOverview({reasoningData, boundingBoxData,
 
     const playedTimes = generatePlayedTimes(xCellNumber);
 
-    const reasoningCellData = preprocessTimestampData(reasoningData, recordingMeta, playedTimes);
-    const humanCellData = preprocessTimestampData(humanReasoningData, recordingMeta, playedTimes);
+    const reasoningCellData = preprocessTimestampData(reasoningData, recordingMeta, playedTimes, state.totalDuration);
+    const humanCellData = preprocessTimestampData(humanReasoningData, recordingMeta, playedTimes, state.totalDuration);
 
-    const clipActionTimedData = preprocessTimestampData(clipActionData, recordingMeta, playedTimes)
+    const clipActionTimedData = preprocessTimestampData(clipActionData, recordingMeta, playedTimes, state.totalDuration)
     const individualActionDataList = extractIndividualActionData(clipActionTimedData);
 
     const actionLabelRef0 = useRef(null);
@@ -231,8 +231,8 @@ export default function TemporalOverview({reasoningData, boundingBoxData,
                                             y={0}
                                             cellSize={cellSize}
                                             rectFill={interpolateBuPu(reasoningCellData[i].step_id / 10 + 0.25)}
-                                            textFill={reasoningCellData[i].step_id < 4 ? "#333333" : "white"}
-                                            label={reasoningCellData[i].step_id.toString()}
+                                            textFill={humanCellData[i].step_id < 4 ? "#333333" : "white"}
+                                            label={humanCellData[i].step_id.toString()}
                                         />
                                     )
                                 })

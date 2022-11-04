@@ -46,9 +46,9 @@ export default function WozDataConsumer({annotationData, setAnnotationData}: Woz
     const {response: recipeList} = useGetRecipes(token, fetchAuth);
     const recipeIDList = recipeList? recipeList.map(d => d._id) : [];
     const {response: recordingList} = useGetAllRecordings(token, fetchAuth);
-    const {response: recipeDataResponse} = useGetRecipeInfo(token, fetchAuth, "mugcake");
+    const {response: recipeData} = useGetRecipeInfo(token, fetchAuth, annotationData.meta.recipeID);
 
-    const [ recipeData, setRecipeData ] = useState<RecipeData>();
+    // const [ recipeData, setRecipeData ] = useState<RecipeData>();
     const recordingID = annotationData.meta.id;
 
     const {response: streamInfo} = useGetStreamInfo(token, fetchAuth, "main");
@@ -57,32 +57,6 @@ export default function WozDataConsumer({annotationData, setAnnotationData}: Woz
         egovlpActionData, clipActionData, recordingData,
         reasoningData, boundingBoxData, memoryData, eyeData
     } = useRecordingData(recordingID, token, fetchAuth);
-
-    const RecipePicker = () => {
-        const { token, fetchAuth } = useToken();
-        const { response: recipes } = useGetRecipes(token, fetchAuth);
-        const { response: recipe, setRecipe, setting } = useCurrentRecipe();
-        const index = recipes && recipes.findIndex(item => item._id === recipe);
-        if (recipes) { setRecipeData(recipes[index]);}
-
-        return (
-            <FormControl sx={{ m: 1, minWidth: 340 }} size="small">
-                <InputLabel id="recipe-selector-label">Select Recipe</InputLabel>
-                {setting === true ? 'Setting...'  : <Select
-                    labelId="recipe-selector-label"
-                    id="recipe-selector"
-                    value={recipe||''}
-                    label="Select Recipe"
-                    onChange={e => setRecipe(e.target.value)}
-                >
-                    {recipes && recipes.map(r => (
-                        <MenuItem key={r.name} value={r._id}>{r.name}</MenuItem>
-                    ))}
-                    <MenuItem value={''}>--</MenuItem>
-                </Select>}
-            </FormControl>
-        )
-    }
 
     const {
         state,
@@ -124,7 +98,6 @@ export default function WozDataConsumer({annotationData, setAnnotationData}: Woz
         annotationData.meta.mode, recordingCurrentTime, recordingData,
         reasoningData, memoryData,
         boundingBoxData, egovlpActionData, clipActionData, eyeData );
-    console.log(reasoningFrameData, reasoningData);
     const videoPlayer = (<ReplayPlayer
         type={dataType.VIDEO}
         data={recordingData}
@@ -164,7 +137,7 @@ export default function WozDataConsumer({annotationData, setAnnotationData}: Woz
     )
 
     const recipePicker = (
-        <RecipePicker/>
+        <div/>
     )
 
     return (
