@@ -11,6 +11,8 @@ import TemporalOverview from "./overview/temporal-overview";
 import React, {ReactElement} from "react";
 import {REASONING_CHECK_STREAM} from "../../config";
 import {ImageView} from '../StreamDataView/ImageView';
+import MachineReasoningRecorder from "./annotation/machine-reasoning-recorder";
+import OnlineStreamInitializer from "./annotation/online-stream-initializer";
 
 
 interface RecipeData {
@@ -31,6 +33,7 @@ interface WozCompContainerProps {
     recordingList: Array<string>,
     recipeIDList: Array<string>,
     recordingData: any,
+    streamInfo: any,
     reasoningData: any,
     reasoningFrameData: any,
     recipeData: RecipeData,
@@ -42,6 +45,7 @@ interface WozCompContainerProps {
     egovlpActionFrameData: any,
     videoPlayer: ReactElement,
     videoControls: ReactElement,
+    currentTime: number,
     recipePicker: ReactElement
 
 }
@@ -54,7 +58,8 @@ export default function WozCompContainer({
                                              recordingData, reasoningData, reasoningFrameData, recipeData,
                                              boundingBoxData, boundingBoxFrameData,
                                              egovlpActionData, egovlpActionFrameData,
-                                             clipActionData, clipActionFrameData, videoPlayer, videoControls,
+                                             clipActionData, clipActionFrameData, videoPlayer,
+                                             videoControls, streamInfo, currentTime,
                                              recipePicker
                                          }: WozCompContainerProps) {
 
@@ -63,8 +68,24 @@ export default function WozCompContainer({
             <AnnotationContext.Consumer>
                 {
                     ({annotationData, setAnnotationData}) => (
-                        <MachineReasoningInitializer
+                        <div>
+                            {annotationData.meta.mode === "offline" && <MachineReasoningInitializer
                             recordingMeta={recordingData} reasoningData={reasoningData}
+                            annotationData={annotationData} setAnnotationData={setAnnotationData}/>}
+                            {annotationData.meta.mode === "online" && streamInfo && <OnlineStreamInitializer
+                                streamMeta={streamInfo}
+                                annotationData={annotationData} setAnnotationData={setAnnotationData}/>}
+
+                        </div>
+                    )
+                }
+            </AnnotationContext.Consumer>
+            <AnnotationContext.Consumer>
+                {
+                    ({annotationData, setAnnotationData}) => (
+                        <MachineReasoningRecorder
+                            currentTime={currentTime}
+                            reasoningFrameData={reasoningFrameData}
                             annotationData={annotationData} setAnnotationData={setAnnotationData}/>
                     )
                 }
@@ -108,7 +129,8 @@ export default function WozCompContainer({
                     </Box>
                     <Box sx={{ gridArea: 'r' }}>
                         <StreamView utf streamId={REASONING_CHECK_STREAM} showStreamId={false} showTime={false}>
-                            {data => (<Box>{reasoningFrameData && <ReasoningOutputsWOZView
+                            {data => (<Box>{<ReasoningOutputsWOZView
+                                currentTimestampValue={currentTime}
                                 recipeIDList={recipeIDList}
                                 clipActionFrameData={clipActionFrameData}
                                 egovlpActionFrameData={egovlpActionFrameData}
@@ -116,7 +138,7 @@ export default function WozCompContainer({
                                 worldFrameData={boundingBoxFrameData}
                                 state={state}
                                 recordingList={recordingList}
-                                recipe={recipeData} data={JSON.parse(data)} />}</Box>)}
+                                recipe={recipeData} data={JSON.parse(data)}/>}</Box>)}
                         </StreamView>
                     </Box>
                     <AnnotationContext.Consumer>

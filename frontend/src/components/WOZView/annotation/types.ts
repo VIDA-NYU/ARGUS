@@ -10,7 +10,9 @@ interface AnnotationReasoningStep {
 interface AnnotationMeta {
     mode: "undefined" | "offline" | "online",
     id: string,
-    recipeID: string
+    recipeID: string,
+    entryTime: number,
+    initialized: boolean
 }
 
 

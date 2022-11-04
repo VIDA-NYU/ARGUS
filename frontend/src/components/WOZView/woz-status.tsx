@@ -33,6 +33,7 @@ import RecipeTextComp from "./recipe/recipe-text";
 interface WozStatusCompStatus {
     recipe: Recipe,
     currentStep: number,
+    currentTimestampValue: number,
     reasoningFrameData: any,
     clipActionFrameData: any,
     egovlpActionFrameData: any,
@@ -156,7 +157,7 @@ export default function WozStatusComp({
                                           reasoningFrameData, egovlpActionFrameData,
                                           worldFrameData,
                                           clipActionFrameData, recordingList,
-                                          recipeIDList
+                                          recipeIDList, currentTimestampValue
                                       }:
                                           WozStatusCompStatus) {
 
@@ -193,10 +194,13 @@ export default function WozStatusComp({
                             recordingList={recordingList}
                             recipeIDList={recipeIDList}
                         />
-                        <AnnotationControlComp mode={"auto"} recipe={recipe} state={state}
+                        <AnnotationControlComp
+                            currentTimeStampValue={currentTimestampValue}
+                            mode={"auto"} recipe={recipe} state={state}
                                                annotationData={annotationData}
                                                setAnnotationData={setAnnotationData}
                                                errorStatus={errorStatus}
+
                         ></AnnotationControlComp>
                     </RowComponent>
 
@@ -220,7 +224,7 @@ export default function WozStatusComp({
 
                     </CardHeader>
                     <CardContent>
-                        <ClipOutputsView data={clipActionFrameData}/>
+                        {reasoningFrameData && <ClipOutputsView data={clipActionFrameData}/> }
                     </CardContent>
                 </Card>
 

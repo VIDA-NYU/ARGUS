@@ -9,7 +9,7 @@ interface SessionControlGroupProps {
     annotationData: AnnotationData,
     setAnnotationData: (value: AnnotationData) => void,
     recordingList: Array<string>,
-    recipeIDList: Array<string>
+    recipeIDList: Array<string>,
 }
 
 const Container = styled("div")({

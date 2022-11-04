@@ -7,6 +7,7 @@ import FormControl from '@mui/material/FormControl';
 import Select, {SelectChangeEvent} from '@mui/material/Select';
 import {AnnotationMeta} from "../annotation/types";
 import SessionModeSwitch from "./session-mode-switch";
+import {buildNewAnnotationMeta} from "../annotation/utils";
 
 
 interface SessionSelectionPanelProps {
@@ -45,22 +46,22 @@ const StyledFormControl = styled(FormControl)({
 
 export default function SessionSelectionPanel({annotationMeta, setAnnotationMeta, recordingList, recipeIDList}:
                                                   SessionSelectionPanelProps) {
-
+    let myRecordingList = recordingList ? recordingList : [];
     const [selectedRecording, setSelectedRecording] = useState<string>(undefined);
 
     const handleChange = (event: SelectChangeEvent) => {
-        setAnnotationMeta({
+        setAnnotationMeta(buildNewAnnotationMeta({
             ...annotationMeta,
             id: event.target.value as string
-        })
+        }))
         // setSelectedRecording(event.target.value as string)
     }
 
     const handleRecipeChange = (event: SelectChangeEvent) => {
-        setAnnotationMeta({
+        setAnnotationMeta(buildNewAnnotationMeta({
             ...annotationMeta,
             recipeID: event.target.value as string
-        })
+        }))
         // setSelectedRecording(event.target.value as string)
     }
 
@@ -73,10 +74,10 @@ export default function SessionSelectionPanel({annotationMeta, setAnnotationMeta
 
     const handleModeSwitching = (newMode: "online" | "offline") => {
         setAnnotationMeta(
-            {
+            buildNewAnnotationMeta({
                 ...annotationMeta,
                 mode: newMode
-            }
+            })
         )
     }
 
@@ -104,7 +105,7 @@ export default function SessionSelectionPanel({annotationMeta, setAnnotationMeta
                                 onChange={handleChange}
                             >
                                 {
-                                    recordingList.map(recordingName => (
+                                    myRecordingList.map(recordingName => (
                                         <MenuItem key={`item-${recordingName}`} value={recordingName}>{recordingName}</MenuItem>
                                     ))
                                 }

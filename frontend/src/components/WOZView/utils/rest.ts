@@ -28,6 +28,15 @@ export function useGetRecordingJson(recordingName, filename) {
     return {data};
 }
 
+export function useGetStreamInfo(token, fetchAuth, sessionID: string) {
+    const url = API_URL +  "/streams" + `/${sessionID}?token=${token}`;
+    const [data, setData] = useState();
+    fetch(url).then((res) => res.json()).then( r => {
+        setData(r);
+    });
+    return {response: data};
+}
+
 export function uploadAnnotation(recordingName, annotationData){
 
     let formData = new FormData();

@@ -1,5 +1,5 @@
-import {AnnotationData, AnnotationReasoningStep} from "./types";
-import {convertTimestampToVideoTime} from "../utils/video-time";
+import {AnnotationData, AnnotationMeta, AnnotationReasoningStep} from "./types";
+import {convertTimestampToVideoTime, extractTimestampValue} from "../utils/video-time";
 
 export function createInitialAnnotationData(): AnnotationData{
     return {
@@ -7,7 +7,9 @@ export function createInitialAnnotationData(): AnnotationData{
         meta: {
             mode: "offline",
             id: "ethan_mugcake_0",
-            recipeID: "mugcake"
+            recipeID: "mugcake",
+            entryTime: 0,
+            initialized: false,
         }
     }
 }
@@ -32,16 +34,30 @@ export function initializeAnnotationDataWithMachineReasoning(uninitializedAnnota
 
     return {
         reasoningSteps: effectiveReasoningSteps,
-        meta: uninitializedAnnotation.meta
+        meta: {
+            ...uninitializedAnnotation.meta,
+            initialized: true
+        }
+    }
+}
+
+export function initializeAnnotationDataWithStreamInfo(uninitializedAnnotation: AnnotationData, videoEntryTime): AnnotationData{
+    return {
+        ...uninitializedAnnotation,
+        reasoningSteps: [],
+        meta: {
+            ...uninitializedAnnotation.meta,
+            entryTime: extractTimestampValue(videoEntryTime),
+            initialized: true
+        }
     }
 }
 
 export function isAnnotationEmpty(annotationData: AnnotationData){
-    return annotationData.reasoningSteps.length === 0;
+    return annotationData.reasoningSteps.length === 0 || !annotationData.meta.initialized;
 }
 
 export function computeCurrentStep(annotationData: AnnotationData, machineReasoningStep, currentTime){
-
     let effectiveAnnotationSteps = [...annotationData.reasoningSteps.filter(step => step.time <= currentTime)];
     effectiveAnnotationSteps.sort((a, b) => a.time - b.time)
     let currStep = 0;
@@ -105,5 +121,12 @@ export function resetHumanAnnotation(annotationData: AnnotationData){
     return {
         ...annotationData,
         reasoningSteps: annotationData.reasoningSteps.filter(d => d.type === "machine_step")
+    }
+}
+
+export function buildNewAnnotationMeta(annotationMeta: AnnotationMeta){
+    return {
+        ...annotationMeta,
+        initialized: false
     }
 }

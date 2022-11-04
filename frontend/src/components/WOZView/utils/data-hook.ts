@@ -1,7 +1,7 @@
 import {useVideoTime} from "./video-time";
 import {useGetRecordingJson} from "./rest";
 import {useGetAllRecordings, useGetRecipeInfo, useGetRecording, useStreamData} from "../../../api/rest";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 function useRecordingData (recordingID: string, token:string, fetchAuth: any){
     const {response: recordingData} = useGetRecording(token, fetchAuth, recordingID);
@@ -74,9 +74,15 @@ function parseStreamBuffer(arrayBufferData: ArrayBuffer | undefined){
 }
 
 function useStreamFrameData(){
-    const [tmp, setTmp] = useState<string>();
-    const {data: reasoningFrameBuffer } = useStreamData({ streamId: "reasoning",
+    const [cachedTime, setCachedTime] = useState<string>();
+    const {data: reasoningFrameBuffer, time } = useStreamData({ streamId: "reasoning",
         parse: null });
+
+    useEffect(() => {
+        if(time){
+            setCachedTime(time);
+        }
+    }, [time])
     const reasoningFrameData = parseStreamBuffer(reasoningFrameBuffer)
 
     const { data: egovlpActionBuffer } = useStreamData({ streamId: "egovlp:action:steps",
@@ -100,7 +106,7 @@ function useStreamFrameData(){
     const clipActionFrameData = parseStreamBuffer(clipActionBuffer);
 
     return {reasoningFrameData, egovlpActionFrameData, memoryFrameData, boundingBoxFrameData, eyeFrameData,
-        clipActionFrameData}
+        clipActionFrameData, currentTime: cachedTime}
 }
 
 function useFrameData(mode: "online" | "offline" | "undefined", currentTime, recordingData, reasoningData, memoryData,
@@ -124,7 +130,8 @@ function useFrameData(mode: "online" | "offline" | "undefined", currentTime, rec
         memoryFrameData: streamMemoryFrameData,
         boundingBoxFrameData: streamBoundingBoxFrameData,
         clipActionFrameData: streamClipActionFrameData,
-        eyeFrameData: streamEyeFrameData
+        eyeFrameData: streamEyeFrameData,
+        currentTime: streamCurrentTime
     } = useStreamFrameData();
 
     if(mode === "online"){
@@ -134,7 +141,8 @@ function useFrameData(mode: "online" | "offline" | "undefined", currentTime, rec
             memoryFrameData: streamMemoryFrameData,
             boundingBoxFrameData: streamBoundingBoxFrameData,
             clipActionFrameData: streamClipActionFrameData,
-            eyeFrameData: streamEyeFrameData
+            eyeFrameData: streamEyeFrameData,
+            currentTime: streamCurrentTime
         }
     }else{
         return {
@@ -143,7 +151,8 @@ function useFrameData(mode: "online" | "offline" | "undefined", currentTime, rec
             clipActionFrameData: recordingClipActionFrameData,
             eyeFrameData: recordingEyeFrameData,
             memoryFrameData: recordingMemoryFrameData,
-            boundingBoxFrameData: recordingBoundingBoxFrameData
+            boundingBoxFrameData: recordingBoundingBoxFrameData,
+            currentTime: currentTime
         }
     }
 }

@@ -125,28 +125,15 @@ export const ReasoningOutputsWOZView = ({
                                             data, recipe, reasoningFrameData,
                                             egovlpActionFrameData, clipActionFrameData,
                                             worldFrameData, state, recordingList,
-                                            recipeIDList
+                                            recipeIDList, currentTimestampValue
                                         }) => {
     const {step_id, step_status, step_description, error_status, error_description} = data || {};
-    // let step_id = 0;
-    const current_step = step_id + 1;
-    const {setStep} = useRecordingControls();
-    const step_id_previous = (step_id - 1).toString();
-    const step_id_next = (step_id + 1).toString();
-    let machinePredictedStep = reasoningFrameData['step_id']
-    const [currentUserStep, setCurrentUserStep] = useState<number>(0);
-
-    const annotateReasoningStep = (stepId) => {
-
-    }
 
     return <Box display='flex' flexDirection='column' pt={0} mr={2} ml={2}>
-      <span style={{paddingBottom: 7}} ><b>{recipe && recipe.name} Recipe Steps</b></span>
-      <span><b>Current Step: </b>{current_step} - <b>  Status:</b> {step_status}</span>
-      {recipe && recipe.instructions && <ListSteps list={recipe.instructions} completedStep={step_id}/>}
       {/*<span><b>RECIPE STEPS</b></span>*/}
       {/*<span><b>Current Step: </b>{current_step} - <b>  Status:</b> {step_status}</span>*/}
         {recipe && <WozStatusComp
+            currentTimestampValue={currentTimestampValue}
             recipeIDList={recipeIDList}
             state={state}
             worldFrameData={worldFrameData}

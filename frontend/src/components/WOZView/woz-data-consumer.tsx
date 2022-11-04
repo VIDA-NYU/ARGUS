@@ -2,7 +2,7 @@ import {useToken} from "../../api/TokenContext";
 import {useCurrentRecipe, useGetAllRecordings, useGetRecipeInfo, useGetRecipes, useGetRecording} from "../../api/rest";
 import React, {useEffect, useRef, useState} from "react";
 import {MediaState} from "../HistoricalDataView";
-import {useGetRecordingJson} from "./utils/rest";
+import {useGetRecordingJson, useGetStreamInfo} from "./utils/rest";
 import {useVideoTime} from "./utils/video-time";
 import {onProgressType} from "../VideoDataView/VideoCard/VideoCard";
 import {format, formatTotalDuration} from "../Helpers";
@@ -50,6 +50,8 @@ export default function WozDataConsumer({annotationData, setAnnotationData}: Woz
 
     const [ recipeData, setRecipeData ] = useState<RecipeData>();
     const recordingID = annotationData.meta.id;
+
+    const {response: streamInfo} = useGetStreamInfo(token, fetchAuth, "main");
 
     const {
         egovlpActionData, clipActionData, recordingData,
@@ -103,7 +105,7 @@ export default function WozDataConsumer({annotationData, setAnnotationData}: Woz
         played,
         seeking,
         totalDuration,
-        currentTime,
+        currentTime: recordingCurrentTime,
     } = state;
 
 
@@ -118,7 +120,9 @@ export default function WozDataConsumer({annotationData, setAnnotationData}: Woz
     // const {
     //     reasoningFrameData, egovlpActionFrameData, memoryFrameData, boundingBoxFrameData
     // } = useStreamFrameData();
-    const {reasoningFrameData, egovlpActionFrameData, clipActionFrameData, boundingBoxFrameData, memoryFrameData, eyeFrameData} = useFrameData(annotationData.meta.mode,currentTime, recordingData, reasoningData, memoryData,
+    const {reasoningFrameData, egovlpActionFrameData, clipActionFrameData, boundingBoxFrameData, memoryFrameData, eyeFrameData, currentTime} = useFrameData(
+        annotationData.meta.mode, recordingCurrentTime, recordingData,
+        reasoningData, memoryData,
         boundingBoxData, egovlpActionData, clipActionData, eyeData );
 
     const videoPlayer = (<ReplayPlayer
@@ -166,10 +170,12 @@ export default function WozDataConsumer({annotationData, setAnnotationData}: Woz
     return (
         <WozCompContainer
             state={state}
+            currentTime={currentTime}
             recordingID={recordingID}
             recordingList={recordingList}
             recipeIDList={recipeIDList}
             recordingData={recordingData}
+            streamInfo={streamInfo}
             recipeData={recipeData}
             reasoningData={reasoningData}
             reasoningFrameData={reasoningFrameData}

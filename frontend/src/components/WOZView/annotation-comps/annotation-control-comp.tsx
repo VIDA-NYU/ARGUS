@@ -20,6 +20,7 @@ interface AnnotationControlProps {
     annotationData: AnnotationData,
     setAnnotationData: (newAnnotationData: AnnotationData) => void,
     errorStatus: boolean,
+    currentTimeStampValue: number,
 };
 
 const CardContentAnnotationRow = styled("div")({
@@ -42,14 +43,14 @@ function computeStepProgressValueByTime(progressTime) {
 const progressThreshold = 5 / 6;
 
 export default function AnnotationControlComp({
-                                                  mode, recipe, state,
+                                                  mode, recipe, state, currentTimeStampValue,
                                                   annotationData, setAnnotationData,
                                                   errorStatus
                                               }: AnnotationControlProps) {
 
     const {setStep} = useRecordingControls();
 
-    let currentTime = state.currentTime;
+    let currentTime = annotationData.meta.mode === "online" ? (currentTimeStampValue - annotationData.meta.entryTime) / 1000 : state.currentTime;
 
     let currentStep = computeCurrentStep(annotationData, 0, currentTime);
 

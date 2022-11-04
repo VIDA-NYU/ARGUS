@@ -47,4 +47,4 @@ function convertTimestampToVideoTime(timestamp, videoEntryTimestamp){
 
 }
 
-export {useVideoTime, convertTimestampToVideoTime}
+export {useVideoTime, convertTimestampToVideoTime, extractTimestampValue}
