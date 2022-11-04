@@ -383,6 +383,6 @@ export const useStreamData = ({ streamId, params=null, parse=null, utf=false, mu
         })
     }, [lastMessage]);
 
-    useTimeout(() => {setData([null, null, null, null])}, timeout, data)
+    useTimeout(() => {setData([null, null, null, null])}, timeout, ts)
     return {sid, ts, time, data, readyState}
 }
