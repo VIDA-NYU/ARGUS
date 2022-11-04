@@ -30,7 +30,8 @@ function preprocessBoundingBoxData(rawData) : Array<TimeRecord>{
     return _preprocessBoundingBoxData(rawData);
 }
 
-function preprocessFrameObject(objectData){
+
+function preprocessFrameObjectWithSchemaXYXYN(objectData){
     return {
         object: objectData.label,
         loc2D: {x: objectData.xyxyn[0], y:objectData.xyxyn[1]},
@@ -38,6 +39,25 @@ function preprocessFrameObject(objectData){
         height: objectData.xyxyn[3] - objectData.xyxyn[1],
         seen: true,
         instruction: ""
+    }
+}
+
+function preprocessFrameObjectWithSchemaXYZ(objectData){
+    return {
+        object: objectData.label,
+        loc2D: {x: objectData.xyz_center[0], y:objectData.xyz_center[1]},
+        width: 10,
+        height: 10,
+        seen: true,
+        instruction: ""
+    }
+}
+
+function preprocessFrameObject(objectData){
+    if(Object.keys(objectData).includes("xyxyn")){
+        return preprocessFrameObjectWithSchemaXYXYN(objectData)
+    }else{
+        return preprocessFrameObjectWithSchemaXYZ(objectData);
     }
 }
 

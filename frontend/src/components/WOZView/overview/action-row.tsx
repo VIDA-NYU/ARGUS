@@ -37,6 +37,7 @@ export default function ActionRow({transform, cellSize, actionCellHeight,
                     playedTimes.map((playedTime, i) => {
                         return (
                             <g
+                                key={`action-${index}-cell-${i}`}
                                 transform={`translate(${xScale(playedTime)}, ${0})`}
                             >
                                 <rect

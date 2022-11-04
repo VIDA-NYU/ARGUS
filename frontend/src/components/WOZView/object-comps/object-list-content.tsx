@@ -23,7 +23,9 @@ export default function ObjectListContent ({recipeObjectStatusList}: ObjectListC
     const theme = useTheme();
     let renderUnDetectedObjectChip = (recipeObjectStatus, abbrLabel) => {
         return (
-            <Tooltip title={recipeObjectStatus.object.label}>
+            <Tooltip
+                key={`detected-obj-${abbrLabel}`}
+                title={recipeObjectStatus.object.label}>
                 <Chip sx={{
                     marginRight: 1, marginBottom: 1
                 }} label={abbrLabel}
@@ -35,7 +37,9 @@ export default function ObjectListContent ({recipeObjectStatusList}: ObjectListC
 
     let renderDetectedObject = (recipeObjectStatus, abbrLabel) => {
         return (
-            <Tooltip title={recipeObjectStatus.object.label}>
+            <Tooltip
+                key={`undetected-obj-${abbrLabel}`}
+                title={recipeObjectStatus.object.label}>
                 <Chip sx={{
                     marginRight: 1, marginBottom: 1
                 }} label={abbrLabel}

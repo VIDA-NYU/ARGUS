@@ -109,11 +109,13 @@ export default function TemporalOverview({reasoningData, boundingBoxData,
     let renderAction = (timedData, index) => {
         let transform = `translate(${0}, ${index * actionCellHeight * 1.2})`;
         return (
-            <ActionRow transform={transform} cellSize={cellSize}
-                       yAxisLabelOffsetY={yAxisLabelOffsetY} yAxisLabelWidth={yAxisLabelWidth}
-                       index={index} xScale={xScale}
-                       actionCellHeight={actionCellHeight}
-                       playedTimes={playedTimes} timedData={timedData}></ActionRow>
+            <ActionRow
+                key={`action-row-${index}`}
+                transform={transform} cellSize={cellSize}
+                yAxisLabelOffsetY={yAxisLabelOffsetY} yAxisLabelWidth={yAxisLabelWidth}
+                index={index} xScale={xScale}
+                actionCellHeight={actionCellHeight}
+                playedTimes={playedTimes} timedData={timedData}></ActionRow>
         )
     }
 
@@ -163,6 +165,7 @@ export default function TemporalOverview({reasoningData, boundingBoxData,
                                 playedTimes.map((playedTime, i) => {
                                     return (
                                         <rect
+                                            key={`reasoning-error-${i}`}
                                             x={xScale(playedTime)}
                                             y={0}
                                             width={cellSize}
@@ -194,6 +197,7 @@ export default function TemporalOverview({reasoningData, boundingBoxData,
                                 playedTimes.map((playedTime, i) => {
                                     return (
                                         <HeatmapCellWithLabel
+                                            key={`machine-reasoning-cell-${i}`}
                                             x={xScale(playedTime)}
                                             y={0}
                                             cellSize={cellSize}
@@ -226,6 +230,7 @@ export default function TemporalOverview({reasoningData, boundingBoxData,
                                 playedTimes.map((playedTime, i) => {
                                     return (
                                         <HeatmapCellWithLabel
+                                            key={`human-reasoning-cell-${i}`}
                                             x={xScale(playedTime)}
                                             y={0}
                                             cellSize={cellSize}

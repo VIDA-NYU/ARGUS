@@ -34,7 +34,9 @@ export default function RecipeTextComp({recipeInstructions, currentStep}: Recipe
                         {
                             recipeInstructions.map((instruction, i) => {
                                 return (
-                                    <RecipeStepComp index={i} instruction={instruction} isCurrentStep={i === currentStep}/>
+                                    <RecipeStepComp
+                                        key={`recipe-step-${i}`}
+                                        index={i} instruction={instruction} isCurrentStep={i === currentStep}/>
                                 )
                             })
                         }
