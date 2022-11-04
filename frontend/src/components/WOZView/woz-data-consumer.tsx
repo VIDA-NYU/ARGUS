@@ -20,6 +20,7 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import {useFrameData, useRecordingData, useRecordingFrameData, useStreamFrameData} from "./utils/data-hook";
 import eyesDataView from "../EyesDataView/EyesDataView";
+import {computeCurrentStep} from "./annotation/utils";
 
 
 interface RecipeData {
@@ -139,11 +140,12 @@ export default function WozDataConsumer({annotationData, setAnnotationData}: Woz
     const recipePicker = (
         <div/>
     )
-
+    const currentStep = computeCurrentStep(annotationData, 0, currentTime);
     return (
         <WozCompContainer
             state={state}
             currentTime={currentTime}
+            currentStep={currentStep}
             recordingID={recordingID}
             recordingList={recordingList}
             recipeIDList={recipeIDList}

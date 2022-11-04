@@ -48,7 +48,8 @@ interface WozCompContainerProps {
     videoPlayer: ReactElement,
     videoControls: ReactElement,
     currentTime: number,
-    recipePicker: ReactElement
+    recipePicker: ReactElement,
+    currentStep: number
 
 }
 
@@ -61,7 +62,7 @@ export default function WozCompContainer({
                                              boundingBoxData, boundingBoxFrameData,
                                              egovlpActionData, egovlpActionFrameData,
                                              clipActionData, clipActionFrameData, videoPlayer,
-                                             videoControls, streamInfo, currentTime,
+                                             videoControls, streamInfo, currentTime, currentStep,
                                              recipePicker
                                          }: WozCompContainerProps) {
 
@@ -156,6 +157,7 @@ export default function WozCompContainer({
                                 worldFrameData={boundingBoxFrameData}
                                 state={state}
                                 recordingList={recordingList}
+                                currentStep={currentStep}
                                 recipe={recipeData} data={JSON.parse(data)}/>}</Box>)}
                         </StreamView>
                     </Box>

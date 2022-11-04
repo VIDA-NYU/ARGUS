@@ -125,7 +125,7 @@ export const ReasoningOutputsWOZView = ({
                                             data, recipe, reasoningFrameData,
                                             egovlpActionFrameData, clipActionFrameData,
                                             worldFrameData, state, recordingList,
-                                            recipeIDList, currentTimestampValue
+                                            recipeIDList, currentTimestampValue, currentStep
                                         }) => {
     const {step_id, step_status, step_description, error_status, error_description} = data || {};
 
@@ -141,7 +141,7 @@ export const ReasoningOutputsWOZView = ({
             clipActionFrameData={clipActionFrameData}
             reasoningFrameData={reasoningFrameData}
             recordingList={recordingList}
-            recipe={recipe} currentStep={2}></WozStatusComp>}
+            recipe={recipe} currentStep={currentStep}></WozStatusComp>}
         {/*{recipe && recipe.instructions &&*/}
         {/*    <RecipeTextComp recipeInstructions={recipe.instructions} currentStep={machinePredictedStep}/>}*/}
         {/*{recipe && recipe.instructions && <ListSteps list={recipe.instructions} completedStep={step_id}/>}*/}
