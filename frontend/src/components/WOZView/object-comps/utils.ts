@@ -42,7 +42,6 @@ function getRecipeObjectStatus(recipeObject: RecipeObject, detectedLabels: Array
 }
 
 function generateRecipeObjectStatusIndex (recipeObjectIndex: RecipeObjectIndex, detectedLabels: Array<string>): RecipeObjectStatusIndex{
-
     return {
         ingredients: recipeObjectIndex.ingredients.map(d => getRecipeObjectStatus(d, detectedLabels)),
         tools: recipeObjectIndex.tools.map(d => getRecipeObjectStatus(d, detectedLabels))

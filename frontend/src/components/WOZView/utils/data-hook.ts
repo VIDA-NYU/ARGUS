@@ -95,8 +95,8 @@ function useStreamFrameData(){
 
     const { data: boundingBoxBuffer } = useStreamData({ streamId: "detic:world",
         parse: null });
-    const boundingBoxFrameData = parseStreamBuffer(boundingBoxBuffer);
-
+    const _boundingBoxFrameData = parseStreamBuffer(boundingBoxBuffer);
+    const boundingBoxFrameData = {data: _boundingBoxFrameData};
     const { data: eyeBuffer } = useStreamData({ streamId: "eye",
         parse: null });
     const eyeFrameData = parseStreamBuffer(eyeBuffer);
@@ -133,7 +133,6 @@ function useFrameData(mode: "online" | "offline" | "undefined", currentTime, rec
         eyeFrameData: streamEyeFrameData,
         currentTime: streamCurrentTime
     } = useStreamFrameData();
-
     if(mode === "online"){
         return {
             reasoningFrameData: streamReasoningFrameDatam,

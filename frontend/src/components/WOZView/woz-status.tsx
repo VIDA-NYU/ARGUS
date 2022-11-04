@@ -224,7 +224,7 @@ export default function WozStatusComp({
 
                     </CardHeader>
                     <CardContent>
-                        {reasoningFrameData && <ClipOutputsView data={clipActionFrameData}/> }
+                        {reasoningFrameData && <ClipOutputsView data={egovlpActionFrameData}/> }
                     </CardContent>
                 </Card>
 
