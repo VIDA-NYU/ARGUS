@@ -21,7 +21,7 @@ export const ClipOutputsView = ({ data, min=0 }: ClipOutputsViewProps) => {
     return data && (<Box display='flex' flexDirection='column'>
       {noAction && <Chip label='No Action' color='error' />}
       {entries.sort(([ta, sa], [tb,sb]) => ( sb-sa ))
-             .slice(0, noAction ? 4 : 5)
+             .slice(0, noAction ? 2 : 3)
              .map(([text, similarity]) => (
               <Chip key={text} label={`${text}: ${(similarity*100).toFixed(2)}`} sx={{ 
                 backgroundColor: probColors[Math.round(Math.max(1, similarity*(probColors.length-1)))],
