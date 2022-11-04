@@ -224,7 +224,12 @@ export default function WozStatusComp({
 
                     </CardHeader>
                     <CardContent>
-                        {reasoningFrameData && <ClipOutputsView data={egovlpActionFrameData}/> }
+                        {reasoningFrameData && <AnnotationContext.Consumer>
+                            {
+                                ({annotationData}) => (<ClipOutputsView data={annotationData.meta.mode === "online" ? egovlpActionFrameData: clipActionFrameData}/>)
+                            }
+
+                        </AnnotationContext.Consumer>}
                     </CardContent>
                 </Card>
 
