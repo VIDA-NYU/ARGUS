@@ -69,8 +69,13 @@ function computeIMUActivity(data){
 
 function sampleArray(data, sampleRate){
 
+    // let sr: number = sampleRate;
+    // if( data.length <= 100 ){
+    //     sr = 1;
+    // }
+
     let sampledArray = []
-    for(let i = 0; i < data.length; i=i+sampleRate){
+    for(let i = 0; i < data.length; i=i+1){
         sampledArray.push(data[i])
     }
     return sampledArray;
