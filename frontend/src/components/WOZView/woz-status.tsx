@@ -28,6 +28,7 @@ import {AnnotationContext} from "./annotation/provider";
 import ObjectPanelContainer from "./object-comps/object-panel-container";
 import SessionControlGroup from "./session-control/session-control-group";
 import RecipeTextComp from "./recipe/recipe-text";
+import ErrorAlert from "./common/error-alert";
 
 
 interface WozStatusCompStatus {
@@ -224,9 +225,17 @@ export default function WozStatusComp({
 
                     </CardHeader>
                     <CardContent>
-                        {reasoningFrameData && <AnnotationContext.Consumer>
+                        {<AnnotationContext.Consumer>
                             {
-                                ({annotationData}) => (<ClipOutputsView data={annotationData.meta.mode === "online" ? egovlpActionFrameData: clipActionFrameData}/>)
+                                ({annotationData}) => {
+                                    if(annotationData.meta.mode === "online"){
+                                        return (<ClipOutputsView data={egovlpActionFrameData}/>)
+                                    }else if(annotationData.meta.mode === "offline" && reasoningFrameData){
+                                        return (<ClipOutputsView data={clipActionFrameData}/>)
+                                    }else{
+                                        return (<ErrorAlert message={"Action recognition not available"}/>)
+                                    }
+                                }
                             }
 
                         </AnnotationContext.Consumer>}

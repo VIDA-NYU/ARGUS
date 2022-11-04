@@ -12,7 +12,6 @@ const Container = styled("div")({
 })
 
 export default function ObjectPanelContainer ({recipe, detectedObjects}: ObjectPanelProps){
-
     const recipeObjectIndex = generateRecipeObjectIndex(recipe);
     const recipeObjectStatusIndex = generateRecipeObjectStatusIndex(recipeObjectIndex, detectedObjects);
 

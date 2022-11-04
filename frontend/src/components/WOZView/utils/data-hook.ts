@@ -3,19 +3,33 @@ import {useGetRecordingJson} from "./rest";
 import {useGetAllRecordings, useGetRecipeInfo, useGetRecording, useStreamData} from "../../../api/rest";
 import {useEffect, useState} from "react";
 
+function preprocessResponse(response: any){
+    if(response && Object.keys(response).includes("detail") && response["detail"] === "Not Found"){
+        return []
+    }else{
+        return response;
+    }
+}
+
 function useRecordingData (recordingID: string, token:string, fetchAuth: any){
     const {response: recordingData} = useGetRecording(token, fetchAuth, recordingID);
-    const {data: egovlpActionData} = useGetRecordingJson(recordingID, "egovlp:action:steps");
+    const {data: egovlpActionResponse} = useGetRecordingJson(recordingID, "egovlp:action:steps");
+    const egovlpActionData = preprocessResponse(egovlpActionResponse);
 
-    const {data: clipActionData} = useGetRecordingJson(recordingID, "clip:action:steps");
+    const {data: clipActionResponse} = useGetRecordingJson(recordingID, "clip:action:steps");
+    const clipActionData = preprocessResponse(clipActionResponse)
 
-    const {data: memoryData} = useGetRecordingJson(recordingID, "detic:memory");
+    const {data: memoryResponse} = useGetRecordingJson(recordingID, "detic:memory");
+    const memoryData = preprocessResponse(memoryResponse)
 
-    const {data: eyeData} = useGetRecordingJson(recordingID, "eye");
+    const {data: eyeResponse} = useGetRecordingJson(recordingID, "eye");
+    const eyeData = preprocessResponse(eyeResponse)
 
-    const {data: reasoningData} = useGetRecordingJson(recordingID, "reasoning");
+    const {data: reasoningResponse} = useGetRecordingJson(recordingID, "reasoning");
+    const reasoningData = preprocessResponse(reasoningResponse);
 
-    const {data: boundingBoxData} = useGetRecordingJson(recordingID, "detic:world");
+    const {data: boundingBoxResponse} = useGetRecordingJson(recordingID, "detic:world");
+    const boundingBoxData = preprocessResponse(boundingBoxResponse);
 
     return {
         egovlpActionData, reasoningData, eyeData,

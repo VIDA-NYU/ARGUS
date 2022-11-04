@@ -13,6 +13,8 @@ import {REASONING_CHECK_STREAM} from "../../config";
 import {ImageView} from '../StreamDataView/ImageView';
 import MachineReasoningRecorder from "./annotation/machine-reasoning-recorder";
 import OnlineStreamInitializer from "./annotation/online-stream-initializer";
+import ErrorAlert from "./common/error-alert";
+import {AnnotationData} from "./annotation/types";
 
 
 interface RecipeData {
@@ -62,6 +64,22 @@ export default function WozCompContainer({
                                              videoControls, streamInfo, currentTime,
                                              recipePicker
                                          }: WozCompContainerProps) {
+
+    const renderTemporalOverview = (annotationData: AnnotationData) => {
+        if(annotationData.meta.mode === "offline" && recordingData && reasoningData && boundingBoxData && reasoningData.length && clipActionData){
+            return (<TemporalOverview
+                annotationData={annotationData}
+                state={state}
+                clipActionData={clipActionData}
+                reasoningData={reasoningData}
+                boundingBoxData={boundingBoxData}
+                recordingMeta={recordingData}
+            ></TemporalOverview>)
+        }else if (annotationData.meta.mode === "offline" && (!reasoningData || reasoningData.length === 0)) {
+            return (<ErrorAlert message={"Reasoning data is not available for this recording"}/>)
+        }
+
+    }
 
     return (
         <Container>
@@ -165,14 +183,8 @@ export default function WozCompContainer({
                             ({annotationData}) => (
                                 <Box sx={{gridArea: 'g'}}>
                                     {
-                                        annotationData.meta.mode === "offline" && recordingData && reasoningData && boundingBoxData && reasoningData && clipActionData && <TemporalOverview
-                                            annotationData={annotationData}
-                                            state={state}
-                                            clipActionData={clipActionData}
-                                            reasoningData={reasoningData}
-                                            boundingBoxData={boundingBoxData}
-                                            recordingMeta={recordingData}
-                                        ></TemporalOverview>
+                                        renderTemporalOverview(annotationData)
+
                                     }
                                 </Box>
                             )

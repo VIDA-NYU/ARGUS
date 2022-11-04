@@ -103,6 +103,7 @@ export class Dataset {
     private generate_timestamp_index(dataset: any[]): void {
 
         // creating binary tree
+
         const tree = BinaryTree.binarytree().x((x) => x);
 
         const timestampToPoint: { [timestamp: number]: any } = {};

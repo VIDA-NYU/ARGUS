@@ -78,10 +78,20 @@ export default function TemporalOverview({reasoningData, boundingBoxData,
     const visRef = useRef(null);
     const xAxisRef = useRef(null);
     const {cellSize, cellMargin} = computeCellSize(xCellNumber, chartWidth);
+
+    useEffect(() => {
+        if (xAxisRef.current) {
+            let xAxis = axisBottom(xScale);
+            select(xAxisRef.current).call(xAxis)
+        }
+    }, []);
+
     let xScale = scaleLinear()
         .range([0, chartWidth])
         .domain([0, 1]);
-
+    if(!reasoningData){
+        return (<div></div>)
+    }
     let humanReasoningData = generateHumanAnnotationTemporalData(annotationData, reasoningData);
 
     const playedTimes = generatePlayedTimes(xCellNumber);
@@ -92,20 +102,9 @@ export default function TemporalOverview({reasoningData, boundingBoxData,
     const clipActionTimedData = preprocessTimestampData(clipActionData, recordingMeta, playedTimes, state.totalDuration)
     const individualActionDataList = extractIndividualActionData(clipActionTimedData);
 
-    const actionLabelRef0 = useRef(null);
-    const actionLabelRef1 = useRef(null);
-    const actionLabelRef2 = useRef(null);
-    const actionLabelRef3 = useRef(null);
     const actionCellHeight = 5;
 
-    const actionLabelRefs = [actionLabelRef0, actionLabelRef1, actionLabelRef2, actionLabelRef3];
 
-    useEffect(() => {
-        if (xAxisRef.current) {
-            let xAxis = axisBottom(xScale);
-            select(xAxisRef.current).call(xAxis)
-        }
-    }, []);
 
     let renderAction = (timedData, index) => {
         let transform = `translate(${0}, ${index * actionCellHeight * 1.2})`;

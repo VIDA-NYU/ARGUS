@@ -1,6 +1,6 @@
 import {useEffect, useRef, useState} from "react";
 import {isEmpty} from "../../HandsDataView/visualization/utils";
-import {Dataset} from "../../HandsDataView/model/dataset";
+import {Dataset} from "./model/dataset";
 
 function useVideoTime (currentTime, data, recordingMetaData){
     const [frameIndex, setFrameIndex] = useState<number>(0);
@@ -10,6 +10,11 @@ function useVideoTime (currentTime, data, recordingMetaData){
     useEffect(() => {
         if (data) {
             dataset.current = new Dataset(recordingMetaData, data);
+            if(data.length === 0){
+                setFrameData(undefined);
+                setFrameIndex(-1);
+            }
+
         }
     }, [data, recordingMetaData]);
 

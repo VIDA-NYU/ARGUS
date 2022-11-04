@@ -17,7 +17,15 @@ export function createInitialAnnotationData(): AnnotationData{
 
 export function initializeAnnotationDataWithMachineReasoning(uninitializedAnnotation: AnnotationData, machineReasoningData, videoEntryTime): AnnotationData{
     let currStep = 0;
-
+    if(!machineReasoningData){
+        return {
+            ...uninitializedAnnotation,
+            meta: {
+                ...uninitializedAnnotation.meta,
+                initialized: true
+            }
+        }
+    }
     let effectiveReasoningSteps: Array<AnnotationReasoningStep> = []
     for(let reasoningStep of machineReasoningData){
         if(reasoningStep['step_id'] !== currStep){
