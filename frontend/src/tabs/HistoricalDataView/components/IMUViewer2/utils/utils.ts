@@ -68,19 +68,23 @@ function computeIMUActivity(data){
 }
 
 function sampleArray(data, sampleRate){
+
     let sampledArray = []
     for(let i = 0; i < data.length; i=i+sampleRate){
         sampledArray.push(data[i])
     }
     return sampledArray;
+
 }
 
 function preprocessIfJSON(dataItem){
+
     if(typeof dataItem === "string") {
         return JSON.parse(dataItem)
     }else{
         return dataItem;
     }
+
 }
 
 function addTimestep(data){
@@ -91,11 +95,11 @@ function addTimestep(data){
     return dataTime;
 }
 
-function preprocessData(data, recordingName){
+function preprocessData(data){
 
-   const sampledData: any = sampleArray( data , 100 );
-   const processedData: any = sampledData.map( element => { return {'data': [Math.random()*7, Math.random()*5, Math.random()*2], 'timestamp': element.timestamp.split('-')[0]} })
-   return processedData;
+    const sampledData: any = sampleArray( data , 100 );
+    const processedData: any = sampledData.map( element => { return {'data': [element.data[0][0], element.data[0][1], element.data[0][2]], 'timestamp': element.timestamp.split('-')[0]} })
+    return processedData;
     
 }
 

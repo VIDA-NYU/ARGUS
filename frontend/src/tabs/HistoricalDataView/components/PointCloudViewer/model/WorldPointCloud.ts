@@ -13,7 +13,7 @@ export class WorldPointCloud{
 
     // voxel grid
     public voxelGrid: VoxelCell[][][] = [];
-    private voxelResolution: number = 0.5;
+    private voxelResolution: number = 1;
 
     // highlighted scene objects
     public gazeDirectionHighlightedCubesGroup!: THREE.Group;

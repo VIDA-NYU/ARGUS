@@ -6,7 +6,7 @@ import { IMUChartController } from './controller/IMUChartController';
 // styles
 import './IMUChart.css'
 
-const IMUChart = ({ imudata }: any) => {
+const  IMUChart = ({ imudata }: any) => {
 
     // DOM Refs
     const containerRef = useRef(null);
@@ -22,10 +22,11 @@ const IMUChart = ({ imudata }: any) => {
 
     }, [])
  
-    useEffect( () => {
+    useEffect( () => {  
 
         if( imudata ){
-            imuchartcontroller.render_line([10,20,30,40,50,60,70,80,90,100,10,20,30,40,50,60,70,80,90,100]);
+            imuchartcontroller.clear_chart();
+            imuchartcontroller.render_line(imudata.map( element => element.data ));
         }
 
     }, [imudata] );

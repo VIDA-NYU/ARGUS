@@ -118,6 +118,8 @@ const HistoricalDataView = () => {
           const imuAccelJSONFile = await getIMUAccelData(recordingName);
           const imuGyroJSONFile = await getIMUGyroData(recordingName);
           const imuMagJSONFile = await getIMUMagData(recordingName);
+
+          console.log('GYRO ', imuGyroJSONFile);
           
           setIMUData([ imuAccelJSONFile, imuGyroJSONFile, imuMagJSONFile ] );
         } catch( error ){

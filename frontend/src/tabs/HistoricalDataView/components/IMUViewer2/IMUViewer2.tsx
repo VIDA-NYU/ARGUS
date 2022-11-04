@@ -30,19 +30,15 @@ const IMUDataView = ({ data, recordingName }: any) => {
     const [imuaGyroData, setimuaGyroData] = useState(null);
     const [imuMagData, setimuMagData] = useState(null);
 
-    // constants
-    const Activity_Sample_Rate = 30;
-
     useEffect(() => {
 
-        if( data && data.length > 0){
+        console.log('incoming IMU data...', data);
 
+        if( data && data.length > 0 ){
 
-            let processedAccelData = preprocessData(data[0], recordingName);
-            let processedGyroData = preprocessData(data[1], recordingName);
-            let processedMagData = preprocessData(data[2], recordingName);
-            // console.log("processedAccelData:")
-            // console.log(processedAccelData)
+            let processedAccelData = preprocessData(data[0]);
+            let processedGyroData = preprocessData(data[1]);
+            let processedMagData = preprocessData(data[2]);
 
             // // setting state
             setimuaccelData( processedAccelData );
