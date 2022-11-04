@@ -55,7 +55,7 @@ const RecordingControls = () => {
           {finishedRecording && <Alert severity="success">Your recording was saved.<br/><br/>{formatRecording(finishedRecording)}</Alert>}
         </Box>
       </Box>
-    </Box>  
+    </Box>
   )
 }
 const parseTime = (tstr) => new Date(Date.parse(tstr + ' GMT')).toLocaleTimeString()
