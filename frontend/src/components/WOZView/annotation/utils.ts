@@ -36,7 +36,8 @@ export function initializeAnnotationDataWithMachineReasoning(uninitializedAnnota
         reasoningSteps: effectiveReasoningSteps,
         meta: {
             ...uninitializedAnnotation.meta,
-            initialized: true
+            initialized: true,
+            entryTime: extractTimestampValue(videoEntryTime)
         }
     }
 }
@@ -129,4 +130,23 @@ export function buildNewAnnotationMeta(annotationMeta: AnnotationMeta){
         ...annotationMeta,
         initialized: false
     }
+}
+
+function getHumanAnnotatedStep(videoTimeSeconds, annotationData){
+    return computeCurrentStep(annotationData, 0, videoTimeSeconds);
+}
+
+export function generateHumanAnnotationTemporalData (annotationData: AnnotationData, machineReasoningData){
+    const humanReasoningData = []
+    for(let machineReasoningFrameData of machineReasoningData){
+        let timestampValue = extractTimestampValue(machineReasoningFrameData['timestamp']);
+        let humanAnnotatedStep = getHumanAnnotatedStep((timestampValue-annotationData.meta.entryTime) / 1000, annotationData);
+        humanReasoningData.push(
+            {
+                ...machineReasoningFrameData,
+                step_id: humanAnnotatedStep,
+            }
+        )
+    }
+    return humanReasoningData
 }

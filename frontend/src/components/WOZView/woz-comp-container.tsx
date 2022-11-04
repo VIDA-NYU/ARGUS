@@ -176,7 +176,8 @@ export default function WozCompContainer({
                             ({annotationData}) => (
                                 <Box sx={{gridArea: 'g'}}>
                                     {
-                                        annotationData.meta.mode === "offline" && recordingData && boundingBoxData && reasoningData && clipActionData && <TemporalOverview
+                                        annotationData.meta.mode === "offline" && recordingData && reasoningData && boundingBoxData && reasoningData && clipActionData && <TemporalOverview
+                                            annotationData={annotationData}
                                             state={state}
                                             clipActionData={clipActionData}
                                             reasoningData={reasoningData}

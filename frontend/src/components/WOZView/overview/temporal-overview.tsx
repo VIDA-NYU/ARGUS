@@ -6,6 +6,7 @@ import {schemeGnBu, interpolateTurbo, interpolateBuPu} from "d3-scale-chromatic"
 import {Tooltip} from "react-svg-tooltip"
 import Card from "@mui/material/Card";
 import ActionRow from "./action-row";
+import {generateHumanAnnotationTemporalData} from "../annotation/utils";
 
 const Container = styled(Card)({})
 
@@ -41,7 +42,39 @@ const yAxisLabelOffsetY = 6;
 const xAxisY = 240;
 
 
-export default function TemporalOverview({reasoningData, boundingBoxData, clipActionData, recordingMeta, state}) {
+interface HeatmapCellWithLabelProps {
+    x: number, y: number, cellSize: number,
+    rectFill: string, textFill: string, label
+}
+
+const HeatmapCellWithLabel = ({x, y, cellSize, label, rectFill, textFill}: HeatmapCellWithLabelProps) => {
+    return (
+        <g
+            transform={`translate(${x}, ${y})`}
+        >
+            <rect
+                x={0}
+                y={0}
+                width={cellSize}
+                height={cellSize}
+                fill={rectFill}
+            >
+            </rect>
+            <text
+                x={cellSize / 2 }
+                y={cellSize / 2 + yAxisLabelOffsetY}
+                fill={textFill}
+                textAnchor={"middle"}
+            >
+                {label}
+            </text>
+        </g>
+    )
+}
+
+export default function TemporalOverview({reasoningData, boundingBoxData,
+                                             clipActionData, recordingMeta,
+                                             state, annotationData}) {
     const visRef = useRef(null);
     const xAxisRef = useRef(null);
     const {cellSize, cellMargin} = computeCellSize(xCellNumber, chartWidth);
@@ -49,27 +82,12 @@ export default function TemporalOverview({reasoningData, boundingBoxData, clipAc
         .range([0, chartWidth])
         .domain([0, 1]);
 
+    let humanReasoningData = generateHumanAnnotationTemporalData(annotationData, reasoningData);
 
     const playedTimes = generatePlayedTimes(xCellNumber);
 
     const reasoningCellData = preprocessTimestampData(reasoningData, recordingMeta, playedTimes);
-    const humanCellData = playedTimes.map((d, i) => {
-        let stepId = 0;
-        if (i < 8) {
-            stepId = 0;
-        } else if (i < 16) {
-            stepId = 1;
-        } else if (i < 20) {
-            stepId = 2;
-        } else if (i < 25) {
-            stepId = i - 18
-        } else {
-            stepId = 7;
-        }
-        return {
-            step_id: stepId,
-        }
-    })
+    const humanCellData = preprocessTimestampData(humanReasoningData, recordingMeta, playedTimes);
 
     const clipActionTimedData = preprocessTimestampData(clipActionData, recordingMeta, playedTimes)
     const individualActionDataList = extractIndividualActionData(clipActionTimedData);
@@ -176,25 +194,15 @@ export default function TemporalOverview({reasoningData, boundingBoxData, clipAc
                             {
                                 playedTimes.map((playedTime, i) => {
                                     return (
-                                        <g
-                                            transform={`translate(${xScale(playedTime)}, ${0})`}
-                                        >
-                                            <rect
-                                                x={0}
-                                                y={0}
-                                                width={cellSize}
-                                                height={cellSize}
-                                                fill={interpolateBuPu(reasoningCellData[i].step_id / 10 + 0.25)}
-                                            >
-                                            </rect>
-                                            <text
-                                                x={cellSize / 2 - 4}
-                                                y={cellSize / 2 + yAxisLabelOffsetY}
-                                                fill={reasoningCellData[i].step_id < 4 ? "#333333" : "white"}
-                                            >
-                                                {reasoningCellData[i].step_id}
-                                            </text>
-                                        </g>
+                                        <HeatmapCellWithLabel
+                                            x={xScale(playedTime)}
+                                            y={0}
+                                            cellSize={cellSize}
+                                            rectFill={interpolateBuPu(reasoningCellData[i].step_id / 10 + 0.25)}
+                                            textFill={reasoningCellData[i].step_id < 4 ? "#333333" : "white"}
+                                            label={reasoningCellData[i].step_id.toString()}
+                                        />
+
                                     )
                                 })
                             }
@@ -218,25 +226,14 @@ export default function TemporalOverview({reasoningData, boundingBoxData, clipAc
                             {
                                 playedTimes.map((playedTime, i) => {
                                     return (
-                                        <g
-                                            transform={`translate(${xScale(playedTime)}, ${0})`}
-                                        >
-                                            <rect
-                                                x={0}
-                                                y={0}
-                                                width={cellSize}
-                                                height={cellSize}
-                                                fill={interpolateBuPu(humanCellData[i].step_id / 10 + 0.25)}
-                                            >
-                                            </rect>
-                                            <text
-                                                x={cellSize / 2 - 4}
-                                                y={cellSize / 2 + yAxisLabelOffsetY}
-                                                fill={humanCellData[i].step_id < 4 ? "#333333" : "white"}
-                                            >
-                                                {humanCellData[i].step_id}
-                                            </text>
-                                        </g>
+                                        <HeatmapCellWithLabel
+                                            x={xScale(playedTime)}
+                                            y={0}
+                                            cellSize={cellSize}
+                                            rectFill={interpolateBuPu(reasoningCellData[i].step_id / 10 + 0.25)}
+                                            textFill={reasoningCellData[i].step_id < 4 ? "#333333" : "white"}
+                                            label={reasoningCellData[i].step_id.toString()}
+                                        />
                                     )
                                 })
                             }

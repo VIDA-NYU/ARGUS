@@ -124,7 +124,7 @@ export default function WozDataConsumer({annotationData, setAnnotationData}: Woz
         annotationData.meta.mode, recordingCurrentTime, recordingData,
         reasoningData, memoryData,
         boundingBoxData, egovlpActionData, clipActionData, eyeData );
-
+    console.log(reasoningFrameData, reasoningData);
     const videoPlayer = (<ReplayPlayer
         type={dataType.VIDEO}
         data={recordingData}
