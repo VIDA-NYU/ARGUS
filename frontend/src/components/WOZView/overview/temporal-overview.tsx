@@ -11,7 +11,7 @@ import {generateHumanAnnotationTemporalData} from "../annotation/utils";
 const Container = styled(Card)({})
 
 const xCellNumber = 50;
-const chartWidth = 1020;
+const chartWidth = 1440;
 const chartHeight = 280;
 const cellMargin = 5;
 

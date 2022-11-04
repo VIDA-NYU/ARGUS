@@ -104,9 +104,9 @@ export default function WozCompContainer({
               "M M M r r r"
               "M M M r r r"
               "N N N r r r"
-              "g g g g c c"
-              "g g g g c c"
-              "g g g g c c"
+              "g g g g g g"
+              "g g g g g g"
+              "g g g g g g"
           `,
                             xs: `
               "H H H H H H"
@@ -160,17 +160,6 @@ export default function WozCompContainer({
                             </Box>
                         )}
                     </AnnotationContext.Consumer>
-                    <Box sx={{ gridArea: 'c' }}>
-                        <Box  pt={2} mr={2} ml={2} >
-                            <span><b>INGREDIENTS</b></span>
-                            <>{
-                                recipeData && recipeData.ingredients.map((value: string, index: number ) => {
-                                    return <li key={'ing_'+ index} > {value} </li>
-                                })
-                            }
-                            </>
-                        </Box>
-                    </Box>
                     <AnnotationContext.Consumer>
                         {
                             ({annotationData}) => (
