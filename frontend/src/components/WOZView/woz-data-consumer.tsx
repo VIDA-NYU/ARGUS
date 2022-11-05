@@ -21,6 +21,7 @@ import MenuItem from "@mui/material/MenuItem";
 import {useFrameData, useRecordingData, useRecordingFrameData, useStreamFrameData} from "./utils/data-hook";
 import eyesDataView from "../EyesDataView/EyesDataView";
 import {computeCurrentStep} from "./annotation/utils";
+import {filterObjectWithRecipe, generateRecipeObjectIndex} from "./object-comps/utils";
 
 
 interface RecipeData {
@@ -99,6 +100,8 @@ export default function WozDataConsumer({annotationData, setAnnotationData}: Woz
         annotationData.meta.mode, recordingCurrentTime, recordingData,
         reasoningData, memoryData,
         boundingBoxData, egovlpActionData, clipActionData, eyeData );
+
+
     const videoPlayer = (<ReplayPlayer
         type={dataType.VIDEO}
         data={recordingData}
@@ -107,7 +110,7 @@ export default function WozDataConsumer({annotationData, setAnnotationData}: Woz
         recordingName={recordingID}
         onProgress={(res) => handleProgress(res)}
         onSeek={res => handleSeekingFromVideoCard(res)}
-        boundingBoxData={boundingBoxFrameData}
+        boundingBoxData={filterObjectWithRecipe(boundingBoxFrameData, generateRecipeObjectIndex(recipeData))}
         annotationData={annotationData}
     >
     </ReplayPlayer>);

@@ -1,7 +1,9 @@
 import {RecipeObject, RecipeObjectIndex, RecipeObjectStatus, RecipeObjectStatusIndex} from "./types";
 
 function generateRecipeObjectIndex(recipe: any): RecipeObjectIndex{
-
+    if(!recipe){
+        return recipe
+    }
     let ingredientObjectList: Array<RecipeObject> = [];
     let toolObjectList: Array<RecipeObject> = [];
 
@@ -97,4 +99,25 @@ function getAbbrLabel(recipeObject: RecipeObject){
     return abbrLabel
 }
 
-export {generateRecipeObjectIndex, generateRecipeObjectStatusIndex, getAbbrLabel}
+function checkObjectInRecipe(objectLabel: string, recipeObjectIndex: RecipeObjectIndex){
+    return recipeObjectIndex.tools.map(d => d.label).includes(objectLabel) ||
+        recipeObjectIndex.ingredients.map(d => d.label).includes(objectLabel);
+}
+
+function filterObjectWithRecipe(objectData, recipeObjectIndex: RecipeObjectIndex){
+    if(!objectData){
+        return objectData;
+    }
+    if(!recipeObjectIndex){
+        return {
+            ...objectData,
+            data: []
+        }
+    }
+    return {
+        ...objectData,
+        data: objectData.data.filter(d => checkObjectInRecipe(d.label, recipeObjectIndex))
+    }
+}
+
+export {generateRecipeObjectIndex, generateRecipeObjectStatusIndex, getAbbrLabel, filterObjectWithRecipe}
