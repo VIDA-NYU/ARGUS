@@ -28,7 +28,7 @@ function useRecordingData (recordingID: string, token:string, fetchAuth: any){
     const {data: reasoningResponse} = useGetRecordingJson(recordingID, "reasoning");
     const reasoningData = preprocessResponse(reasoningResponse);
 
-    const {data: boundingBoxResponse} = useGetRecordingJson(recordingID, "detic:world");
+    const {data: boundingBoxResponse} = useGetRecordingJson(recordingID, "detic:image");
     const boundingBoxData = preprocessResponse(boundingBoxResponse);
 
     return {
@@ -68,7 +68,6 @@ function useRecordingFrameData(currentTime, recordingData, reasoningData, memory
 
     const {frameIndex: eyeFrameIndex, frameData: eyeFrameData} =
         useVideoTime(currentTime, eyeData, recordingData);
-
 
     return {
         reasoningFrameData, egovlpActionFrameData, clipActionFrameData,

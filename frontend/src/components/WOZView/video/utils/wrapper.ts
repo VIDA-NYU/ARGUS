@@ -61,11 +61,14 @@ function preprocessFrameObject(objectData){
     }
 }
 
-function preprocessFrameBoundingBoxData(rawData) : TimeRecord{
+function preprocessFrameBoundingBoxData(rawData, confidenceThreshold: number | undefined) : TimeRecord{
+    if(!confidenceThreshold){
+        confidenceThreshold = 0;
+    }
     return {
         index: 0,
         time: 0,
-        objects: rawData.data.map(d => preprocessFrameObject(d))
+        objects: rawData.data.filter(d => d.confidence > confidenceThreshold).map(d => preprocessFrameObject(d))
     }
 }
 function locateFrame(boundingBoxSequence: Array<TimeRecord>, played: number){

@@ -12,7 +12,6 @@ const Container = styled(Card)({})
 
 const xCellNumber = 50;
 const chartWidth = 1440;
-const chartHeight = 280;
 const cellMargin = 5;
 
 function computeCellSize(cellNumber, width) {
@@ -39,7 +38,6 @@ const chartErrorHighlightColor = "red";
 const yAxisLabelWidth = 70;
 const yAxisLabelOffsetY = 6;
 
-const xAxisY = 240;
 
 
 interface HeatmapCellWithLabelProps {
@@ -104,7 +102,9 @@ export default function TemporalOverview({reasoningData, boundingBoxData,
 
     const actionCellHeight = 5;
 
+    const chartHeight = 120 + actionCellHeight * 1.2 * individualActionDataList.length + 40;
 
+    const xAxisY = chartHeight - 20;
 
     let renderAction = (timedData, index) => {
         let transform = `translate(${0}, ${index * actionCellHeight * 1.2})`;

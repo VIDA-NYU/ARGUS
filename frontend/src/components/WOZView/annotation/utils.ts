@@ -11,6 +11,9 @@ export function createInitialAnnotationData(): AnnotationData{
             recipeID: "mugcake",
             entryTime: 0,
             initialized: false,
+        },
+        perceptronParameters: {
+            objectConfidenceThreshold: 0
         }
     }
 }
@@ -47,6 +50,9 @@ export function initializeAnnotationDataWithMachineReasoning(uninitializedAnnota
             ...uninitializedAnnotation.meta,
             initialized: true,
             entryTime: extractTimestampValue(videoEntryTime)
+        },
+        perceptronParameters: {
+            objectConfidenceThreshold: 0
         }
     }
 }
@@ -159,4 +165,14 @@ export function generateHumanAnnotationTemporalData (annotationData: AnnotationD
         )
     }
     return humanReasoningData
+}
+
+export function setNewObjectConfidenceThreshold (annotationData: AnnotationData, newObjectConfidenceThreshold: number){
+    return {
+        ...annotationData,
+        perceptronParameters: {
+            ...annotationData.perceptronParameters,
+            objectConfidenceThreshold: newObjectConfidenceThreshold
+        }
+    }
 }

@@ -33,7 +33,7 @@ const Container = styled("div")(({}) => ({
     // zIndex: 10,
 }))
 
-const VideoDataView = ({ type, title, data, recordingName, state, onProgress, onSeek, boundingBoxData }: any ) => {
+const VideoDataView = ({ type, title, data, recordingName, state, onProgress, onSeek, boundingBoxData, annotationData }: any ) => {
 
     const [count, setCount] = useState<number>(0);
     // let count = 0;
@@ -70,7 +70,8 @@ const VideoDataView = ({ type, title, data, recordingName, state, onProgress, on
             let videoHeight = ctx.canvas.height;
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
             ctx.beginPath();
-            let frameData = preprocessFrameBoundingBoxData(boundingBoxData);
+            let frameData = preprocessFrameBoundingBoxData(boundingBoxData,
+                annotationData.perceptronParameters.objectConfidenceThreshold);
             if (frameData && frameData.objects) {
                 for (let object of frameData.objects) {
                     ctx.rect(object.loc2D.x * videoWidth, object.loc2D.y * videoHeight,
@@ -88,8 +89,7 @@ const VideoDataView = ({ type, title, data, recordingName, state, onProgress, on
             setCount(value => value + 1)
         }
 
-    }, [played, boundingBoxData]);
-
+    }, [played, boundingBoxData, annotationData.perceptronParameters.objectConfidenceThreshold]);
     return (
         <Container>
             <PlayerContainer

@@ -108,6 +108,7 @@ export default function WozDataConsumer({annotationData, setAnnotationData}: Woz
         onProgress={(res) => handleProgress(res)}
         onSeek={res => handleSeekingFromVideoCard(res)}
         boundingBoxData={boundingBoxFrameData}
+        annotationData={annotationData}
     >
     </ReplayPlayer>);
     const videoControls = (
