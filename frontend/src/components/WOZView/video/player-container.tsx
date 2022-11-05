@@ -61,7 +61,7 @@ function PlayerContainer(props: VideoCardProps) {
 
     return (
                 <ReactPlayer
-                    className='react-player'
+                    className='react-playe-intervenor'
                     ref = {playerRef}
                     url={props.path}
                     width='100%'
