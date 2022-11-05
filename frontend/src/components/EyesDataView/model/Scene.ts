@@ -239,15 +239,15 @@ export class Scene {
 
     private initialize_renderer(): void {
 
-        const renderer: THREE.Renderer = new THREE.WebGLRenderer();
-        renderer.setPixelRatio( window.devicePixelRatio );
-        renderer.setSize( 1600, 600 );
+        // const renderer: THREE.Renderer = new THREE.WebGLRenderer();
+        // renderer.setPixelRatio( window.devicePixelRatio );
+        // renderer.setSize( 1600, 600 );
 
-        // appending renderer
-        this.container.appendChild( renderer.domElement );
+        // // appending renderer
+        // this.container.appendChild( renderer.domElement );
 
-        // saving ref
-        this.renderer = renderer;
+        // // saving ref
+        // this.renderer = renderer;
 
     }
 

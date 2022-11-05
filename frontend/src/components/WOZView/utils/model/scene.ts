@@ -186,7 +186,7 @@ export class Scene {
     private initialize_renderer(): void {
 
         const renderer: THREE.Renderer = new THREE.WebGLRenderer();
-        renderer.setPixelRatio(window.devicePixelRatio);
+        // renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(1600, 600);
 
         // appending renderer

@@ -47,6 +47,10 @@ export enum streamingType {
     MIC = 'mic0', // microphone
     EYE = 'eye', // eye
     HAND = 'hand', // hand
+    POINTCLOUD = 'pointcloud',
+    IMUACCEL = 'imuaccel', //imu acceleration/accelerometer
+    IMUGYRO = 'imugyro', //imu angular velocity/gyroscope
+    IMUMAG = 'imumag' //imu magnetic force/magnetometer
 }
 
 export enum RequestStatus {

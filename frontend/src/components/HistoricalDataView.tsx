@@ -232,41 +232,41 @@ function RecordingsDataView() {
     const renderStreamings= () => {
       if (recordingData !== undefined && recordingData &&  recordingData.streams){
         return <>
-          <VideoDataView 
-            type={dataType.VIDEO} 
-            data={recordingData} 
-            title={"Cameras"} 
-            state={state} 
-            recordingName={recordingName} 
-            onProgress={(res) => handleProgress(res)} 
-            onSeek={res => handleSeekingFromVideoCard(res)}>
-          </VideoDataView>
+            <VideoDataView 
+              type={dataType.VIDEO} 
+              data={recordingData} 
+              title={"Cameras"} 
+              state={state} 
+              recordingName={recordingName} 
+              onProgress={(res) => handleProgress(res)} 
+              onSeek={res => handleSeekingFromVideoCard(res)}>
+            </VideoDataView>
 
-          <AudioDataView 
-            type={dataType.AUDIO} 
-            data={recordingData} 
-            title={"Audio"} 
-            state={state} 
-            recordingName={recordingName} 
-            onProgress={(res) => handleProgress(res)} 
-            onSeek={res => handleSeekingFromVideoCard(res)}>  
-          </AudioDataView>
+            <AudioDataView 
+              type={dataType.AUDIO} 
+              data={recordingData} 
+              title={"Audio"} 
+              state={state} 
+              recordingName={recordingName} 
+              onProgress={(res) => handleProgress(res)} 
+              onSeek={res => handleSeekingFromVideoCard(res)}>  
+            </AudioDataView>
 
-          <EyesDataView 
-            type={dataType.JSON} 
-            data={eyeData} 
-            title={"Eye Data"}
-            recordingMetadata={recordingData}
-            currentState={state}>  
-          </EyesDataView>
+            <EyesDataView 
+              type={dataType.JSON} 
+              data={eyeData} 
+              title={"Eye Data"}
+              recordingMetadata={recordingData}
+              currentState={state}>  
+            </EyesDataView>
 
-          <HandsDataView
-            type={dataType.JSON} 
-            data={handData}
-            recordingMetaData={recordingData}
-            state={state}
-            title={"Hands Data"}>
-          </HandsDataView>
+            <HandsDataView
+              type={dataType.JSON} 
+              data={handData}
+              recordingMetaData={recordingData}
+              state={state}
+              title={"Hands Data"}>
+            </HandsDataView>
           </>
       }
       return <></>;
