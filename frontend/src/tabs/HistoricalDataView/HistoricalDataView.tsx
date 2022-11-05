@@ -106,6 +106,7 @@ const HistoricalDataView = () => {
 
       const fetchPointCloudData = async() => {
         try {
+          console.log('Fetching...', recordingName);
           const pointCloudJSONFile = await getPointCloudData(recordingName);
           const gazePointClouJSONFile = await getEyeData(recordingName);
           setPointCloudData({ 'world': pointCloudJSONFile, 'gaze': gazePointClouJSONFile });
@@ -162,6 +163,8 @@ const HistoricalDataView = () => {
       // };
 
       if (recordingData && recordingData.streams){
+        console.log(recordingData.streams, ' - ', streamingType.POINTCLOUD);
+        
         Object.keys(recordingData.streams).includes(streamingType.POINTCLOUD) && 
         Object.keys(recordingData.streams).includes(streamingType.EYE) && 
         fetchPointCloudData();

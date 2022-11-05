@@ -31,8 +31,17 @@ export class PointCloudViewerController {
             this.scene.scene.remove(this.dataset.worldPointCloud.gazeDirectionHighlightedPointsGroup);
         }
 
+        if( this.dataset.gazePointCloud.currentHighlightedGazeDirection && this.dataset.gazePointCloud.currentHighlightedGazePoint ){
+            this.scene.scene.remove(this.dataset.gazePointCloud.currentHighlightedGazeDirection);
+            this.scene.scene.remove(this.dataset.gazePointCloud.currentHighlightedGazePoint);
+        }
+
         const [gazeBufferPositions, gazeBufferNormals]: [number[], number[]] = this.dataset.gazePointCloud.get_buffer_positions(currentIndex, currentIndex+1);
-        this.scene.add_gaze_point_cloud( gazeBufferPositions, gazeBufferNormals );
+        const [points, directions]: [THREE.Points, THREE.Line] = this.scene.add_gaze_point_cloud( gazeBufferPositions, gazeBufferNormals );
+
+        // saving highlighted pointcloud
+        this.dataset.gazePointCloud.currentHighlightedGazeDirection = directions;
+        this.dataset.gazePointCloud.currentHighlightedGazePoint = points;
 
         // let i = 0;
         // setInterval( () => {
