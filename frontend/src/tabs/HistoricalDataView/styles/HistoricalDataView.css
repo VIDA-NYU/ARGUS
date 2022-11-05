@@ -1,10 +1,20 @@
+
+/* TODO: Figure out the correct way to fill the whole screen with main-wrapper */
 .main-wrapper{
 
-    width: 95vw;
+    width: 98vw;
     height: 90vh;
     display: flex;
     flex-direction: column;
 
+}
+
+.layer-wrapper{
+
+    display: flex;
+    flex: 1;
+    margin: 1em;
+    flex-direction: row;
 }
 
 .controls-wrapper{
@@ -16,17 +26,12 @@
 
 }
 
-.layer-wrapper{
 
-    display: flex;
-    flex: 1;
-    flex-direction: row;
-
-}
 
 .layer-component {
 
     display: flex;
     flex: 1;
+    margin: 1em;
     
 }

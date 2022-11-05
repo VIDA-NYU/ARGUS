@@ -2,6 +2,7 @@
 // material
 import {styled} from '@mui/material';
 import {useEffect, useState} from "react";
+import ComponentTemplate from '../../../../templates/HistoricalViewComponentTemplate/ComponentTemplate';
 
 // local components
 import IMUChart from './charts/IMUChart/IMUChart';
@@ -32,8 +33,6 @@ const IMUDataView = ({ data, recordingName }: any) => {
 
     useEffect(() => {
 
-        console.log('incoming IMU data...', data);
-
         if( data && data.length > 0 ){
 
             let processedAccelData = preprocessData(data[0]);
@@ -54,19 +53,21 @@ const IMUDataView = ({ data, recordingName }: any) => {
         <ComponentContainer>
 
             <ChartContainer>
-                <IMUChart imudata={imuaccelData}></IMUChart>
-                {/* <IMUActivityBarChart></IMUActivityBarChart> */}
-                {/* data={imuaccelData} */}
+                <ComponentTemplate title={'IMUAccel'}>
+                    <IMUChart imudata={imuaccelData}></IMUChart>
+                </ComponentTemplate>
+            </ChartContainer>
+            
+            <ChartContainer>
+                <ComponentTemplate title={'IMUGyro'}>
+                    <IMUChart imudata={imuaGyroData}></IMUChart>
+                </ComponentTemplate>
             </ChartContainer>
 
             <ChartContainer>
-                <IMUChart imudata={imuaGyroData}></IMUChart>
-                {/* <IMUActivityBarChart data={imuaGyroData}></IMUActivityBarChart> */}
-            </ChartContainer>
-
-            <ChartContainer>
-                <IMUChart imudata={imuMagData}></IMUChart>
-                {/* <IMUActivityBarChart data={imuMagData}></IMUActivityBarChart> */}
+                <ComponentTemplate title={'IMUMag'}>
+                    <IMUChart imudata={imuMagData}></IMUChart>
+                </ComponentTemplate>
             </ChartContainer>
 
         </ComponentContainer>

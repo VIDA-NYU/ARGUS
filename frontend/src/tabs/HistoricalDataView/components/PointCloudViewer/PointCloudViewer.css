@@ -12,8 +12,8 @@
 .component-container{
     
     display: flex;
-    width: 80%;
-    height: 80%;
+    width: 95%;
+    height: 95%;
 
 }
 
@@ -22,8 +22,8 @@
     width: 100%;
     height: 100%;
 
-    border-style: solid;
-    border-radius: 10px;
-    border-color: gray;
+    /* border-style: solid; */
+    /* border-radius: 10px; */
+    /* border-color: gray; */
 
 }
