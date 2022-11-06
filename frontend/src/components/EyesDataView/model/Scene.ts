@@ -54,7 +54,7 @@ export class Scene {
         this.initialize_renderer();
 
         // initialize sprites
-        this.initialize_sprites( './circle.png' );
+        this.initialize_sprites( './sprites/circle.png' );
 
     }
 

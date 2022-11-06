@@ -405,7 +405,7 @@ const HistoricalDataView = () => {
             </div>
 
             <div className="layer-wrapper">
-                <IMUDataView data={imudata}></IMUDataView>
+                <IMUDataView data={imudata} videostate={state} videometadata={recordingData}></IMUDataView>
             </div>
             
         </div>

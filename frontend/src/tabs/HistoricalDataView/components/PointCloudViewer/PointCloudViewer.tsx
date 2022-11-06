@@ -17,7 +17,6 @@ const PointCloudViewer = ( { pointCloudRawData, videoState, recordingMetadata }:
   const [pointCloudViewerController, setPointCloudViewerController] = useState<PointCloudViewerController | null>(null);
 
   // temp
-  const [videostarted, setvideostarted ] = useState<boolean>(false);
   const [sessionMetadata, setSessionMetadata] = useState<any>({});
   const [renderingScene, setRenderingScene] = useState<boolean>(true);
 

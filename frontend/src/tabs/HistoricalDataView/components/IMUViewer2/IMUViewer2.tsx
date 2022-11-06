@@ -24,7 +24,7 @@ const ChartContainer = styled("div")(({}) => ({
 }))
 
 
-const IMUDataView = ({ data, recordingName }: any) => {
+const IMUDataView = ({ data, videostate, videometadata }: any) => {
 
     // states
     const [imuaccelData, setimuaccelData] = useState(null);
@@ -54,19 +54,19 @@ const IMUDataView = ({ data, recordingName }: any) => {
 
             <ChartContainer>
                 <ComponentTemplate title={'IMUAccel'}>
-                    <IMUChart imudata={imuaccelData}></IMUChart>
+                    <IMUChart imudata={imuaccelData} videostate={videostate} videometadata={videometadata}></IMUChart>
                 </ComponentTemplate>
             </ChartContainer>
             
             <ChartContainer>
                 <ComponentTemplate title={'IMUGyro'}>
-                    <IMUChart imudata={imuaGyroData}></IMUChart>
+                    <IMUChart imudata={imuaGyroData} videostate={videostate} videometadata={videometadata}></IMUChart>
                 </ComponentTemplate>
             </ChartContainer>
 
             <ChartContainer>
                 <ComponentTemplate title={'IMUMag'}>
-                    <IMUChart imudata={imuMagData}></IMUChart>
+                    <IMUChart imudata={imuMagData} videostate={videostate} videometadata={videometadata}></IMUChart>
                 </ComponentTemplate>
             </ChartContainer>
 

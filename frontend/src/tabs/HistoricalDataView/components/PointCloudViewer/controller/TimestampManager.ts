@@ -35,4 +35,12 @@ export class TimestampManager {
 
     }
 
+    public get_imu_timestamp_index( initialTimestamp: number, timestamp: number ): number {
+
+        const currentTimestamp: number = initialTimestamp + (timestamp * 1000);
+        const closestTimestamp: number = this.gaze_timestamp_tree_index.find( currentTimestamp );
+        return closestTimestamp;
+
+    }
+
 }
