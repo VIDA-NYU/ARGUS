@@ -70,7 +70,11 @@ export function initializeAnnotationDataWithStreamInfo(uninitializedAnnotation: 
 }
 
 export function isAnnotationEmpty(annotationData: AnnotationData){
-    return annotationData.reasoningSteps.length === 0 || !annotationData.meta.initialized;
+    if(annotationData.meta.mode === "online"){
+        return !annotationData.meta.initialized
+    }else{
+        return annotationData.reasoningSteps.length === 0 || !annotationData.meta.initialized;
+    }
 }
 
 export function computeCurrentStep(annotationData: AnnotationData, machineReasoningStep, currentTime){

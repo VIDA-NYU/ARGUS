@@ -38,7 +38,7 @@ export function useGetStreamInfo(token, fetchAuth, sessionID: string) {
         fetch(url).then((res) => res.json()).then(r => {
             setData(r);
         });
-    })
+    }, [sessionID])
     return {response: data};
 }
 

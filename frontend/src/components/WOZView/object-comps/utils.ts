@@ -118,7 +118,7 @@ function checkObjectInRecipe(objectLabel: string, recipeObjectIndex: RecipeObjec
 }
 
 function filterObjectWithRecipe(objectData, recipeObjectIndex: RecipeObjectIndex){
-    if(!objectData){
+    if(!objectData || !objectData.data){
         return objectData;
     }
     if(!recipeObjectIndex){

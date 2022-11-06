@@ -68,7 +68,6 @@ function useRecordingFrameData(currentTime, recordingData, reasoningData, memory
 
     const {frameIndex: eyeFrameIndex, frameData: eyeFrameData} =
         useVideoTime(currentTime, eyeData, recordingData);
-
     return {
         reasoningFrameData, egovlpActionFrameData, clipActionFrameData,
         memoryFrameData, boundingBoxFrameData, eyeFrameData,
@@ -106,10 +105,11 @@ function useStreamFrameData(){
         parse: null });
     const memoryFrameData = parseStreamBuffer(memoryBuffer);
 
-    const { data: boundingBoxBuffer } = useStreamData({ streamId: "detic:world",
+    const { data: boundingBoxBuffer, time: boundingBoxTime } = useStreamData({ streamId: "detic:image",
         parse: null });
     const _boundingBoxFrameData = parseStreamBuffer(boundingBoxBuffer);
-    const boundingBoxFrameData = {data: _boundingBoxFrameData};
+    const boundingBoxFrameData = {data: _boundingBoxFrameData, timestamp: `${boundingBoxTime}-0`};
+
     const { data: eyeBuffer } = useStreamData({ streamId: "eye",
         parse: null });
     const eyeFrameData = parseStreamBuffer(eyeBuffer);
