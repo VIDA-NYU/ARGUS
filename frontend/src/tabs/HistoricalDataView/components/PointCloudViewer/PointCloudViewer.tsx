@@ -70,7 +70,7 @@ const PointCloudViewer = ( { pointCloudRawData, videoState, recordingMetadata }:
       
       // clearing previous scene
       pointCloudViewerController.scene.clear_scene();
-
+      
       setSessionMetadata({ 'firstEntry': parseInt(recordingMetadata['first-entry'].split('-')[0]) });
     }
     
