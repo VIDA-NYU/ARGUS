@@ -1,27 +1,40 @@
 import {RecipeObject, RecipeObjectIndex, RecipeObjectStatus, RecipeObjectStatusIndex} from "./types";
 
+function extractCategoryObjects(category: "ingredient" | "tool", categoryObjectConfig: any){
+    let categoryObjects: Array<RecipeObject> = [];
+    for(let label of Object.keys(categoryObjectConfig)){
+        categoryObjects.push({
+            type: category,
+            label: label,
+            alternativeLabels: [label, ...categoryObjectConfig[label]]
+        })
+    }
+    return categoryObjects;
+}
+
 function generateRecipeObjectIndex(recipe: any): RecipeObjectIndex{
     if(!recipe){
         return recipe
     }
-    let ingredientObjectList: Array<RecipeObject> = [];
-    let toolObjectList: Array<RecipeObject> = [];
+    let ingredientObjectList: Array<RecipeObject> = extractCategoryObjects("ingredient", recipe["ingredient_objects"]);
+    let toolObjectList: Array<RecipeObject> = extractCategoryObjects("tool", recipe["tool_objects"]);
 
-    let ingredientLabels = recipe.objects.filter(d => !recipe.tools.includes(d))
-    for(let ingredientLabel of ingredientLabels){
-        ingredientObjectList.push({
-            type: "ingredient",
-            label: ingredientLabel,
-        })
-    }
+    // let ingredientLabels = recipe.objects.filter(d => !recipe.tools.includes(d))
+    // for(let ingredientLabel of ingredientLabels){
+    //     ingredientObjectList.push({
+    //         type: "ingredient",
+    //         label: ingredientLabel,
+    //         alternativeLabels: []
+    //     })
+    // }
 
-    for(let toolLabel of recipe.tools){
-        toolObjectList.push({
-            type: "tool",
-            label: toolLabel
-        })
-    };
-
+    // for(let toolLabel of recipe.tools){
+    //     toolObjectList.push({
+    //         type: "tool",
+    //         label: toolLabel,
+    //         alternativeLabels: []
+    //     })
+    // };
     return {
         ingredients: ingredientObjectList,
         tools: toolObjectList
@@ -32,7 +45,7 @@ function generateRecipeObjectIndex(recipe: any): RecipeObjectIndex{
 function getRecipeObjectStatus(recipeObject: RecipeObject, detectedLabels: Array<string>): RecipeObjectStatus{
     let num = 0;
     for(let label of detectedLabels){
-        if(label === recipeObject.label){
+        if(label === recipeObject.label || recipeObject.alternativeLabels.includes(label)){
             num ++;
         }
     }

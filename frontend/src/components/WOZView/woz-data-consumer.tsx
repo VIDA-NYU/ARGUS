@@ -110,7 +110,7 @@ export default function WozDataConsumer({annotationData, setAnnotationData}: Woz
         recordingName={recordingID}
         onProgress={(res) => handleProgress(res)}
         onSeek={res => handleSeekingFromVideoCard(res)}
-        boundingBoxData={filterObjectWithRecipe(boundingBoxFrameData, generateRecipeObjectIndex(recipeData))}
+        boundingBoxData={boundingBoxFrameData}
         annotationData={annotationData}
     >
     </ReplayPlayer>);
@@ -159,7 +159,7 @@ export default function WozDataConsumer({annotationData, setAnnotationData}: Woz
             reasoningData={reasoningData}
             reasoningFrameData={reasoningFrameData}
             boundingBoxData={boundingBoxData}
-            boundingBoxFrameData={boundingBoxFrameData}
+            boundingBoxFrameData={filterObjectWithRecipe(boundingBoxFrameData, generateRecipeObjectIndex(recipeData))}
             egovlpActionData={egovlpActionData}
             egovlpActionFrameData={egovlpActionFrameData}
             clipActionData={clipActionData}

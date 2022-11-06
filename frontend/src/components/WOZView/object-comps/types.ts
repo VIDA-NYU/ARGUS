@@ -1,6 +1,7 @@
 interface RecipeObject {
     label: string,
     type: "ingredient"| "tool",
+    alternativeLabels: Array<string>
 }
 
 interface RecipeObjectStatus {
