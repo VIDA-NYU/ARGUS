@@ -11,6 +11,9 @@ export function createInitialAnnotationData(): AnnotationData{
             recipeID: "mugcake",
             entryTime: 0,
             initialized: false,
+        },
+        perceptronParameters: {
+            objectConfidenceThreshold: 0
         }
     }
 }
@@ -47,6 +50,9 @@ export function initializeAnnotationDataWithMachineReasoning(uninitializedAnnota
             ...uninitializedAnnotation.meta,
             initialized: true,
             entryTime: extractTimestampValue(videoEntryTime)
+        },
+        perceptronParameters: {
+            objectConfidenceThreshold: 0
         }
     }
 }
@@ -64,7 +70,11 @@ export function initializeAnnotationDataWithStreamInfo(uninitializedAnnotation: 
 }
 
 export function isAnnotationEmpty(annotationData: AnnotationData){
-    return annotationData.reasoningSteps.length === 0 || !annotationData.meta.initialized;
+    if(annotationData.meta.mode === "online"){
+        return !annotationData.meta.initialized
+    }else{
+        return annotationData.reasoningSteps.length === 0 || !annotationData.meta.initialized;
+    }
 }
 
 export function computeCurrentStep(annotationData: AnnotationData, machineReasoningStep, currentTime){
@@ -159,4 +169,14 @@ export function generateHumanAnnotationTemporalData (annotationData: AnnotationD
         )
     }
     return humanReasoningData
+}
+
+export function setNewObjectConfidenceThreshold (annotationData: AnnotationData, newObjectConfidenceThreshold: number){
+    return {
+        ...annotationData,
+        perceptronParameters: {
+            ...annotationData.perceptronParameters,
+            objectConfidenceThreshold: newObjectConfidenceThreshold
+        }
+    }
 }

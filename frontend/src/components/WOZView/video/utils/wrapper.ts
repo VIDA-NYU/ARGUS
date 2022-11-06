@@ -1,4 +1,6 @@
 import {_preprocessBoundingBoxData} from "./utils";
+import {extractTimestampValue} from "../../utils/video-time";
+
 
 interface Loc2D {
     x: number,
@@ -61,11 +63,14 @@ function preprocessFrameObject(objectData){
     }
 }
 
-function preprocessFrameBoundingBoxData(rawData) : TimeRecord{
+function preprocessFrameBoundingBoxData(rawData, confidenceThreshold: number | undefined) : TimeRecord{
+    if(!confidenceThreshold){
+        confidenceThreshold = 0;
+    }
     return {
         index: 0,
         time: 0,
-        objects: rawData.data.map(d => preprocessFrameObject(d))
+        objects: rawData.data.filter(d => d.confidence > confidenceThreshold).map(d => preprocessFrameObject(d))
     }
 }
 function locateFrame(boundingBoxSequence: Array<TimeRecord>, played: number){
@@ -78,4 +83,23 @@ function locateFrame(boundingBoxSequence: Array<TimeRecord>, played: number){
     return boundingBoxSequence[boundingBoxSequence.length - 1];
 }
 
-export {preprocessBoundingBoxData, locateFrame, preprocessFrameBoundingBoxData};
+
+function syncWithVideoTime(currentTime: number, state: any, videoEntryTime: number, boundingBoxData: any){
+    if(!boundingBoxData || !boundingBoxData.data){
+        return boundingBoxData;
+    }
+    const threshold = 1000;
+
+    let boundingBoxTimestampValue = extractTimestampValue(boundingBoxData.timestamp);
+    if(Math.abs(boundingBoxTimestampValue - currentTime) > threshold){
+        return {
+            ...boundingBoxData,
+            data: []
+        }
+    }else{
+        return boundingBoxData
+    }
+
+}
+export type {ObjectRecord}
+export {preprocessBoundingBoxData, locateFrame, preprocessFrameBoundingBoxData, syncWithVideoTime};

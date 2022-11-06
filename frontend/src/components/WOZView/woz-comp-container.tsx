@@ -10,7 +10,7 @@ import Card from "@mui/material/Card";
 import TemporalOverview from "./overview/temporal-overview";
 import React, {ReactElement} from "react";
 import {REASONING_CHECK_STREAM} from "../../config";
-import {ImageView} from '../StreamDataView/ImageView';
+import {ImageView} from './video/online-image-view';
 import MachineReasoningRecorder from "./annotation/machine-reasoning-recorder";
 import OnlineStreamInitializer from "./annotation/online-stream-initializer";
 import ErrorAlert from "./common/error-alert";
@@ -166,7 +166,7 @@ export default function WozCompContainer({
                             <Box sx={{gridArea: 'M'}}>
                                 {/*{recordingData && videoPlayer }*/}
                                 {annotationData.meta.mode === "offline" && recordingData && videoPlayer}
-                                { annotationData.meta.mode === "online" && <ImageView streamId='main' boxStreamId='debug' confidence={0.5} debugMode={false}/>}
+                                { annotationData.meta.mode === "online" && <ImageView streamId='main' boxStreamId='detic:image' confidence={annotationData.perceptronParameters.objectConfidenceThreshold} debugMode={false}/>}
                             </Box>
                         )}
 

@@ -7,6 +7,7 @@ function useVideoTime (currentTime, data, recordingMetaData){
     const [frameData, setFrameData] = useState(undefined);
     const dataset = useRef(null);
 
+
     useEffect(() => {
         if (data) {
             dataset.current = new Dataset(recordingMetaData, data);
@@ -19,12 +20,12 @@ function useVideoTime (currentTime, data, recordingMetaData){
     }, [data, recordingMetaData]);
 
     useEffect(() => {
-
         if (dataset.current && recordingMetaData && recordingMetaData['first-entry']) {
+            let currentTimeSeconds = (currentTime - extractTimestampValue(recordingMetaData['first-entry']))/1000;
             const {
                 element: currFrameData,
                 index: currFrameIndex
-            } = dataset.current.get_corresponding_timestamp(currentTime);
+            } = dataset.current.get_corresponding_timestamp(currentTimeSeconds);
             if (currFrameIndex >= 0) {
                 setFrameData(currFrameData);
                 setFrameIndex(currFrameIndex);
@@ -52,4 +53,12 @@ function convertTimestampToVideoTime(timestamp, videoEntryTimestamp){
 
 }
 
-export {useVideoTime, convertTimestampToVideoTime, extractTimestampValue}
+function parseVideoStateTime(value: string | number){
+    if(typeof value === "string"){
+        return 0;
+    }else{
+        return value
+    }
+}
+
+export {useVideoTime, convertTimestampToVideoTime, extractTimestampValue, parseVideoStateTime}

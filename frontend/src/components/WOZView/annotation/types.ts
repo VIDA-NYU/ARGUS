@@ -1,4 +1,6 @@
-
+interface PerceptronParameters {
+    objectConfidenceThreshold: number
+}
 
 interface AnnotationReasoningStep {
     type: "new_step" | "revert" | "machine_step" | "human_go_prev" | "human_go_next",
@@ -18,7 +20,8 @@ interface AnnotationMeta {
 
 interface AnnotationData {
     reasoningSteps: Array<AnnotationReasoningStep>,
-    meta: AnnotationMeta
+    meta: AnnotationMeta,
+    perceptronParameters: PerceptronParameters
 }
 
 interface AnnotationProviderState {

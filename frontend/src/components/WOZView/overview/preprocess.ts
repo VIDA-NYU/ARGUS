@@ -21,14 +21,26 @@ function preprocessTimestampData (data, recordingMetaData, playedTimes, totalDur
     return result
 }
 
+function extractAllLabels(wholeActionData){
+    const labels = []
+    for(let timedActionData of wholeActionData){
+        let timedLabels = Object.keys(timedActionData).filter(d => d != "timestamp");
+        for(let label of timedLabels){
+            if(!labels.includes(label)){
+                labels.push(label);
+            }
+        }
+    }
+    return labels;
 
+}
 function extractIndividualActionData(wholeActionData){
-    let actionLabels = Object.keys(wholeActionData[0]).filter(d=>d!=="timestamp");
+    let actionLabels = extractAllLabels(wholeActionData);
     let result = [];
     for(let label of actionLabels){
         result.push({
             "label": label,
-            data: wholeActionData.map(d=>d[label])
+            data: wholeActionData.map(d=>d[label] ? d[label] : 0)
         })
     }
     return result

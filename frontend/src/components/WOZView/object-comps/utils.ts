@@ -1,25 +1,40 @@
 import {RecipeObject, RecipeObjectIndex, RecipeObjectStatus, RecipeObjectStatusIndex} from "./types";
 
-function generateRecipeObjectIndex(recipe: any): RecipeObjectIndex{
-
-    let ingredientObjectList: Array<RecipeObject> = [];
-    let toolObjectList: Array<RecipeObject> = [];
-
-    let ingredientLabels = recipe.objects.filter(d => !recipe.tools.includes(d))
-    for(let ingredientLabel of ingredientLabels){
-        ingredientObjectList.push({
-            type: "ingredient",
-            label: ingredientLabel,
+function extractCategoryObjects(category: "ingredient" | "tool", categoryObjectConfig: any){
+    let categoryObjects: Array<RecipeObject> = [];
+    for(let label of Object.keys(categoryObjectConfig)){
+        categoryObjects.push({
+            type: category,
+            label: label,
+            alternativeLabels: [label, ...categoryObjectConfig[label]]
         })
     }
+    return categoryObjects;
+}
 
-    for(let toolLabel of recipe.tools){
-        toolObjectList.push({
-            type: "tool",
-            label: toolLabel
-        })
-    };
+function generateRecipeObjectIndex(recipe: any): RecipeObjectIndex{
+    if(!recipe){
+        return recipe
+    }
+    let ingredientObjectList: Array<RecipeObject> = extractCategoryObjects("ingredient", recipe["ingredient_objects"]);
+    let toolObjectList: Array<RecipeObject> = extractCategoryObjects("tool", recipe["tool_objects"]);
 
+    // let ingredientLabels = recipe.objects.filter(d => !recipe.tools.includes(d))
+    // for(let ingredientLabel of ingredientLabels){
+    //     ingredientObjectList.push({
+    //         type: "ingredient",
+    //         label: ingredientLabel,
+    //         alternativeLabels: []
+    //     })
+    // }
+
+    // for(let toolLabel of recipe.tools){
+    //     toolObjectList.push({
+    //         type: "tool",
+    //         label: toolLabel,
+    //         alternativeLabels: []
+    //     })
+    // };
     return {
         ingredients: ingredientObjectList,
         tools: toolObjectList
@@ -30,7 +45,7 @@ function generateRecipeObjectIndex(recipe: any): RecipeObjectIndex{
 function getRecipeObjectStatus(recipeObject: RecipeObject, detectedLabels: Array<string>): RecipeObjectStatus{
     let num = 0;
     for(let label of detectedLabels){
-        if(label === recipeObject.label){
+        if(label === recipeObject.label || recipeObject.alternativeLabels.includes(label)){
             num ++;
         }
     }
@@ -97,4 +112,25 @@ function getAbbrLabel(recipeObject: RecipeObject){
     return abbrLabel
 }
 
-export {generateRecipeObjectIndex, generateRecipeObjectStatusIndex, getAbbrLabel}
+function checkObjectInRecipe(objectLabel: string, recipeObjectIndex: RecipeObjectIndex){
+    return recipeObjectIndex.tools.map(d => d.label).includes(objectLabel) ||
+        recipeObjectIndex.ingredients.map(d => d.label).includes(objectLabel);
+}
+
+function filterObjectWithRecipe(objectData, recipeObjectIndex: RecipeObjectIndex){
+    if(!objectData || !objectData.data){
+        return objectData;
+    }
+    if(!recipeObjectIndex){
+        return {
+            ...objectData,
+            data: []
+        }
+    }
+    return {
+        ...objectData,
+        data: objectData.data.filter(d => checkObjectInRecipe(d.label, recipeObjectIndex))
+    }
+}
+
+export {generateRecipeObjectIndex, generateRecipeObjectStatusIndex, getAbbrLabel, filterObjectWithRecipe}

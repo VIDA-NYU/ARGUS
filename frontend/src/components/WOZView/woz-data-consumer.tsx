@@ -3,7 +3,7 @@ import {useCurrentRecipe, useGetAllRecordings, useGetRecipeInfo, useGetRecipes, 
 import React, {useEffect, useRef, useState} from "react";
 import {MediaState} from "../HistoricalDataView";
 import {useGetRecordingJson, useGetStreamInfo} from "./utils/rest";
-import {useVideoTime} from "./utils/video-time";
+import {parseVideoStateTime, useVideoTime} from "./utils/video-time";
 import {onProgressType} from "../VideoDataView/VideoCard/VideoCard";
 import {format, formatTotalDuration} from "../Helpers";
 import screenful from "screenfull";
@@ -21,6 +21,8 @@ import MenuItem from "@mui/material/MenuItem";
 import {useFrameData, useRecordingData, useRecordingFrameData, useStreamFrameData} from "./utils/data-hook";
 import eyesDataView from "../EyesDataView/EyesDataView";
 import {computeCurrentStep} from "./annotation/utils";
+import {filterObjectWithRecipe, generateRecipeObjectIndex} from "./object-comps/utils";
+import {syncWithVideoTime} from "./video/utils/wrapper";
 
 
 interface RecipeData {
@@ -80,10 +82,9 @@ export default function WozDataConsumer({annotationData, setAnnotationData}: Woz
         played,
         seeking,
         totalDuration,
-        currentTime: recordingCurrentTime,
+        currentTime: recordingCurrentPlayedTime,
     } = state;
-
-
+    let recordingCurrentTime = Math.round(parseVideoStateTime(recordingCurrentPlayedTime) * 1000 + annotationData.meta.entryTime);
     // const {
     //     clipActionFrameData,
     //     eyeFrameData
@@ -99,6 +100,8 @@ export default function WozDataConsumer({annotationData, setAnnotationData}: Woz
         annotationData.meta.mode, recordingCurrentTime, recordingData,
         reasoningData, memoryData,
         boundingBoxData, egovlpActionData, clipActionData, eyeData );
+
+
     const videoPlayer = (<ReplayPlayer
         type={dataType.VIDEO}
         data={recordingData}
@@ -108,6 +111,8 @@ export default function WozDataConsumer({annotationData, setAnnotationData}: Woz
         onProgress={(res) => handleProgress(res)}
         onSeek={res => handleSeekingFromVideoCard(res)}
         boundingBoxData={boundingBoxFrameData}
+        annotationData={annotationData}
+        currentTime={currentTime}
     >
     </ReplayPlayer>);
     const videoControls = (
@@ -155,7 +160,7 @@ export default function WozDataConsumer({annotationData, setAnnotationData}: Woz
             reasoningData={reasoningData}
             reasoningFrameData={reasoningFrameData}
             boundingBoxData={boundingBoxData}
-            boundingBoxFrameData={boundingBoxFrameData}
+            boundingBoxFrameData={syncWithVideoTime(currentTime, state, annotationData.meta.entryTime, filterObjectWithRecipe(boundingBoxFrameData, generateRecipeObjectIndex(recipeData)))}
             egovlpActionData={egovlpActionData}
             egovlpActionFrameData={egovlpActionFrameData}
             clipActionData={clipActionData}

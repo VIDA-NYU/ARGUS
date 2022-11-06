@@ -34,9 +34,11 @@ export function useGetRecordingJson(recordingName, filename) {
 export function useGetStreamInfo(token, fetchAuth, sessionID: string) {
     const url = API_URL + "/streams" + `/${sessionID}?token=${token}`;
     const [data, setData] = useState();
-    fetch(url).then((res) => res.json()).then(r => {
-        setData(r);
-    });
+    useEffect(() => {
+        fetch(url).then((res) => res.json()).then(r => {
+            setData(r);
+        });
+    }, [sessionID])
     return {response: data};
 }
 

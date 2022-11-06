@@ -29,6 +29,7 @@ import ObjectPanelContainer from "./object-comps/object-panel-container";
 import SessionControlGroup from "./session-control/session-control-group";
 import RecipeTextComp from "./recipe/recipe-text";
 import ErrorAlert from "./common/error-alert";
+import PerceptronMainComp from "./perceptron-comps/perceptron-main-comp";
 
 
 interface WozStatusCompStatus {
@@ -211,36 +212,18 @@ export default function WozStatusComp({
             {recipe && <RowComponent> <RecipeTextComp recipeInstructions={recipe.instructions} currentStep={currentStep}/></RowComponent>}
 
             <RowComponent>
-                {recipe && <ObjectCompContainer><AnnotationContext.Consumer>
-                    {({}) => (
-                        <ObjectPanelContainer recipe={recipe}
-                                              detectedObjects={worldFrameData && worldFrameData.data ? worldFrameData.data.map(d => d.label) : []}/>
-                    )}
-                </AnnotationContext.Consumer> </ObjectCompContainer>}
-                <Card sx={{
-                    flexBasis: 2,
-                    flexGrow: 2,
-                }}>
-                    <CardHeader title={"Reasoning"} titleTypographyProps={{variant: "body1"}}>
+                <AnnotationContext.Consumer>
+                    {
+                        ({annotationData, setAnnotationData}) => (
+                            <PerceptronMainComp recipe={recipe} worldFrameData={worldFrameData}
+                                                egovlpActionFrameData={egovlpActionFrameData}
+                                                clipActionFrameData={clipActionFrameData}
+                                                reasoningFrameData={reasoningFrameData}
+                                                annotationData={annotationData} setAnnotationData={setAnnotationData}/>
+                        )
+                    }
+                </AnnotationContext.Consumer>
 
-                    </CardHeader>
-                    <CardContent>
-                        {<AnnotationContext.Consumer>
-                            {
-                                ({annotationData}) => {
-                                    if(annotationData.meta.mode === "online"){
-                                        return (<ClipOutputsView data={egovlpActionFrameData}/>)
-                                    }else if(annotationData.meta.mode === "offline" && reasoningFrameData){
-                                        return (<ClipOutputsView data={clipActionFrameData}/>)
-                                    }else{
-                                        return (<ErrorAlert message={"Action recognition not available"}/>)
-                                    }
-                                }
-                            }
-
-                        </AnnotationContext.Consumer>}
-                    </CardContent>
-                </Card>
 
             </RowComponent>
 
