@@ -49,7 +49,7 @@ const  IMUChart = ({ imudata, videostate, videometadata }: any) => {
         
             const timestamps: number[] = imudata.map( element => parseInt(element.timestamp) );
             imuchartcontroller.clear_chart();
-            imuchartcontroller.render_line(imudata.map( element => element.data ), timestamps );
+            imuchartcontroller.render_line(imudata.map( element => element.data ), timestamps, firstEntry );
         }
 
     }, [imudata] );

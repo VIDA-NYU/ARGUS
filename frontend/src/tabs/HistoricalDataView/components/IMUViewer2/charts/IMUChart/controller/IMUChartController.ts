@@ -3,7 +3,7 @@ import { TimestampManager } from '../../../../PointCloudViewer/controller/Timest
 
 export class IMUChartController {
 
-    public margins: { top: number, bottom: number, left: number, right: number } = { top: 40, bottom: 40, left: 40, right: 40 }
+    public margins: { top: number, bottom: number, left: number, right: number } = { top: 60, bottom: 40, left: 60, right: 10 }
 
     // chart svg
     public chartSVG!: any;
@@ -29,6 +29,11 @@ export class IMUChartController {
     public xScale!: any;
     public yScale!: any;
 
+    // labels
+    public labelsGroup!: any;
+    public xAxisLabelGroup!: any;
+    public yAxisLabelGroup!: any;
+
 
     public initialize_chart( container: HTMLElement ): void {
 
@@ -47,11 +52,7 @@ export class IMUChartController {
     }
 
     public move_time_axis( initialTimestamp: number, currentTimestamp: number ): void {
-
-        // incrementing
-        // this.timestamp += 10;
         const closestTimestamp: number = this.timestampManager.get_imu_timestamp_index( initialTimestamp, currentTimestamp );
-        // console.log(closestTimestamp);
 
         this.movingAxisGroup
             .attr("transform", `translate(${this.margins.left + this.xScale(closestTimestamp)},${this.margins.top})`)
@@ -91,24 +92,83 @@ export class IMUChartController {
 
         this.chartSVG.selectAll('.axis-group').remove();
         this.chartSVG.selectAll('.imu-line').remove();
+        this.chartSVG.selectAll('.label-group').remove();
     }
 
-    public create_axes( xScale: any, yScale: any ): void {
+    public add_line_labels(): void {
+
+        // colors
+        const colors: string[] = ['steelblue', 'orange', 'green'];
+        const axes: string[] = ['x', 'y', 'z'];
+
+        this.labelsGroup = this.chartSVG.append('g').attr('class', 'label-group').attr("transform", `translate(${ this.margins.left + this.margins.right},${this.margins.top - 30})`);
+        
+        for(let i = 0; i < 3; i++){
+
+            this.labelsGroup
+                .append('circle')
+                .attr('cx', 80 * i)
+                .attr('cy', 10)
+                .attr('r', 10)
+                .attr('fill', colors[i]);
+
+            this.labelsGroup
+                .append('text')
+                .attr('x', (80 * i) + 15)
+                .attr('y', 10)
+                .attr('alignment-baseline', 'central')
+                .text(axes[i])
+        }
+        
+        
+
+    }
+
+    public add_axes_labels(): void {
+
+        this.xAxisLabelGroup = this.chartSVG.append('g')
+            .attr('class', 'axis-group')
+            .attr("transform", `translate(${this.width - this.margins.right},${this.height - this.margins.bottom + 10})`)
+            .append('text')
+            .attr('alignment-baseline', 'hanging')
+            .attr('text-anchor', 'end')
+            .text('Time');
+
+        this.yAxisLabelGroup = this.chartSVG.append('g')
+            .attr('class', 'axis-group')
+            .attr("transform", `translate(${10},${this.margins.top + 10}) rotate(270)`)
+            .append('text')
+            .attr('alignment-baseline', 'hanging')
+            .attr('text-anchor', 'end')
+            .text('Magnitude');
+
+    }
+
+    public create_axes( xScale: any, yScale: any, firstEntry: any ): void {
 
         this.yAxisGroup = this.chartSVG.append('g').attr('class', 'axis-group').attr("transform", `translate(${this.margins.left},${this.margins.top})`)
         this.xAxisGroup = this.chartSVG.append('g').attr('class', 'axis-group').attr("transform", `translate(${this.margins.left},${this.height - this.margins.bottom})`)
         this.movingAxisGroup = this.chartSVG.append('g').attr('class', 'axis-group').attr("transform", `translate(${this.margins.left},${this.margins.top})`);
 
-        this.xAxisGroup.call(d3.axisBottom(xScale));
+        // @ts-ignore
+        this.xAxisGroup.call(d3.axisBottom(xScale).tickFormat( (d: any) => { return (((d - firstEntry)/1000)/60).toFixed(2) }));
         this.yAxisGroup.call(d3.axisLeft(yScale));
         this.movingAxisGroup.call(d3.axisLeft(yScale).tickSizeInner(0).tickSizeOuter(0).tickPadding(0).ticks(0));
+
+        // formating text
+        this.xAxisGroup.selectAll('text')
+
 
         this.movingAxisGroup.selectAll(".domain").attr("stroke-dasharray", "2,2");
 
 
     }
 
-    public render_line( lineData: number[][], timestamps: number[] ): void {
+    public render_line( lineData: number[][], timestamps: number[], firstEntry: number ): void {
+
+        // adding labels
+        this.add_line_labels();
+        this.add_axes_labels();
 
         // initializing timestamp manager
         this.timestampManager = new TimestampManager();
@@ -133,7 +193,7 @@ export class IMUChartController {
 
 
         // creating axes
-        this.create_axes( xScale, yScale );
+        this.create_axes( xScale, yScale, firstEntry );
 
         // rendering lines
         this.chartGroup.append("path")
