@@ -6,13 +6,16 @@ import { IMUChartController } from './controller/IMUChartController';
 // styles
 import './IMUChart.css'
 
-const  IMUChart = ({ imudata }: any) => {
+const  IMUChart = ({ imudata, videostate, videometadata }: any) => {
 
     // DOM Refs
     const containerRef = useRef(null);
 
     // controller
     const [ imuchartcontroller, setimuchartcontroller ] = useState<IMUChartController>(null);
+
+    // state
+    const [ firstEntry, setFirstEntry ] = useState<number>(null);
 
     useEffect( () => {
 
@@ -21,12 +24,32 @@ const  IMUChart = ({ imudata }: any) => {
         setimuchartcontroller(imuChartController);
 
     }, [])
- 
+
+    useEffect( () => {
+
+        if(videometadata){
+            const firstEntry: number = parseInt(videometadata['first-entry'].split('-')[0]);
+            setFirstEntry(firstEntry);
+        }
+        
+
+    }, [videometadata] );
+     
+    useEffect( () => {
+
+        if(videostate.playing){
+            imuchartcontroller.move_time_axis( firstEntry, videostate.currentTime );
+        }
+
+    }, [videostate] );
+
     useEffect( () => {  
 
         if( imudata ){
+        
+            const timestamps: number[] = imudata.map( element => parseInt(element.timestamp) );
             imuchartcontroller.clear_chart();
-            imuchartcontroller.render_line(imudata.map( element => element.data ));
+            imuchartcontroller.render_line(imudata.map( element => element.data ), timestamps, firstEntry );
         }
 
     }, [imudata] );

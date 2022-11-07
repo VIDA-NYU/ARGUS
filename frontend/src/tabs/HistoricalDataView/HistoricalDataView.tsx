@@ -1,6 +1,9 @@
 // react imports
 import React, { useEffect, useRef } from 'react';
 
+// templates
+import ComponentTemplate from '../../templates/HistoricalViewComponentTemplate/ComponentTemplate';
+
 // material imports
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
@@ -103,6 +106,7 @@ const HistoricalDataView = () => {
 
       const fetchPointCloudData = async() => {
         try {
+          console.log('Fetching...', recordingName);
           const pointCloudJSONFile = await getPointCloudData(recordingName);
           const gazePointClouJSONFile = await getEyeData(recordingName);
           setPointCloudData({ 'world': pointCloudJSONFile, 'gaze': gazePointClouJSONFile });
@@ -117,10 +121,7 @@ const HistoricalDataView = () => {
         try{
           const imuAccelJSONFile = await getIMUAccelData(recordingName);
           const imuGyroJSONFile = await getIMUGyroData(recordingName);
-          const imuMagJSONFile = await getIMUMagData(recordingName);
-
-          console.log('GYRO ', imuGyroJSONFile);
-          
+          const imuMagJSONFile = await getIMUMagData(recordingName);          
           setIMUData([ imuAccelJSONFile, imuGyroJSONFile, imuMagJSONFile ] );
         } catch( error ){
 
@@ -162,6 +163,8 @@ const HistoricalDataView = () => {
       // };
 
       if (recordingData && recordingData.streams){
+        console.log(recordingData.streams, ' - ', streamingType.POINTCLOUD);
+        
         Object.keys(recordingData.streams).includes(streamingType.POINTCLOUD) && 
         Object.keys(recordingData.streams).includes(streamingType.EYE) && 
         fetchPointCloudData();
@@ -369,32 +372,40 @@ const HistoricalDataView = () => {
             <div className="layer-wrapper">
 
                 <div className="layer-component">
-                  <VideoDataView 
-                    type={dataType.VIDEO} 
-                    data={recordingData} 
-                    title={"Cameras"} 
-                    state={state} 
-                    recordingName={recordingName} 
-                    onProgress={(res) => handleProgress(res)} 
-                    onSeek={res => handleSeekingFromVideoCard(res)}>
-                  </VideoDataView>
+
+                  <ComponentTemplate title={'Video Mosaic'}>
+                    <VideoDataView 
+                      type={dataType.VIDEO} 
+                      data={recordingData} 
+                      title={"Cameras"} 
+                      state={state} 
+                      recordingName={recordingName} 
+                      onProgress={(res) => handleProgress(res)} 
+                      onSeek={res => handleSeekingFromVideoCard(res)}>
+                    </VideoDataView>
+                  </ComponentTemplate>
+
                 </div>
 
                 <div className="layer-component">
-                  <PointCloudViewer
-                    pointCloudRawData={pointCloudData}
-                    videoState={state}
-                    recordingMetadata={recordingData}
-                    // worldPointCloudData={pointCloudData}
-                    // gazePointCloudData={eyeData}
-                    >
-                  </PointCloudViewer>
+
+                  <ComponentTemplate title={'3D View'}>
+                    <PointCloudViewer
+                      pointCloudRawData={pointCloudData}
+                      videoState={state}
+                      recordingMetadata={recordingData}
+                      // worldPointCloudData={pointCloudData}
+                      // gazePointCloudData={eyeData}
+                      >
+                    </PointCloudViewer>
+                  </ComponentTemplate>
+                  
                 </div>
 
             </div>
 
             <div className="layer-wrapper">
-                <IMUDataView data={imudata}></IMUDataView>
+                <IMUDataView data={imudata} videostate={state} videometadata={recordingData}></IMUDataView>
             </div>
             
         </div>

@@ -85,9 +85,13 @@ export class Scene {
     }
 
 
-    public clear_objects(): void {
+    // public clear_objects( renderedObjects: THREE.Object3D[] ): void {
 
-    }
+    //     renderedObjects.forEach( object => {
+    //         this.scene.remove()
+    //     })
+
+    // }
 
     public clear_scene(): void {
 
@@ -124,7 +128,7 @@ export class Scene {
         }
     }
 
-    public add_gaze_point_cloud( positions: number[], normals: number[] ): void {
+    public add_gaze_point_cloud( positions: number[], normals: number[] ): [THREE.Points, THREE.Line] {
 
         const pointgeometry = new THREE.BufferGeometry();
         pointgeometry.setAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
@@ -141,6 +145,7 @@ export class Scene {
 
         // adding lines
         // for(let i = 0; i < positions.length; i=i+3){
+        let line!: THREE.Line;
         for(let i = 0; i < 1; i=i+3){
             
             const origin: THREE.Vector3 = new THREE.Vector3( positions[i], positions[i+1], positions[i+2] );
@@ -148,18 +153,16 @@ export class Scene {
             const destination: THREE.Vector3 = origin.clone().add( normal );
 
             const geometry = new THREE.BufferGeometry().setFromPoints( [origin, destination] );
-            const line = new THREE.Line( geometry, material );
+            line = new THREE.Line( geometry, material );
             this.scene.add( line );
 
         }
 
-        // adding normals
-        // pointgeometry.setAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
-        // const helper = new VertexNormalsHelper( points, 0.2, 0x00ff00 );
-        
         // adding objects to scene
         this.scene.add( points );
-        // this.scene.add(helper);
+
+        // returning added points
+        return [points, line]
         
     }
 

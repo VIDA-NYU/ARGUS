@@ -1,4 +1,3 @@
-/*
 function computeFrameJointMovement(frameJoint0, frameJoint1){
     let xMovement = frameJoint1.pose.position.x - frameJoint0.pose.position.x;
     let yMovement = frameJoint1.pose.position.y - frameJoint0.pose.position.y;
@@ -6,7 +5,9 @@ function computeFrameJointMovement(frameJoint0, frameJoint1){
     let distance = Math.sqrt(xMovement * xMovement + yMovement * yMovement + zMovement * zMovement);
     return distance;
 }
+
 function computeFrameHandMovement(frameHand0, frameHand1){
+
     let accMovement = 0
     for (let jointIndex = 0; jointIndex < frameHand0.items.length; jointIndex++){
         let jointMovement = computeFrameJointMovement(frameHand0.items[jointIndex], frameHand1.items[jointIndex])
@@ -14,23 +15,26 @@ function computeFrameHandMovement(frameHand0, frameHand1){
     }
     let avgMovement = accMovement / frameHand0.items.length;
     return avgMovement;
+
 }
-*/
 
-function computeFrameDiff(frame0, frame1){
-    const x_accel_diff = frame1[0] - frame0[0]
-    const y_accel_diff = frame1[1] - frame0[1]
-    const z_accel_diff = frame1[2] - frame0[2]
 
+function computeFrameMovement(frame0, frame1){
+    let leftMovement = computeFrameHandMovement(frame0.left, frame1.left);
+    let rightMovement = computeFrameHandMovement(frame0.right, frame1.right);
     return {
-        avg: (x_accel_diff + y_accel_diff + z_accel_diff) / 3,
-        x_accel_diff: x_accel_diff,
-        y_accel_diff: y_accel_diff,
-        z_accel_diff: z_accel_diff
+        avg: (leftMovement + rightMovement) / 2,
+        left: leftMovement,
+        right: rightMovement
     }
 
 }
 function isEmpty(obj) {
+
+    if(!obj){
+        return true;
+    }
+
     return Object.keys(obj).length === 0;
 }
 
@@ -46,9 +50,8 @@ function add(accumulator, a) {
 function divideMovement(acc, n){
     return {
         avg: acc.avg / n,
-        x_accel_diff: acc.x_accel_diff / n,
-        y_accel_diff: acc.y_accel_diff / n,
-        z_accel_diff: acc.z_accel_diff / n
+        left: acc.left / n,
+        right: acc.right / n
     }
 }
 
@@ -59,7 +62,7 @@ function computeMovingAverage(data){
     for(let i = 0; i < targetTickNum; i++){
         let keyframe = i * interval;
         let movingAverageValue = divideMovement(data.slice(keyframe, keyframe + interval * 2).map(d => d.movement).reduce(add, {
-            avg: 0, x_accel_diff: 0, y_accel_diff: 0, z_accel_diff: 0
+            avg: 0, left: 0, right: 0
         }), data.slice(keyframe, keyframe + interval * 2).length);
 
         movingAverageData.push({
@@ -70,13 +73,13 @@ function computeMovingAverage(data){
     return movingAverageData;
 }
 
-function computeIMUActivity(data){
+function computeHandsActivity(data){
     if(isEmpty(data)){
         return [];
     }
     let framesMovement = []
     for (let frameIndex = 1; frameIndex < data.length; frameIndex++){
-        let frameMovement = computeFrameDiff(data[frameIndex - 1], data[frameIndex]);
+        let frameMovement = computeFrameMovement(data[frameIndex - 1], data[frameIndex]);
         framesMovement.push(
             {
                 frame: frameIndex,
@@ -102,24 +105,30 @@ function preprocessIfJSON(dataItem){
     }
 }
 
-function addTimestep(data){
-    let dataTime = []
-    for(let i = 1; i < data.length + 1; i=i+1){
-        dataTime.push(data[i-1].concat(i))
-    }
-    return dataTime;
-}
-
-function preprocessData(data, recordingName){
-    if(isEmpty(data)){
+function preprocessData(data){
+    console.log('DATA: ', data);
+    if(!data || isEmpty(data)){
         return data;
     }
     const targetLen = 100;
     let sampleRate = Math.ceil(data.length / targetLen);
     data = sampleArray(data, sampleRate)
-    let dataTime = addTimestep(data)
-    dataTime.push([recordingName, recordingName, recordingName])
-    return dataTime;
+
+    let processedData = data.map(d => {
+        if(typeof d.left === "string"){
+            let left = JSON.parse(d.left);
+            let right = JSON.parse(d.right);
+            let processedItem = {
+                ...d,
+                left,
+                right
+            }
+            return processedItem;
+        } else{
+            return d
+        }
+    })
+    return processedData;
 }
 
-export {computeIMUActivity, isEmpty, sampleArray, preprocessData};
+export {computeHandsActivity, isEmpty, sampleArray, preprocessData};

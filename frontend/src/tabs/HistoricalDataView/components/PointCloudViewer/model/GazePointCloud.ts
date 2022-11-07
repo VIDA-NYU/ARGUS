@@ -1,5 +1,9 @@
 export class GazePointCloud {
 
+    // highlighted gaze
+    public currentHighlightedGazePoint!: THREE.Points;
+    public currentHighlightedGazeDirection!: THREE.Line;
+
     constructor( public points: number[][], public normals: number[][], public timestamps: number[] ){}
 
     // returns positions and normals
