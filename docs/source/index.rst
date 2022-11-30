@@ -11,6 +11,8 @@ The system can be found at this address: https://dashboard.ptg.poly.edu/
 
 You can find the source code on GitLab: https://github.com/VIDA-NYU/tim-dashboard
 
+Documentation is available here: https://github.com/VIDA-NYU/tim-dashboard/blob/main/docs/source/webui.rst
+
 ..  toctree::
     :maxdepth: 2
     :caption: Contents:

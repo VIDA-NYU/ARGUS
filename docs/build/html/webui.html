@@ -1,35 +1,71 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  <meta charset="utf-8" />
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
   <title>Using the web interface &mdash; Dashboard  documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-    <script src="_static/js/theme.js"></script>
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Internals" href="internals.html" />
     <link rel="prev" title="Welcome to dashboard’s documentation!" href="index.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
+          
+
+          
             <a href="index.html" class="icon icon-home"> Dashboard
+          
+
+          
           </a>
+
+          
+            
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -37,110 +73,213 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Using the web interface</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#create-a-new-recording">Create a New Recording</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#explore">Explore</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#recipes">Recipes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-creation">Data creation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#historical-data">Historical Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#recipe-collection">Recipe Collection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#debugging-models">Debugging Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#intervenor">Intervenor</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="internals.html">Internals</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">Dashboard</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
+    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
       <li>Using the web interface</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
+          
             <a href="_sources/webui.rst.txt" rel="nofollow"> View page source</a>
+          
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
-  <section id="using-the-web-interface">
-<h1>Using the web interface<a class="headerlink" href="#using-the-web-interface" title="Permalink to this heading"></a></h1>
-<p>The web interface allows users to explore the Hololens data with no additional software.</p>
+            
+  <div class="section" id="using-the-web-interface">
+<h1>Using the web interface<a class="headerlink" href="#using-the-web-interface" title="Permalink to this headline">¶</a></h1>
+<p>The Dashboard is an interactive webpage to view current streams, access historical data, debug, and view the human-in-the-loop tool (Intervenor).
+The web interface allows users to explore the Hololens data with no additional software.</p>
 <p>The version of TIM-Dashboard that we host can be accessed at <a class="reference external" href="https://dashboard.ptg.poly.edu/">https://dashboard.ptg.poly.edu/</a></p>
-<p>The main TIM-Dashboard functionalities are thought as follows: (1) to record new video recipes, (2) to explore recordings, and (3) to inspect the recipes (ingredients, descriptions, tools, etc).</p>
-<section id="create-a-new-recording">
-<h2>Create a New Recording<a class="headerlink" href="#create-a-new-recording" title="Permalink to this heading"></a></h2>
-<p>This page allows users to record new videos using a hololens. If the hololens is connected, you will see the live view.</p>
+<p>The Dashboard has five main features:  (1) Data creation , (2) data exploration, (3)  recipe collection (ingredients, descriptions, tools, etc), (4) model debugging and (5) the Intervenor.</p>
+<div class="section" id="data-creation">
+<h2>Data creation<a class="headerlink" href="#data-creation" title="Permalink to this headline">¶</a></h2>
+<p>This page allows users to record new videos using a hololens. If the hololens is connected, you will see the live view. Otherwise, displays the following message: “Be right back”. </p>
 <p>To start a new recording, click on the “Start Recording” button.</p>
-<figure class="align-default">
-<img alt="_images/start_rec.png" src="_images/start_rec.png" />
-</figure>
+<div class="figure align-default">
+<img alt="_images/start_rec_v2.png" src="_images/start_rec_v2.png" />
+</div>
 <p>When you are done, click on the “Stop Recording” buttton to stop and finish the recording. Automatically, the video will be saved and uploaded to the server under a unique and pre-generated name with date and time stamps of the current system (YY-MM-DD.HH-MM-SS).</p>
-<figure class="align-default">
-<img alt="_images/stop_rec.png" src="_images/stop_rec.png" />
-</figure>
+<div class="figure align-default">
+<img alt="_images/stop_rec_v2.png" src="_images/stop_rec_v2.png" />
+</div>
 <p>To verify if the recording was saved correctly, go to the tab “Historical Data”, then click on the last entry from the “Select Data” drop-down. It may take some time to appear here (around 1 min).</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="_images/check_rec.png" src="_images/check_rec.png" />
-</figure>
-</section>
-<section id="explore">
-<h2>Explore<a class="headerlink" href="#explore" title="Permalink to this heading"></a></h2>
+</div>
+</div>
+<div class="section" id="historical-data">
+<h2>Historical Data<a class="headerlink" href="#historical-data" title="Permalink to this headline">¶</a></h2>
 <p>This page allows you to inspect all the recordings. By default, the data that belongs to the first recording is displayed. To select a different recording, use the “Select Data” drop-down menu.
-Currently, the following data is displayed: Cameras (Main, Depth, Grey Left-Left, Grey Left-Front, Grey Right-Front, and Grey Right-Right), Audio, Eye and Hand data.</p>
+Currently, the following data is displayed: Cameras (Main, Depth, Grey Left-Left, Grey Left-Front, Grey Right-Front, and Grey Right-Right), Eye data and inertial measurement unit (IMU) data.</p>
 <p>Using the controls, users can play/stop all the videos. They can also seek any position on the video using the slider.</p>
-<figure class="align-default">
-<img alt="_images/historical_data_tab.png" src="_images/historical_data_tab.png" />
-</figure>
-</section>
-<section id="recipes">
-<h2>Recipes<a class="headerlink" href="#recipes" title="Permalink to this heading"></a></h2>
+<div class="figure align-default">
+<img alt="_images/historical_data_view.png" src="_images/historical_data_view.png" />
+</div>
+<p>At the upper-right of the previous image, the eye data is displayed. Find below an expanded version of it. It is a visualization of the LIDAR mosaic of the physical space with user location over time denoted by beige squares and user vision path by blue lines.</p>
+<div class="figure align-default">
+<img alt="_images/eye_data_vis.png" src="_images/eye_data_vis.png" />
+</div>
+<p>Finally, at the bottom is the IMU metrics over time of head/HoloLens acceleration, rotation (gyroscope), and velocity in the x (blue), y (orange), and z (green) directions.</p>
+</div>
+<div class="section" id="recipe-collection">
+<h2>Recipe Collection<a class="headerlink" href="#recipe-collection" title="Permalink to this headline">¶</a></h2>
 <p>This page allows users to explore the recipes. It includes information about the ingredients, tools and descriptions.</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="_images/recipes_tab.png" src="_images/recipes_tab.png" />
-</figure>
-</section>
-</section>
+</div>
+</div>
+<div class="section" id="debugging-models">
+<h2>Debugging Models<a class="headerlink" href="#debugging-models" title="Permalink to this headline">¶</a></h2>
+<p>This page allows users inspect the model’s outputs. To better follow the interpretation systems during a stream, the debugging model tab provides model outputs from recognition, reasoning, and perception modules. Included are the following:</p>
+<ol class="arabic simple">
+<li><p>In the upper-left, we draw bounding boxes around the objects in the video to identify the spatial location. Labels are also displayed. Users can also change the detection confidence to inspect how this impacts the model performance. </p></li>
+<li><p>In the upper-right, the interpreted current step, a description of that step, the user’s status within the step, and any errors detected.</p></li>
+<li><p>Below (2) are the objects needed in the current step (“target objects”) and the currently detected objects.</p></li>
+<li><p>Below (3), is the list of predicted most likely current actions with their probability. In this example, the model predicts with 70.64% likelihood “apply spreads” is the current action, followed by “scoop spreads” at 14.68%.</p></li>
+<li><p>The bottom row displays the location and confidence for the recognized objects and user hands as well as a small graph of the hand detection confidence over time.</p></li>
+</ol>
+<div class="figure align-default">
+<img alt="_images/debugging_model_view.png" src="_images/debugging_model_view.png" />
+</div>
+</div>
+<div class="section" id="intervenor">
+<h2>Intervenor<a class="headerlink" href="#intervenor" title="Permalink to this headline">¶</a></h2>
+<p>Intervenor was designed to loop an intervening user in the model inference and user operation. The intervenor is likely to be a model developer, system administrator, or other person who wants to control the TIM system. The system supports two major goals:</p>
+<ol class="arabic simple">
+<li><p>The first is to allow the intervenor to directly intervene in the experiments. The idea is motivated by the fact that the reasoning/perceptual modules are imperfect so the human should be looped into the process. The intervenor user can directly control the reasoning step through the step control view.</p></li>
+<li><p>The second aim is to enable a deeper dive into the model behavior. The intervenor user can inspect the model behavior through reasoning and temporal views allowing human interaction in the loop.</p></li>
+</ol>
+<p>Intervenor supports two modes, i.e., online and offline. The online mode allows the intervenor to control the TIM interface currently being streamed. The offline mode enables the intervenor to replay a recording, while inspecting the model behaviors in the model. The offline mode can help the developer to understand and improve the model. The intervenor can fix incorrect predictions and annotate the recording for future analysis. To support the two modes, the following components exist:</p>
+<div class="figure align-default">
+<img alt="_images/intervenor_view.png" src="_images/intervenor_view.png" />
+</div>
+</div>
+</div>
 
 
            </div>
+           
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to dashboard’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="internals.html" class="btn btn-neutral float-right" title="Internals" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to dashboard’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, New York University.</p>
-  </div>
+    <p>
+        &#169; Copyright 2022, New York University.
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
-  <script>
+  
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>
