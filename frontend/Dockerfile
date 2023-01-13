@@ -2,8 +2,8 @@ FROM node:16-slim AS build
 
 WORKDIR /src
 
-COPY package.json package-lock.json ./
-RUN npm install
+COPY package*.json ./
+RUN npm install --force
 COPY . ./
 RUN npm run build
 

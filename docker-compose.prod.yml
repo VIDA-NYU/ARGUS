@@ -17,6 +17,24 @@ services:
       - "traefik.http.routers.tim-dash.tls.certresolver=le"
       - "traefik.http.routers.tim-dash.tls=true"
       - "traefik.http.services.tim-dash.loadbalancer.server.port=80"
+  docs:
+    container_name: dashdocs
+    restart: always
+    ports:
+      - "8034:80"
+    networks:
+      - web
+      - default
+    build:
+      context: .
+      dockerfile: ./Dockerfile.docs
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.tim-dash-rtd.rule=Host(`dashboard-rtd.${DOMAIN}`)"
+      - "traefik.http.routers.tim-dash-rtd.entrypoints=websecure"
+      - "traefik.http.routers.tim-dash-rtd.tls.certresolver=le"
+      - "traefik.http.routers.tim-dash-rtd.tls=true"
+      - "traefik.http.services.tim-dash-rtd.loadbalancer.server.port=80"
 
 networks:
   web:
