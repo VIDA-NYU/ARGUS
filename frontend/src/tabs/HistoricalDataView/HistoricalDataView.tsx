@@ -17,21 +17,20 @@ import { MediaState, DeleteInfo } from './types/types';
 // API imports
 import { useGetAllRecordings, useGetRecording, useDeleteRecording, getPointCloudData, getEyeData, getIMUAccelData, getIMUGyroData, getIMUMagData  } from '../../api/rest';
 import { useToken } from '../../api/TokenContext';
-import { dataType, RequestStatus, streamingType } from '../../api/types';
+import { dataType, streamingType } from '../../api/types';
 
 // global components
-import Controls from '../../components/Controls';
+import Controls from '../../utils/Controls';
 
 // local components
 import PointCloudViewer from './components/PointCloudViewer/PointCloudViewer';
-// import IMUDataView from './components/IMUViewer/IMUViewer';
-import IMUDataView from './components/IMUViewer2/IMUViewer2';
+import IMUDataView from './components/IMUViewer/IMUViewer';
 
 // helpers
-import { formatTotalDuration, format  } from '../../components/Helpers';
+import { formatTotalDuration, format  } from '../../utils/Helpers';
 
 // video
-import { onProgressType } from '../../components/VideoDataView/VideoCard/VideoCard';
+import { onProgressType } from './components/VideoDataView/VideoCard/VideoCard';
 import VideoDataView from './components/VideoDataView/VideoDataView';
 
 // third-party
@@ -132,39 +131,7 @@ const HistoricalDataView = () => {
 
       }
 
-      // const fetchPointCloudData = async() => {
-      //   try {
-      //     const jsonFile = await getPointCloudData(recordingName);
-      //     setPointCloudData(jsonFile);
-      //   } catch (error) {
-      //           // console.log("error", error);
-      //           setPointCloudData("404 Not Found. Point Cloud data was not found.");
-      //   }
-      // };
-
-      // const fetchEyeData = async () => {
-      //   try {
-      //     const jsonFile = await getEyeData(recordingName);
-      //     setEyeData(jsonFile);
-      //   } catch (error) {
-      //           // console.log("error", error);
-      //           setEyeData("404 Not Found. Eye data was not found.");
-      //         }
-      // };
-
-      // const fetchHandData = async () => {
-      //   try {
-      //     const jsonFile = await getHandData(recordingName);
-      //     setHandData(jsonFile);
-      //   } catch (error) {
-      //     // console.log("error", error);
-      //     setHandData("404 Not Found. Hand data was not found.");
-      //   }
-      // };
-
-      if (recordingData && recordingData.streams){
-        console.log(recordingData.streams, ' - ', streamingType.POINTCLOUD);
-        
+      if (recordingData && recordingData.streams){        
         Object.keys(recordingData.streams).includes(streamingType.POINTCLOUD) && 
         Object.keys(recordingData.streams).includes(streamingType.EYE) && 
         fetchPointCloudData();
@@ -179,19 +146,6 @@ const HistoricalDataView = () => {
       }
 
     }, [recordingData]);
-
-    // useEffect(() => {
-    //   if (statusDel === RequestStatus.SUCCESS){
-    //     console.log("Successfully deleted:");
-    //     setOpenConfDelDialog(true);
-    //     setDelData({name: "", confirmation: false});
-
-    //     const index = 0;
-    //     setRecordingID(index);
-    //     recordings && setRecordingName(recordings[index]);
-    //     setState({ ...state, totalDuration: "0:0" });
-    //   }
-    // }, [deletedRecord]);
 
     const handleChangeRecording = (event: SelectChangeEvent) => {      
       const index = Number(event.target.value);
