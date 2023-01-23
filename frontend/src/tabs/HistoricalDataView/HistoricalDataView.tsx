@@ -48,10 +48,7 @@ const HistoricalDataView = () => {
     // const [handData, setHandData] = React.useState({});
 
     const [ imudata, setIMUData ] = React.useState([]);
-
     const [pointCloudData, setPointCloudData] = React.useState({});
-    const [openDelDialog, setOpenDelDialog] = React.useState(false);
-    const [openConfDelDialog, setOpenConfDelDialog] = React.useState(false);
     const [delData, setDelData] = React.useState<DeleteInfo>({name: "", confirmation: false});
     const [timeDisplayFormat, setTimeDisplayFormat] = React.useState("normal");
     const [state, setState] = React.useState<MediaState>({
@@ -71,7 +68,7 @@ const HistoricalDataView = () => {
     const playerRef = useRef(null);
     const playerContainerRef = useRef(null);
     const controlsRef = useRef(null);
-    const canvasRef = useRef(null);
+    // const canvasRef = useRef(null);
     const {
       playing,
       controls,
@@ -147,6 +144,8 @@ const HistoricalDataView = () => {
 
     }, [recordingData]);
 
+
+
     const handleChangeRecording = (event: SelectChangeEvent) => {      
       const index = Number(event.target.value);
       setRecordingID(index);
@@ -211,23 +210,6 @@ const HistoricalDataView = () => {
       screenful.toggle(playerContainerRef.current);
     };
 
-    const handleClickDelButton = () => {
-      setOpenDelDialog(true);
-    }
-
-    const handleCloseDeleteDialog = (value) => {
-      setOpenDelDialog(false);
-      if (value) { // if confirmation is true
-        //Delete recording
-        setDelData({name: recordingName, confirmation: value});
-      } else {
-        // Do nothing
-      }
-    };
-    const handleCloseConfDeleteDialog = () => {
-      setOpenConfDelDialog(false);
-    };
-
     const elapsedTime =
       timeDisplayFormat == "normal"
         ? format(currentTime) : "0:0";
@@ -235,24 +217,6 @@ const HistoricalDataView = () => {
 
     // const totalDurationValue = format(totalDuration);
     const totalDurationValue = (recordingData && recordingData.duration) ? formatTotalDuration(recordingData.duration) : "0:0";
-
-    const renderStreamings= () => {
-        if (recordingData !== undefined && recordingData && recordingData.streams){
-          return <>
-            <VideoDataView 
-              type={dataType.VIDEO} 
-              data={recordingData} 
-              title={"Cameras"} 
-              state={state} 
-              recordingName={recordingName} 
-              onProgress={(res) => handleProgress(res)} 
-              onSeek={res => handleSeekingFromVideoCard(res)}>
-            </VideoDataView>
-        </>
-        }
-        return <></>;
-      }
-
 
     return (
         <div className='main-wrapper'>
@@ -274,26 +238,6 @@ const HistoricalDataView = () => {
                           }
                       </Select>
                   </FormControl>
-              
-                  {/* // Disable Delete recording
-                  <FormControl sx={{ m: 1, minWidth: 140 }} size="small">
-                      <Button variant="outlined" onClick={handleClickDelButton}  startIcon={<DeleteIcon />}>
-                      Delete
-                      </Button>
-                  </FormControl> */}
-                  
-                  {/* <DeleteRecordingDialog
-                      id="delete-recording"
-                      keepMounted
-                      open={openDelDialog}
-                      onClose={handleCloseDeleteDialog}
-                  />
-                  <ConfirmationDeleteDialog
-                      id="confirmation-delete-recording"
-                      keepMounted
-                      open={openConfDelDialog}
-                      onClose={handleCloseConfDeleteDialog}
-                  /> */}
               </Box>
 
               <Controls
@@ -309,16 +253,10 @@ const HistoricalDataView = () => {
                   played={played}
                   elapsedTime={elapsedTime}
                   totalDuration={totalDurationValue}
-                  // onMute={hanldeMute}
-                  // muted={muted}
-                  // onVolumeChange={handleVolumeChange}
-                  // onVolumeSeekDown={handleVolumeSeekDown}
                   onChangeDispayFormat={handleDisplayFormat}
                   playbackRate={playbackRate}
                   onPlaybackRateChange={handlePlaybackRate}
                   onToggleFullScreen={toggleFullScreen}
-                  // volume={volume}
-                  // onBookmark={addBookmark}
               />
 
             </div>

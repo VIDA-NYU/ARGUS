@@ -84,40 +84,6 @@ const VideoDataView = ({ type, title, data, recordingName, state, onProgress, on
             </div>
 
         </div>
-
-        // <AccordionView title='Cameras' height={300}>
-
-        //     <VideoCard 
-        //         title={videoStreamings['main']} 
-        //         state={state}
-        //         onSeek={res => onSeek(res)} 
-        //         onProgress={(res) => onProgress(res)} 
-        //         path={getVideoPath(recordingName, 'main')} />
-
-        //     {/* <Grid container spacing={{ xs: 1, md: 2 }} >
-        //         {
-        //             videoStreamingsIDs.map((name, index) => {
-        //             const streams = Object.keys(data.streams);
-        //                 if (streams.includes(name)){ //verify if stream exists.
-        //                     return (
-        //                         <Grid 
-        //                             key={index} 
-        //                             item 
-        //                             xs={2} 
-        //                             style={{ maxHeight: '100%'}}>
-        //                             <VideoCard 
-        //                                 title={videoStreamings[name]} 
-        //                                 state={state}
-        //                                 onSeek={res => onSeek(res)} 
-        //                                 onProgress={(res) => onProgress(res)} 
-        //                                 path={getVideoPath(recordingName, name)} />
-        //                         </Grid>
-        //                     )
-        //                 }
-        //             })
-        //         }
-        //     </Grid> */}
-        // </AccordionView>
     )}
 
 export default VideoDataView;
