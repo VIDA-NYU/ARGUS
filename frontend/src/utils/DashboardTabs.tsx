@@ -12,6 +12,7 @@ import LiveDataView from '../tabs/LiveDataView/LiveDataView';
 import DebuggingDataView from '../tabs/DebuggingDataView/DebuggingDataView';
 import WOZView from '../tabs/IntervenorView/WOZView';
 import RecipesView from '../tabs/RecipesCollectionView/RecipesView';
+import WOZViewPaper from '../tabs/IntervenorView/WOZViewPaper';
 
 
 interface TabPanelProps {
@@ -76,7 +77,7 @@ export default function DashboardTabs() {
         <DebuggingDataView />
       </TabPanel>
       <TabPanel value={value} index={4}>
-        <WOZView />
+        <WOZViewPaper />
       </TabPanel>
     </Box>
   );

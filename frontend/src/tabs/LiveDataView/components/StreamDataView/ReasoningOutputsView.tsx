@@ -1,4 +1,4 @@
-import {Box, Chip } from '@mui/material';
+import {Box, Chip, Button } from '@mui/material';
 import { useRecordingControls } from '../../../../api/rest';
 import DoneIcon from '@mui/icons-material/Done';
 import RotateLeftIcon from '@mui/icons-material/RotateLeft';
@@ -8,6 +8,8 @@ import { StreamView } from './LiveStream';
 import RestaurantOutlinedIcon from '@mui/icons-material/RestaurantOutlined';
 import LunchDiningOutlinedIcon from '@mui/icons-material/LunchDiningOutlined';
 import { DETIC_IMAGE_STREAM, REASONING_ENTITIES_STREAM } from '../../../../config';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 interface Entity {
   ingredients: string [],
@@ -171,4 +173,21 @@ export const ReasoningOutputsWOZView = ({
 
     </Box>
 
+}
+export const ReasoningOutputsWOZViewPaper = ({ data, recipe }) => {
+  const { step_id, step_status, step_description, error_status, error_description } = data || {};
+  // let step_id = 0;
+  const current_step = step_id + 1;
+  const { setStep } = useRecordingControls();
+  const step_id_previous = (step_id -1).toString();
+  const step_id_next = (step_id +1).toString();
+  return <Box display='flex' flexDirection='column' pt={0} mr={2} ml={2}>
+    <span><b>RECIPE STEPS</b></span>
+    <span><b>Current Step: </b>{current_step} - <b>  Status:</b> {step_status}</span>
+    {recipe && recipe.steps_simple && <ListSteps list={recipe.steps_simple} completedStep={step_id}/>}
+    <Box>
+      <Button onClick={() => setStep({ step_id_s: step_id_previous})} variant="contained" style={{margin: 6}}><ArrowBackIcon /> Previous Step</Button>
+      <Button  onClick={() => setStep({ step_id_s: step_id_next})} variant="contained"><ArrowForwardIcon />Next Step</Button>
+    </Box>
+  </Box>
 }
