@@ -1,7 +1,7 @@
 import {Box, styled} from "@mui/material";
 import {AnnotationContext} from "./components/annotation/provider";
 import MachineReasoningInitializer from "./components/annotation/machine-reasoning-initializer";
-import {StreamView} from '../LiveDataView/components/StreamDataView/LiveStream';;
+import {StreamView} from '../LiveDataView/components/StreamDataView/LiveStream';
 import {ReasoningOutputsWOZView} from "../LiveDataView/components/StreamDataView/ReasoningOutputsView";
 import TemporalOverview from "./components/overview/temporal-overview";
 import {ReactElement} from "react";
