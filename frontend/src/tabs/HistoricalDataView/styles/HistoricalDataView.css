@@ -2,10 +2,16 @@
 /* TODO: Figure out the correct way to fill the whole screen with main-wrapper */
 .main-wrapper{
 
-    width: 98vw;
-    height: 90vh;
+    /* width: 98vw; */
+    /* height: 90vh; */
+
+    width: 100%;
+    height: 100%;
+
     display: flex;
     flex-direction: column;
+
+    background-color: red;
 
 }
 

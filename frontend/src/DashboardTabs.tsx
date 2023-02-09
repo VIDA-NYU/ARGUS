@@ -7,12 +7,11 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
 // Tabs
-import HistoricalDataView from '../tabs/HistoricalDataView/HistoricalDataView';
-import LiveDataView from '../tabs/LiveDataView/LiveDataView';
-import DebuggingDataView from '../tabs/DebuggingDataView/DebuggingDataView';
-import WOZView from '../tabs/IntervenorView/WOZView';
-import RecipesView from '../tabs/RecipesCollectionView/RecipesView';
-import WOZViewPaper from '../tabs/IntervenorView/WOZViewPaper';
+import HistoricalDataView from './tabs/HistoricalDataView/HistoricalDataView3';
+import LiveDataView from './tabs/LiveDataView/LiveDataView';
+import DebuggingDataView from './tabs/DebuggingDataView/DebuggingDataView';
+import WOZView from './tabs/IntervenorView/WOZView';
+import RecipesView from './tabs/RecipesCollectionView/RecipesView';
 
 
 interface TabPanelProps {
@@ -54,7 +53,7 @@ export default function DashboardTabs() {
     setValue(newValue);
   };
   return (
-    <Box sx={{ pt: 9, pl: 1,  width: '100%' }} component="main">
+    <Box sx={{ pt: 9, pl: 1,  width: '100%', height: '100%', backgroundColor: 'red' }} component="main">
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }} >
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
           <Tab label="Create Data" {...a11yProps(0)} />
