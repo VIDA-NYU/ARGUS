@@ -9,7 +9,7 @@ import DashboardTabs from './DashboardTabs';
 
 export default function App() {
   return (
-    <div className="App">
+    <div className='main-wrapper'>
         <Box sx={{ display: "flex" }}>
           <AppBar component="nav">
               <Toolbar>
@@ -18,8 +18,7 @@ export default function App() {
                   edge="start"
                   color="inherit"
                   aria-label="menu"
-                  sx={{ mr: 2 }}
-              >
+                  sx={{ mr: 2 }}>
                   <MenuIcon />
               </IconButton>
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
@@ -32,4 +31,3 @@ export default function App() {
     </div>
   );
 }
-//sx={{ flexGrow: 1 }}

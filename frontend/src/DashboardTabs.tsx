@@ -30,10 +30,11 @@ function TabPanel(props: TabPanelProps) {
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
       {...other}
+      style={{ flex: 1 }}
     >
       {value === index && (
-        <Box sx={{ p: 2 }}>
-          <Typography component={'div'}>{children}</Typography>
+        <Box sx={{ width: '100%', height: '100%', display: 'flex', p: 2 }}>
+          <Typography component={'div'} style={{ display: 'flex', flex: 1 }}>{children}</Typography>
         </Box>
       )}
     </div>
@@ -43,7 +44,7 @@ function TabPanel(props: TabPanelProps) {
 function a11yProps(index: number) {
   return {
     id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`
   };
 }
 
@@ -51,33 +52,44 @@ export default function DashboardTabs() {
   const [value, setValue] = React.useState(0);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
-  };
+  };  
+
   return (
-    <Box sx={{ pt: 9, pl: 1,  width: '100%', height: '100%', backgroundColor: 'red' }} component="main">
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }} >
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+    <Box sx={{ pt: 9, pl: 1,  width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }} component="main">
+
+      <Box sx={{ width: '100%', height: '60px'}}>
+        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" >
           <Tab label="Create Data" {...a11yProps(0)} />
           <Tab label="Historical Data" {...a11yProps(1)} />
           <Tab label="Recipe Collection" {...a11yProps(2)} />
-          <Tab label="Debuging Models" {...a11yProps(3)} />
-          <Tab label="Intervenor" {...a11yProps(4)} />
+          {/* <Tab label="Debuging Models" {...a11yProps(3)} /> */}
+          {/* <Tab label="Intervenor" {...a11yProps(4)} />  */}
         </Tabs>
       </Box>
-      <TabPanel value={value} index={0}>
-        <LiveDataView />
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        <HistoricalDataView />
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        <RecipesView />
-      </TabPanel>
-      <TabPanel value={value} index={3}>
+
+      <Box sx={{ flex: 1, display: 'flex' }}>
+
+        <TabPanel value={value} index={0}>
+          <LiveDataView />
+        </TabPanel>
+
+        <TabPanel value={value} index={1}>
+          <HistoricalDataView />
+        </TabPanel>
+
+        <TabPanel value={value} index={2}>
+          <RecipesView />
+        </TabPanel>
+
+      </Box>
+
+      
+      {/* <TabPanel value={value} index={3}>
         <DebuggingDataView />
       </TabPanel>
       <TabPanel value={value} index={4}>
-        <WOZViewPaper />
-      </TabPanel>
+        <WOZView />
+      </TabPanel> */}
     </Box>
   );
 }
