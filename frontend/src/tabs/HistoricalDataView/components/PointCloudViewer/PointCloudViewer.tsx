@@ -29,7 +29,7 @@ const PointCloudViewer = ( { pointCloudRawData, videoState, recordingMetadata }:
 
     }
 
-  }, [videoState])
+  }, [videoState])  
 
   useEffect( () => {
     

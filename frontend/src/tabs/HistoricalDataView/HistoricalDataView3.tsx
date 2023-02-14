@@ -3,6 +3,8 @@ import React, { useEffect, useRef } from 'react';
 
 // material imports
 import Box from '@mui/material/Box';
+import { Divider } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -10,9 +12,6 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 // styles
 import './styles/HistoricalDataView.css'
-
-// data
-import useSomeData from './data/HistoricalDataView.data';
 
 // api
 import { useToken } from '../../api/TokenContext';
@@ -28,6 +27,10 @@ import {
 
 // global components
 import Controls from '../../utils/Controls';
+import PointCloudViewer from '../../components/PointCloudViewer/PointCloudViewer';
+import SummaryView from '../../components/SummaryView/SummaryView';
+import SessionListView from '../../components/SessionListView/SessionListView';
+import ModelView from '../../components/ModelView/ModelView';
 
 const HistoricalDataView = () => {
 
@@ -35,63 +38,53 @@ const HistoricalDataView = () => {
   const { token, fetchAuth } = useToken();
   const { response: recordingsList } = useGetAllRecordings(token, fetchAuth);
 
-  const { someData, loading, error } = useSomeData();
+  // const { someData, loading, error } = useSomeData();
 
   // Recordings
-  // const [availableRecordings, setAvailableRecordings] = React.useState(['']);
-  // const [selectedRecordingID, setSelectedRecordingID] = React.useState<string>('');
+  const [availableRecordings, setAvailableRecordings] = React.useState(['']);
+  const [selectedRecordingID, setSelectedRecordingID] = React.useState<string>('');
   
-  // // Initialization
-  // useEffect( () => {
+  // Initialization
+  useEffect( () => {
     
-  //   // Setup/initialize recording name.
-  //   recordingsList && setSelectedRecordingID(recordingsList[0]);
-  //   recordingsList && setAvailableRecordings(recordingsList);
+    // Setup/initialize recording name.
+    recordingsList && setSelectedRecordingID(recordingsList[0]);
+    recordingsList && setAvailableRecordings(recordingsList);
 
-  // }, [recordingsList])
+  }, [recordingsList])
 
     return (
       <Box sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
 
-        <Box sx={{ width: '100%', height: '80px', display: 'flex' }}>
+        <Box sx={{ flex: 1, display: 'flex'}}>
 
-          <Box sx={{ width: '400px', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <FormControl sx={{ m: 1, minWidth: 340 }} size="small">
-                <InputLabel>Select Data</InputLabel>
-                <Select
-                    value={selectedRecordingID}
-                    label="Select Data">
-                      {   
-                        availableRecordings && availableRecordings.map((recordingID, index) => (
-                            <MenuItem key={'menu-item-' + index} value={recordingID}>{recordingID}</MenuItem>
-                        ))
-                      }
-                </Select>
-            </FormControl>
+          <Box sx={{ width: '500px', height: '100%', display: 'flex', flexDirection: 'column' }}>
+
+            <Box sx={{ flex: 1, display: 'flex' }}>
+                <SummaryView></SummaryView>
+            </Box>
+
+            <Divider />
+
+            <Box sx={{ flex: 1, display: 'flex' }}>
+              <SessionListView></SessionListView>
+            </Box>
+
           </Box>
 
-          <Box sx={{ flex: 1, display: 'flex', backgroundColor: 'green' }}>
+          <Divider orientation='vertical'/>
+
+          <Box sx={{ flex: 1, display: 'flex' }}>
+              <PointCloudViewer recordingName='test-looking-around-office-9.19'></PointCloudViewer>
           </Box>
 
-        </Box>
+          <Divider orientation='vertical'/>
 
-
-        <Box sx={{ flex: 1, display: 'flex', backgroundColor: 'purple' }}>
-
-          <Box sx={{ width: '400px', height: '100%', display: 'flex', backgroundColor: 'red' }}>
-                        
-          </Box>
-
-          <Box sx={{ flex: 1, display: 'flex', backgroundColor: 'yellow' }}>
-
-          
-
+          <Box sx={{ width: '500px', display: 'flex' }}>
+            <ModelView></ModelView>
           </Box>
 
         </Box>
-
-
-        
 
       </Box>
 
