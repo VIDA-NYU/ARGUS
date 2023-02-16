@@ -1,33 +1,14 @@
 // react imports
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 
 // material imports
 import Box from '@mui/material/Box';
 import { Divider } from '@mui/material';
-import Typography from '@mui/material/Typography';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 // styles
 import './styles/HistoricalDataView.css'
 
-// api
-import { useToken } from '../../api/TokenContext';
-import { 
-  useGetAllRecordings, 
-  // useGetRecording, 
-  // useDeleteRecording, 
-  // getPointCloudData, 
-  // getEyeData, 
-  // getIMUAccelData, 
-  // getIMUGyroData, 
-  getIMUMagData  } from '../../api/rest';
-
 // global components
-import Controls from '../../utils/Controls';
-import PointCloudViewer from '../../components/SessionView/PointCloudViewer/PointCloudViewer';
 import SummaryView from '../../components/SummaryView/SummaryView';
 import SessionListView from '../../components/SessionListView/SessionListView';
 import ModelView from '../../components/ModelView/ModelView';
@@ -35,40 +16,38 @@ import SessionView from '../../components/SessionView/SessionView';
 
 const HistoricalDataView = () => {
 
-  // get the token and authenticated fetch function
-  const { token, fetchAuth } = useToken();
-  const { response: recordingsList } = useGetAllRecordings(token, fetchAuth);
-
-  // const { someData, loading, error } = useSomeData();
-
   // Recordings
-  const [availableRecordings, setAvailableRecordings] = React.useState(['']);
-  const [selectedRecordingID, setSelectedRecordingID] = React.useState<string>('');
-  
-  // Initialization
-  useEffect( () => {
-    
+  const [availableRecordings, setAvailableRecordings] = React.useState([]);
+  const [selectedRecordingName, setSelectedRecordingName] = React.useState<string>('');
+
+  // fetch
+  useEffect(() => {
     // Setup/initialize recording name.
-    recordingsList && setSelectedRecordingID(recordingsList[0]);
-    recordingsList && setAvailableRecordings(recordingsList);
+    availableRecordings && availableRecordings[0] && setSelectedRecordingName(availableRecordings[0].name);
+  }, [availableRecordings]);
 
-  }, [recordingsList])
-
+  const handleChangeSelectRecording = (newSelection) => {
+      setSelectedRecordingName(newSelection);
+  }
+  const updateAvailableRecordings = (updatedAvailableRecordings) => {
+      setAvailableRecordings(updatedAvailableRecordings);
+      // console.log(updatedAvailableRecordings);
+  }
     return (
       <Box sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
 
         <Box sx={{ flex: 1, display: 'flex'}}>
 
-          <Box sx={{ width: '500px', height: '100%', display: 'flex', flexDirection: 'column' }}>
+          <Box sx={{ width: '420px', height: '100%', display: 'flex', flexDirection: 'column' }}>
 
-            <Box sx={{ flex: 1, display: 'flex' }}>
-                <SummaryView></SummaryView>
+            <Box sx={{ height: 300 , flexDirection: 'column', overflow: "auto" }}>
+                <SummaryView updateRecordings={updateAvailableRecordings}></SummaryView>
             </Box>
 
             <Divider />
 
-            <Box sx={{ flex: 1, display: 'flex' }}>
-              <SessionListView></SessionListView>
+            <Box sx={{ height: 400, flexDirection: 'column', overflow: "auto" }}>
+              <SessionListView recordings={availableRecordings} onChangeSelectRecording={handleChangeSelectRecording}></SessionListView>
             </Box>
 
           </Box>
@@ -76,7 +55,7 @@ const HistoricalDataView = () => {
           <Divider orientation='vertical'/>
 
           <Box sx={{ flex: 1, display: 'flex' }}>
-              <SessionView recordingName='test-looking-around-office-9.19'></SessionView>
+              <SessionView recordingName={selectedRecordingName}></SessionView>
           </Box>
 
           <Divider orientation='vertical'/>
