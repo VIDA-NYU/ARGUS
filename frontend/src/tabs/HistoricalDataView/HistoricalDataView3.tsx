@@ -27,10 +27,11 @@ import {
 
 // global components
 import Controls from '../../utils/Controls';
-import PointCloudViewer from '../../components/PointCloudViewer/PointCloudViewer';
+import PointCloudViewer from '../../components/SessionView/PointCloudViewer/PointCloudViewer';
 import SummaryView from '../../components/SummaryView/SummaryView';
 import SessionListView from '../../components/SessionListView/SessionListView';
 import ModelView from '../../components/ModelView/ModelView';
+import SessionView from '../../components/SessionView/SessionView';
 
 const HistoricalDataView = () => {
 
@@ -75,7 +76,7 @@ const HistoricalDataView = () => {
           <Divider orientation='vertical'/>
 
           <Box sx={{ flex: 1, display: 'flex' }}>
-              <PointCloudViewer recordingName='test-looking-around-office-9.19'></PointCloudViewer>
+              <SessionView recordingName='test-looking-around-office-9.19'></SessionView>
           </Box>
 
           <Divider orientation='vertical'/>
