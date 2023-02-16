@@ -5,12 +5,12 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-import DashboardTabs from './utils/DashboardTabs';
+import DashboardTabs from './DashboardTabs';
 import 'c3/c3.css';
 
 export default function App() {
   return (
-    <div className="App">
+    <div className='main-wrapper'>
         <Box sx={{ display: "flex" }}>
           <AppBar component="nav">
               <Toolbar>
@@ -19,8 +19,7 @@ export default function App() {
                   edge="start"
                   color="inherit"
                   aria-label="menu"
-                  sx={{ mr: 2 }}
-              >
+                  sx={{ mr: 2 }}>
                   <MenuIcon />
               </IconButton>
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
@@ -33,4 +32,3 @@ export default function App() {
     </div>
   );
 }
-//sx={{ flexGrow: 1 }}
