@@ -25,3 +25,15 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+#chartduration {
+  background: #fff;
+  margin: 1em auto;
+  width: 100%;
+  min-height: 125px;
+}
+#chartsize {
+  background: #fff;
+  margin: 1em auto;
+  width: 100%;
+  min-height: 125px;
+}
