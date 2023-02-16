@@ -1,6 +1,6 @@
 // react
 import React, { useEffect, useRef, useState } from 'react';
-import { PointCloudViewerController } from './controllers/PointCloudViewer.controller';
+import { SceneViewerController } from './controllers/SceneViewer.controller';
 
 const SceneViewer = ( {pointCloudData} : any ) => {
 
@@ -8,12 +8,11 @@ const SceneViewer = ( {pointCloudData} : any ) => {
     const containerRef = useRef(null);
 
     // state
-    const [pointCloudViewerController, setPointCloudViewerController] = useState<PointCloudViewerController | null>(null);
+    const [sceneViewerController, setSceneViewerController] = useState<SceneViewerController | null>(null);
 
     useEffect(() => {
 
-        const pointCloudViewerController: PointCloudViewerController = new PointCloudViewerController();
-        pointCloudViewerController.initialize_controller( containerRef.current );
+
 
     }, [pointCloudData])
 

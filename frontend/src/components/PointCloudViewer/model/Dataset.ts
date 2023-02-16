@@ -6,7 +6,6 @@
 import { DataUtils  } from "../utils/DataUtils";
 
 // model
-// import { GazePointCloudRaw, WorldPointCloudRaw } from "../../../types/DataTypes";
 import { GazePointCloudRaw, WorldPointCloudRaw } from "../types/types";
 
 import { WorldPointCloud } from "./WorldPointCloud";
@@ -66,5 +65,16 @@ export class Dataset {
         return worldPointCloud;
 
     }
+
+    // public parse_point_clouds( worldPointCloudRaw: WorldPointCloudRaw[] = [], gazePointCloudRaw: GazePointCloudRaw[] = [] ): [WorldPointCloud, GazePointCloud] {
+
+    //     // Scene Point Cloud  Summaries
+    //     const worldPointCloud: WorldPointCloud = DataUtils.parse_world_point_cloud_data( worldPointCloudRaw );
+    //     const gazePointCloud: GazePointCloud = DataUtils.parse_gaze_point_cloud_data( gazePointCloudRaw );
+
+    //     return [worldPointCloud, gazePointCloud];
+
+
+    // }
 
 }

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHelper';
+import { VoxelCube } from '../types/types';
 // import { VoxelCube } from '../../../types/DataTypes';
 // import { VoxelCube } from '../../../types/types';
 
@@ -104,6 +105,36 @@ export class Scene {
 
         // saving ref
         this.renderer = renderer;
+
+    }
+
+    public add_voxel_grid( cellCubes: VoxelCube[], color: string = 'gray', opacity: number = 0.1 ): THREE.Group {
+
+        // creating group of highlighted objects
+        const group: THREE.Group = new THREE.Group();
+        
+        cellCubes.forEach( (cube: VoxelCube) => {
+
+            const geometry = new THREE.BoxGeometry( cube.width - 0.01, cube.height - 0.01, cube.depth - 0.01 );
+            const material = new THREE.MeshBasicMaterial({ color: color, opacity: opacity, transparent: true });
+            const object = new THREE.Mesh( geometry, material );
+
+            // positioning cube
+            object.position.x = cube.center[0];  
+            object.position.y = cube.center[1];
+            object.position.z = cube.center[2];
+
+           
+
+            // adding cube to group
+            group.add( object );
+
+        })
+
+        // adding cube
+        this.scene.add( group );
+
+        return group;
 
     }
 
