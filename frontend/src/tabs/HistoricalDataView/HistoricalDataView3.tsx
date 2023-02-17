@@ -13,6 +13,7 @@ import SummaryView from '../../components/SummaryView/SummaryView';
 import SessionListView from '../../components/SessionListView/SessionListView';
 import ModelView from '../../components/ModelView/ModelView';
 import SessionView from '../../components/SessionView/SessionView';
+import PointCloudViewer from './components/PointCloudViewer/PointCloudViewer';
 
 const HistoricalDataView = () => {
 
@@ -55,7 +56,7 @@ const HistoricalDataView = () => {
           <Divider orientation='vertical'/>
 
           <Box sx={{ flex: 1, display: 'flex' }}>
-              <SessionView recordingName={selectedRecordingName}></SessionView>
+              <PointCloudViewer recordingName={'2023.02.09-16.41.00'}></PointCloudViewer>
           </Box>
 
           <Divider orientation='vertical'/>
@@ -67,66 +68,6 @@ const HistoricalDataView = () => {
         </Box>
 
       </Box>
-
-        // <div style={{ display: 'flex', flex: 1, backgroundColor: 'pink'}}>
-
-        //   <div className='controls-wrapper'>
-        //       <Box sx={{ flexGrow: 1 }}>
-        //           <FormControl sx={{ m: 1, minWidth: 340 }} size="small">
-        //               <InputLabel id="demo-simple-select-label">Select Data </InputLabel>
-        //               <Select
-        //                   labelId="demo-simple-select-label"
-        //                   id="demo-simple-select"
-        //                   value={'0'}
-        //                   label="Select Data">
-        //               </Select>
-        //           </FormControl>
-        //       </Box>
-
-  
-
-        //     </div>
-
-        //     <div className="layer-wrapper">
-
-        //         <div className="layer-component">
-
-        //           <ComponentTemplate title={'Video Mosaic'}>
-        //             <VideoDataView 
-        //               type={dataType.VIDEO} 
-        //               data={recordingData} 
-        //               title={"Cameras"} 
-        //               state={state} 
-        //               recordingName={recordingName} 
-        //               onProgress={(res) => handleProgress(res)} 
-        //               onSeek={res => handleSeekingFromVideoCard(res)}>
-        //             </VideoDataView>
-        //           </ComponentTemplate>
-
-        //         </div>
-
-        //         <div className="layer-component">
-
-        //           <ComponentTemplate title={'3D View'}>
-        //             <PointCloudViewer
-        //               pointCloudRawData={pointCloudData}
-        //               videoState={state}
-        //               recordingMetadata={recordingData}
-        //               // worldPointCloudData={pointCloudData}
-        //               // gazePointCloudData={eyeData}
-        //               >
-        //             </PointCloudViewer>
-        //           </ComponentTemplate>
-                  
-        //         </div>
-
-        //     </div>
-
-        //     <div className="layer-wrapper">
-        //         <IMUDataView data={imudata} videostate={state} videometadata={recordingData}></IMUDataView>
-        //     </div>
-            
-        //  </div>
     );
 }
 

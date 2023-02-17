@@ -12,14 +12,17 @@ const SceneViewer = ( {pointCloudData} : any ) => {
 
     useEffect(() => {
 
+        const sceneViewerController: SceneViewerController = new SceneViewerController();
+        sceneViewerController.initialize_controller( containerRef.current );
 
+        // saving controller instance
+        setSceneViewerController(sceneViewerController);
 
     }, [pointCloudData])
 
     return (
         <div style={{ flex: 1 }} ref={containerRef}></div>
     )
-
 };
 
 export default SceneViewer;

@@ -1,9 +1,10 @@
-export const API_URL = 'https://api.ptg.poly.edu';
-// export const API_URL = 'https://dashboardptg.vida-nyu.org:7890';
+// export const API_URL = 'https://api.ptg.poly.edu';
+export const API_URL = 'http://dashboardptg.vida-nyu.org:7890';
 export const RECORDINGS_STATIC_PATH = '/recordings/static/';
 export const TEST_USER = 'test';
 export const TEST_PASS = 'test';
-export const WS_API_URL = API_URL.replace('https://', 'wss://');
+// export const WS_API_URL = API_URL.replace('https://', 'wss://');
+export const WS_API_URL = API_URL.replace('http://', 'ws://');
 export const REASONING_CHECK_STREAM = 'reasoning:check_status';
 export const REASONING_ENTITIES_STREAM = 'reasoning:entities';
 export const DETIC_IMAGE_STREAM = 'detic:image';

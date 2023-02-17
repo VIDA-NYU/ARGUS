@@ -20,8 +20,7 @@ export class SceneViewerController {
         const scene: Scene = this.initialize_scene( containerRef );
         this.scene = scene;
 
-
-
+        // this.scene.render();
 
     }
 
@@ -53,15 +52,7 @@ export class SceneViewerController {
         // saving world point cloud
         this.dataset.initialize_world_pointcloud_dataset( worldPointCloudRaw );
 
-        // adding voxel grid
-        this.scene.add_voxel_grid(this.dataset.worldPointCloud.get_voxel_cubes());
     }
-
-    // public initialize_gaze_point_cloud_dataset( gazePointCloudRaw: GazePointCloudRaw[] ): void {
-
-    //     // saving gaze point cloud
-    //     this.dataset.initialize_gaze_point_cloud_dataset( gazePointCloudRaw );
-    // }
 
     // ****** ******************** ****** //
 }
