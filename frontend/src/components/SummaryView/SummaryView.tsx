@@ -8,7 +8,7 @@ import Slider from '@mui/material/Slider';
 
 // API imports
 import { useGetAllRecordingInfoNotoken  } from '../../api/rest';
-import {getFilteredData, getHistogramValues, getMinMaxData} from '../../utils/DataProcessing';
+import {getFilteredData, getHistogramFromObjects, getHistogramValues, getMinMaxData} from '../../utils/DataProcessing';
 
 // styles
 // import './styles/HistoricalDataView.css'
@@ -16,6 +16,7 @@ import * as d3 from 'd3'
 
 // third-party
 import c3 from "c3";
+import Grid from '@mui/material/Grid';
 
 
 interface dataPlot {
@@ -146,9 +147,11 @@ export function myHorizontalBarChart(data: dataPlot[], {
     return `${value}°C`;
   }
 
-  export function Filters({dataMinMax, summaryDuration, summarySize, ...props }) {
+  export function Filters({dataMinMax, summaryDuration, summarySize, summaryStreaming, ...props }) {
     const [valueDuration, setValueDuration] = React.useState<number>(dataMinMax.duration_max);
     const [valueSize, setValueSize] = React.useState<number>(dataMinMax.size_mb_max);
+    const [valueStreamings, setValueStreamings] = React.useState<number>(dataMinMax.size_mb_max);
+
 
     const handleChangeDuration = (event: Event, newValue: number | number[]) => {
       if (typeof newValue === 'number') {
@@ -162,59 +165,97 @@ export function myHorizontalBarChart(data: dataPlot[], {
         props.onChangeSize(newValue);
       }
     };
+    const handleChangeStreamings = (event: Event, newValue: number | number[]) => {
+      if (typeof newValue === 'number') {
+        setValueStreamings(newValue);
+        props.onChangeStreamings(newValue);
+      }
+    };
+
     return (
-      <Box sx={{ width: 300 }}>
-        <Chart result={summaryDuration} title={"duration"} />
-        <Chart result={summarySize} title={"size"} />
-        <Slider
-          aria-label="Custom marks"
-          value={valueDuration}
-          getAriaValueText={valuetext}
-          step={60}
-          valueLabelDisplay="auto"
-          marks={[
-            {
-              value: 0,
-              label: '0sec',
-            },
-            {
-              value: dataMinMax.duration_max,
-              label: dataMinMax.duration_max + 'sec',
-            },
-          ]}
-          min={dataMinMax.duration_min}
-          max={dataMinMax.duration_max}
-          onChange={handleChangeDuration}
-        />
-        <Typography id="input-slider" gutterBottom>
-        </Typography>
-        <Slider
-          aria-label="Custom marks"
-          value={valueSize}
-          getAriaValueText={valuetext}
-          step={60}
-          valueLabelDisplay="auto"
-          marks={[
-            {
-              value: 0,
-              label: '0MB',
-            },
-            {
-              value: dataMinMax.size_mb_max,
-              label: dataMinMax.size_mb_max + 'MB',
-            },
-          ]}
-          min={dataMinMax.size_mb_min}
-          max={dataMinMax.size_mb_max}
-          onChange={handleChangeSize}
-        />
+      <Box sx={{ width: "95%" }}>
+        <Grid container spacing={1}>
+          <Grid style={{marginTop: '-10px', marginLeft: '-20px'}} item xs={6}>
+            <Chart result={summaryDuration} title={"duration"} />
+            <Slider
+              style={{marginTop: '-30px', marginBottom: '20px'}}
+              aria-label="Custom marks"
+              value={valueDuration}
+              getAriaValueText={valuetext}
+              step={60}
+              valueLabelDisplay="auto"
+              // marks={[
+              //   {
+              //     value: 0,
+              //     label: '0sec',
+              //   },
+              //   {
+              //     value: dataMinMax.duration_max,
+              //     label: dataMinMax.duration_max + 'sec',
+              //   },
+              // ]}
+              min={dataMinMax.duration_min}
+              max={dataMinMax.duration_max}
+              onChange={handleChangeDuration}
+            />
+          </Grid>
+          <Grid style={{marginTop: '-10px', marginLeft: '15px'}} item xs={6}>
+            <Chart result={summarySize} title={"size"} />
+            <Slider
+              style={{marginTop: '-30px', marginBottom: '20px'}}
+              aria-label="Custom marks"
+              value={valueSize}
+              getAriaValueText={valuetext}
+              step={60}
+              valueLabelDisplay="auto"
+              // marks={[
+              //   {
+              //     value: 0,
+              //     label: '0MB',
+              //   },
+              //   {
+              //     value: dataMinMax.size_mb_max,
+              //     label: dataMinMax.size_mb_max + 'MB',
+              //   },
+              // ]}
+              min={dataMinMax.size_mb_min}
+              max={dataMinMax.size_mb_max}
+              onChange={handleChangeSize}
+            />
+          </Grid>
+          <Grid style={{marginTop: '-40px', marginLeft: '-20px'}} item xs={6}>
+            <Chart result={summaryStreaming} title={"streamings"} />
+            <Slider
+              style={{marginTop: '-30px', marginBottom: '20px'}}
+              aria-label="Custom marks"
+              value={valueStreamings}
+              getAriaValueText={valuetext}
+              step={1}
+              valueLabelDisplay="auto"
+              // marks={[
+              //   {
+              //     value: 0,
+              //     label: '0MB',
+              //   },
+              //   {
+              //     value: dataMinMax.size_mb_max,
+              //     label: dataMinMax.size_mb_max + 'MB',
+              //   },
+              // ]}
+              min={dataMinMax.streams_min}
+              max={dataMinMax.streams_max}
+              onChange={handleChangeStreamings}
+            />
+          </Grid>
+        </Grid>
       </Box>
     );
   }
 
   interface TypeFilters {
     duration?: number,
-    size?: number
+    size?: number,
+    streams?: number
   }
 const SummaryView = ({...props}) => {
 
@@ -227,6 +268,7 @@ const SummaryView = ({...props}) => {
       const filteredDataByDuration = appliedFilters.duration ? getFilteredData(recordings, "duration_secs", appliedFilters.duration): recordings;
       const filteredDataBySize = appliedFilters.size ? getFilteredData(filteredDataByDuration, "size_mb", appliedFilters.size): recordings;
       recordings && props.updateRecordings(filteredDataBySize);
+      console.log(filteredDataBySize);
     }, [recordings]);
     
     const handleChangeDuration = (newValue) => {
@@ -240,20 +282,32 @@ const SummaryView = ({...props}) => {
       props.updateRecordings(filteredData);
     }
 
+    const handleChangeStreamings = (newValue) => {
+      const filteredData = getFilteredData(recordings, "streams", newValue);
+      setAppliedFilters({...appliedFilters, streams: newValue});
+      props.updateRecordings(filteredData);
+    }
+
     if (recordings) {
       let dataMinMax = getMinMaxData(recordings);
       let summaryDuration =  getHistogramValues(recordings, 30, "duration_secs");
       let summarySize =  getHistogramValues(recordings, 100, "size_mb");
+      let summaryStreaming =  getHistogramFromObjects(recordings, 2, "streams");
       return (
+        <>
+        {recordings && <Typography color="text.secondary">  Filters:</Typography>}
         <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               <Filters 
               dataMinMax={dataMinMax}
               summaryDuration={summaryDuration}
               summarySize={summarySize}
+              summaryStreaming={summaryStreaming}
               onChangeDuration={handleChangeDuration}
               onChangeSize={handleChangeSize}
+              onChangeStreamings={handleChangeStreamings}
               />
         </Box>
+        </>
       )
     } else {
       return <></>;

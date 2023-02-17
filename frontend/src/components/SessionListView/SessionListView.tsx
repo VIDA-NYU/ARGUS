@@ -64,7 +64,7 @@ const RecordingCard = (props) => {
             {Object.entries(recording.streams||{}).map(([sid, d]) => {
               const f = files.find(f=>f.startsWith(sid));
               return <Tooltip title={f||''} key={sid}>
-                <Chip label={sid} size='small' color={f ? 'primary' : 'default'} />
+                <Chip label={sid} size='small' color={f ? 'default' : 'default'} />
               </Tooltip>
             })}
           </SeeMoreStack>
@@ -90,7 +90,7 @@ const SessionListView = ({ sortby='first-entry', ...props }) => {
     return (
       // display='flex' flexWrap='wrap' gap={2} mt={5} m={'2em'} justifyContent='center'
         <Box display='flex' flexWrap='wrap' gap={2} pt={2} flexDirection='column'>
-          {recordings && <>About {recordings && recordings.length} results:</>}
+          {recordings && <Typography color="text.secondary">  About {recordings && recordings.length} results:</Typography>}
           {recordings && recordings
             .filter(d=>d.duration && !d.duration.startsWith('0:00:0'))
             .sort((a, b) => (a[sortby]||'').localeCompare(b[sortby]||''))

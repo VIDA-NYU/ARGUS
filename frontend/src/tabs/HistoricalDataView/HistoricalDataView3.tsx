@@ -38,9 +38,9 @@ const HistoricalDataView = () => {
 
         <Box sx={{ flex: 1, display: 'flex'}}>
 
-          <Box sx={{ width: '420px', height: '100%', display: 'flex', flexDirection: 'column' }}>
+          <Box sx={{ width: '350px', height: '100%', display: 'flex', flexDirection: 'column' }}>
 
-            <Box sx={{ height: 300 , flexDirection: 'column', overflow: "auto" }}>
+            <Box sx={{ height: 300 , flexDirection: 'column'}}>
                 <SummaryView updateRecordings={updateAvailableRecordings}></SummaryView>
             </Box>
 

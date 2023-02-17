@@ -37,3 +37,9 @@ code {
   width: 100%;
   min-height: 125px;
 }
+#chartstreamings {
+  background: #fff;
+  margin: 1em auto;
+  width: 100%;
+  min-height: 100px;
+}

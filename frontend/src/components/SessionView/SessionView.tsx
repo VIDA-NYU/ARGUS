@@ -10,8 +10,8 @@ import PointCloudViewer from './PointCloudViewer/PointCloudViewer';
 const SessionView = ( {recordingName} : any ) => {
 
   return (
-    <Box sx={{ flex: 1, display: 'flex' }}>
-        <h2>Selected Recording: <h6>{recordingName}</h6></h2>
+    <Box sx={{ flex: 1, display: 'flex' }} style={{marginLeft: 15}}>
+        <h2>Selected Recording: {recordingName}</h2>
         <PointCloudViewer recordingName='test-looking-around-office-9.19'></PointCloudViewer>
     </Box>
   )
