@@ -19,9 +19,9 @@ export class PointCloudViewerController {
 
     public render_world_point_cloud(): void {
 
-        console.log('adding to scene...');
-        const [worldBufferPositions, worldBufferColors]: [number[], number[]] = this.dataset.worldPointCloud.get_buffer_positions();
-        this.scene.add_world_point_cloud( worldBufferPositions, worldBufferColors );
+        // console.log('adding to scene...');
+        // const [worldBufferPositions, worldBufferColors]: [number[], number[]] = this.dataset.worldPointCloud.get_buffer_positions();
+        // this.scene.add_world_point_cloud( worldBufferPositions, worldBufferColors );
 
     }
 

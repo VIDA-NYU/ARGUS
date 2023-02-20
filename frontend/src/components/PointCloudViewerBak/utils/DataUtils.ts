@@ -8,7 +8,7 @@ import * as d3 from 'd3';
 // import { WorldPointCloud } from "../components/PointCloudViewer/model/WorldPointCloud";
 // import { GazePointCloud } from "../components/PointCloudViewer/model/GazePointCloud";
 
-import { WorldPointCloud } from '../model/WorldPointCloud';
+import { WorldPointCloud } from '../../PointCloudViewer/model/WorldPointCloud';
 import { GazePointCloud } from '../model/GazePointCloud';
 
 export class DataUtils {

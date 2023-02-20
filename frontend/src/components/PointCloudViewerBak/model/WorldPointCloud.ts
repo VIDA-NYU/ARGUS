@@ -1,11 +1,8 @@
 // third-party
 // import * as d3 from 'd3';
 // import { VoxelCube } from '../../../types/DataTypes';
-<<<<<<<< HEAD:frontend/src/components/PointCloudViewerBAK/model/WorldPointCloud.ts
 // import { VoxelCube  } from '../../../types/types';
-========
 import { VoxelCube  } from '../types/types';
->>>>>>>> ab77e47 (fixing intervenor imports):frontend/src/components/PointCloudViewerBak/model/WorldPointCloud.ts
 import { VoxelCell } from './VoxelCell';
 
 export class WorldPointCloud{

@@ -7,11 +7,7 @@ import { DataUtils  } from "../utils/DataUtils";
 
 // model
 // import { GazePointCloudRaw, WorldPointCloudRaw } from "../../../types/DataTypes";
-<<<<<<<< HEAD:frontend/src/components/PointCloudViewerBAK/model/Dataset.ts
-// import { GazePointCloudRaw, WorldPointCloudRaw } from "../../../types/types";
-========
 import { GazePointCloudRaw, WorldPointCloudRaw } from "../types/types";
->>>>>>>> ab77e47 (fixing intervenor imports):frontend/src/components/PointCloudViewerBak/model/Dataset.ts
 
 import { WorldPointCloud } from "./WorldPointCloud";
 import { GazePointCloud } from "./GazePointCloud";

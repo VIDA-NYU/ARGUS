@@ -11,7 +11,7 @@ import { useGetAllRecordingInfoNotoken  } from '../../api/rest';
 import {getFilteredData, getHistogramFromObjects, getHistogramValues, getMinMaxData} from '../../utils/DataProcessing';
 
 // types
-import { DataPlot, TypeFilters } from './types/types';
+import { DataPlot } from './types/types';
 
 // styles
 // import './styles/HistoricalDataView.css'
@@ -152,11 +152,12 @@ export const Chart = ({result, title}) => {
     );
   }
 
-  // interface TypeFilters {
-  //   duration?: number,
-  //   size?: number,
-  //   streams?: number
-  // }
+  interface TypeFilters {
+    duration?: number,
+    size?: number,
+    streams?: number
+  }
+
 const SummaryView = ({...props}) => {
 
     const [appliedFilters, setAppliedFilters] = React.useState<TypeFilters>({});

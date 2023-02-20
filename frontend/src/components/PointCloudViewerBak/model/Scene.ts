@@ -1,12 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHelper';
-// import { VoxelCube } from '../../../types/DataTypes';
-<<<<<<<< HEAD:frontend/src/components/PointCloudViewerBAK/model/Scene.ts
-// import { VoxelCube } from '../../../types/types';
-========
 import { VoxelCube } from '../types/types';
->>>>>>>> ab77e47 (fixing intervenor imports):frontend/src/components/PointCloudViewerBak/model/Scene.ts
 
 export class Scene {
 
