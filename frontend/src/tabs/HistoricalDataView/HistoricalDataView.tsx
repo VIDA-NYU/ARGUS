@@ -1,15 +1,35 @@
 // react imports
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 // material imports
 import Box from '@mui/material/Box';
 import { Divider } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+
+// styles
+import './styles/HistoricalDataView.css'
+
+// api
+import { useToken } from '../../api/TokenContext';
+import { 
+  useGetAllRecordings, 
+  // useGetRecording, 
+  // useDeleteRecording, 
+  // getPointCloudData, 
+  // getEyeData, 
+  // getIMUAccelData, 
+  // getIMUGyroData, 
+  getIMUMagData  } from '../../api/rest';
 
 // global components
+import Controls from '../../utils/Controls';
 import SummaryView from '../../components/SummaryView/SummaryView';
 import SessionListView from '../../components/SessionListView/SessionListView';
 import ModelView from '../../components/ModelView/ModelView';
-import SessionView from '../../components/SessionView/SessionView';
 
 const HistoricalDataView = () => {
 
@@ -42,9 +62,8 @@ const HistoricalDataView = () => {
 
             <Divider />
 
-            <Box sx={{ flex: 1 }}>
-              <h1>Session List</h1>
-              {/* <SessionListView recordings={availableRecordings} onChangeSelectRecording={handleChangeSelectRecording}></SessionListView> */}
+            <Box sx={{ flex: 1, display: 'flex' }}>
+              <SessionListView></SessionListView>
             </Box>
 
           </Box>
