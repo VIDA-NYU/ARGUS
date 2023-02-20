@@ -1,7 +1,7 @@
 import axios, {AxiosResponse, AxiosRequestConfig} from 'axios';
 import React, { useEffect, useRef, useCallback, useState } from 'react';
 import useSWR, { Key } from 'swr';
-import { DeleteInfo } from '../tabs/HistoricalDataView/types/types';
+import { DeleteInfo } from '../components/DeleteBox/types/types';
 import { API_URL, WS_API_URL, RECORDINGS_STATIC_PATH } from '../config';
 import { RequestStatus } from './types';
 import { useToken } from './TokenContext';

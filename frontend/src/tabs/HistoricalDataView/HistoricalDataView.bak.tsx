@@ -12,7 +12,7 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 // types
-import { MediaState, DeleteInfo } from './types/types';
+// import { MediaState, DeleteInfo } from './types/types';
 
 // API imports
 import { useGetAllRecordings, useGetRecording, useDeleteRecording, getPointCloudData, getEyeData, getIMUAccelData, getIMUGyroData, getIMUMagData  } from '../../api/rest';
@@ -23,21 +23,23 @@ import { dataType, streamingType } from '../../api/types';
 import Controls from '../../utils/Controls';
 
 // local components
-import PointCloudViewer from './components/PointCloudViewer/PointCloudViewer';
-import IMUDataView from './components/IMUViewer/IMUViewer';
+import PointCloudViewer from '../../components/PointCloudViewer/PointCloudViewer';
+import IMUDataView from '../../components/IMUViewer/IMUViewer';
 
 // helpers
 import { formatTotalDuration, format  } from '../../utils/Helpers';
 
 // video
-import { onProgressType } from './components/VideoDataView/VideoCard/VideoCard';
-import VideoDataView from './components/VideoDataView/VideoDataView';
+import { onProgressType } from '../../components/VideoDataView/VideoCard/VideoCard';
+import VideoDataView from  '../../components/VideoDataView/VideoDataView';
 
 // third-party
 import screenful from 'screenfull';
 
 // styles
 import './styles/HistoricalDataView.css'
+import { DeleteInfo } from '../../components/DeleteBox/types/types';
+import { MediaState } from '../../components/Controls/types/types';
 
 const HistoricalDataView = () => {
 

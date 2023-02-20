@@ -4,14 +4,7 @@ import React, { useEffect, useRef } from 'react';
 // material imports
 import Box from '@mui/material/Box';
 import { Divider } from '@mui/material';
-import Typography from '@mui/material/Typography';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
 
-// styles
-import './styles/HistoricalDataView.css'
 
 // api
 import { useToken } from '../../api/TokenContext';

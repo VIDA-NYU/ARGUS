@@ -3,7 +3,7 @@ import {styled} from "@mui/material";
 import React, { useEffect, useRef } from "react";
 import ReactPlayer from 'react-player';
 
-import { MediaState } from "../../../tabs/HistoricalDataView/types/types";
+import { MediaState } from "../../Controls/types/types";
 
 // templates
 

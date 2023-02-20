@@ -1,6 +1,6 @@
 // templates
 // import AccordionView from '../../templates/AccordionView/AccordionView';
-import AccordionView from '../../../../templates/AccordionView/AccordionView';
+import AccordionView from '../../templates/AccordionView/AccordionView';
 
 // material
 import {Box, styled} from '@mui/material';

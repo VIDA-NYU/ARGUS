@@ -2,7 +2,7 @@
 import React, { useEffect, useRef } from 'react';
 
 // API
-import { getVideoPath } from '../../../../api/rest';
+import { getVideoPath } from '../../api/rest';
 
 // material
 import Grid from '@mui/material/Grid';
@@ -11,10 +11,10 @@ import Grid from '@mui/material/Grid';
 import { VideoCard  } from './VideoCard/VideoCard';
 
 // templates
-import AccordionView from '../../../../templates/AccordionView/AccordionView';
+import AccordionView from '../../templates/AccordionView/AccordionView';
 
 // model
-import { streamingType } from '../../../../api/types';
+import { streamingType } from '../../api/types';
 
 // styles
 import './VideoCard/VideoCard.css';
