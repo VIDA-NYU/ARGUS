@@ -4,7 +4,7 @@ import { Scene } from "../model/Scene";
 
 // types
 // import { VoxelCube } from "../../../types/DataTypes";
-import { GazePointCloudRaw, VoxelCube, WorldPointCloudRaw } from "../../../types/types";
+// import { GazePointCloudRaw, VoxelCube, WorldPointCloudRaw } from "../../../types/types";
 import { TimestampManager } from "./TimestampManager";
 
 export class PointCloudViewerController {

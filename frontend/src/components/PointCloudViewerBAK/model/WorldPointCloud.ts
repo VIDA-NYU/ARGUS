@@ -1,7 +1,7 @@
 // third-party
 // import * as d3 from 'd3';
 // import { VoxelCube } from '../../../types/DataTypes';
-import { VoxelCube  } from '../../../types/types';
+// import { VoxelCube  } from '../../../types/types';
 import { VoxelCell } from './VoxelCell';
 
 export class WorldPointCloud{
@@ -30,94 +30,94 @@ export class WorldPointCloud{
 
     }
 
-    // calculate the cubes that
-    public get_corresponding_voxel_cubes( points: number[][] ): VoxelCube[] {
+    // // calculate the cubes that
+    // public get_corresponding_voxel_cubes( points: number[][] ): VoxelCube[] {
 
-        const cubes: {[center: string]: VoxelCube} = {};
-        points.forEach( (point: number[]) => {
+    //     const cubes: {[center: string]: VoxelCube} = {};
+    //     points.forEach( (point: number[]) => {
 
-            // calculating indices
-            const xIndex: number = Math.floor( (point[0] - this.xExtent[0])/this.voxelResolution );
-            const yIndex: number = Math.floor( (point[1] - this.yExtent[0])/this.voxelResolution );
-            const zIndex: number = Math.floor( (point[2] - this.zExtent[0])/this.voxelResolution );
+    //         // calculating indices
+    //         const xIndex: number = Math.floor( (point[0] - this.xExtent[0])/this.voxelResolution );
+    //         const yIndex: number = Math.floor( (point[1] - this.yExtent[0])/this.voxelResolution );
+    //         const zIndex: number = Math.floor( (point[2] - this.zExtent[0])/this.voxelResolution );
 
-            // getting corresponding cube
-            const cellCube: VoxelCube = this.voxelGrid[xIndex][yIndex][zIndex].get_voxel_cube();
+    //         // getting corresponding cube
+    //         const cellCube: VoxelCube = this.voxelGrid[xIndex][yIndex][zIndex].get_voxel_cube();
 
-            // indexing cube
-            const index: string = `${cellCube.center.join('-')}`;
-            cubes[index] = cellCube;
+    //         // indexing cube
+    //         const index: string = `${cellCube.center.join('-')}`;
+    //         cubes[index] = cellCube;
             
 
-        });
+    //     });
 
-        return Object.values(cubes);
+    //     return Object.values(cubes);
 
-    }
+    // }
 
-    // calculate the cubes that
-    public get_corresponding_voxel_points( points: number[][] ): [number[], number[]] {
+    // // calculate the cubes that
+    // public get_corresponding_voxel_points( points: number[][] ): [number[], number[]] {
 
-        let bufferPositions: number[] = [];
-        let bufferColors: number[] = [];
-        points.forEach( (point: number[]) => {
+    //     let bufferPositions: number[] = [];
+    //     let bufferColors: number[] = [];
+    //     points.forEach( (point: number[]) => {
 
-            // calculating indices
-            const xIndex: number = Math.floor( (point[0] - this.xExtent[0])/this.voxelResolution );
-            const yIndex: number = Math.floor( (point[1] - this.yExtent[0])/this.voxelResolution );
-            const zIndex: number = Math.floor( (point[2] - this.zExtent[0])/this.voxelResolution );
+    //         // calculating indices
+    //         const xIndex: number = Math.floor( (point[0] - this.xExtent[0])/this.voxelResolution );
+    //         const yIndex: number = Math.floor( (point[1] - this.yExtent[0])/this.voxelResolution );
+    //         const zIndex: number = Math.floor( (point[2] - this.zExtent[0])/this.voxelResolution );
 
-            // getting corresponding cube
-            const voxelCell: VoxelCell = this.voxelGrid[xIndex][yIndex][zIndex];
+    //         // getting corresponding cube
+    //         const voxelCell: VoxelCell = this.voxelGrid[xIndex][yIndex][zIndex];
 
-            // getting buffer points
-            const [positions, colors]: [number[], number[]] = voxelCell.get_buffer_positions();
+    //         // getting buffer points
+    //         const [positions, colors]: [number[], number[]] = voxelCell.get_buffer_positions();
 
-            // concating
-            bufferPositions = bufferPositions.concat(positions);
-            bufferColors = bufferColors.concat(colors);
+    //         // concating
+    //         bufferPositions = bufferPositions.concat(positions);
+    //         bufferColors = bufferColors.concat(colors);
             
             
-        });
+    //     });
 
-        return [bufferPositions, bufferColors];
+    //     return [bufferPositions, bufferColors];
 
-    }
+    // }
 
-    public get_voxel_cubes(): VoxelCube[] {
+    // public get_voxel_cubes(): VoxelCube[] {
 
-        const cubes: VoxelCube[] = [];
-        for( let i = 0; i < this.voxelGrid.length; i++ ){
-            for( let j = 0; j < this.voxelGrid[i].length; j++ ){
-                for( let k = 0; k < this.voxelGrid[i][j].length; k++ ){
-                    // if( this.voxelGrid[i][j][k].points.length > 0 ){
-                        const cellCube: VoxelCube = this.voxelGrid[i][j][k].get_voxel_cube();
-                        cubes.push(cellCube);
-                    // }
-                }
-            }
-        }
+    //     const cubes: VoxelCube[] = [];
+    //     for( let i = 0; i < this.voxelGrid.length; i++ ){
+    //         for( let j = 0; j < this.voxelGrid[i].length; j++ ){
+    //             for( let k = 0; k < this.voxelGrid[i][j].length; k++ ){
+    //                 // if( this.voxelGrid[i][j][k].points.length > 0 ){
+    //                     const cellCube: VoxelCube = this.voxelGrid[i][j][k].get_voxel_cube();
+    //                     cubes.push(cellCube);
+    //                 // }
+    //             }
+    //         }
+    //     }
 
-        return cubes;
-    }
+    //     return cubes;
+    // }
 
-    public get_buffer_positions(): [number[], number[]] {
+    // public get_buffer_positions(): [number[], number[]] {
 
-        let bufferPositions: number[] = [];
-        let bufferColors: number[] = [];
-        for(let i = 0; i < this.voxelGrid.length; i++){
-            for(let j = 0; j < this.voxelGrid[i].length; j++){
-                for(let k = 0; k < this.voxelGrid[i][j].length; k++){
-                    const [voxelPoints, voxelColors]: [number[], number[]] = this.voxelGrid[i][j][k].get_buffer_positions( 2000 );
-                    bufferPositions = bufferPositions.concat(voxelPoints); 
-                    bufferColors = bufferColors.concat(voxelColors);
-                }
-            }
-        }
+    //     let bufferPositions: number[] = [];
+    //     let bufferColors: number[] = [];
+    //     for(let i = 0; i < this.voxelGrid.length; i++){
+    //         for(let j = 0; j < this.voxelGrid[i].length; j++){
+    //             for(let k = 0; k < this.voxelGrid[i][j].length; k++){
+    //                 const [voxelPoints, voxelColors]: [number[], number[]] = this.voxelGrid[i][j][k].get_buffer_positions( 2000 );
+    //                 bufferPositions = bufferPositions.concat(voxelPoints); 
+    //                 bufferColors = bufferColors.concat(voxelColors);
+    //             }
+    //         }
+    //     }
 
-        return [bufferPositions, bufferColors];
+    //     return [bufferPositions, bufferColors];
 
-    }
+    // }
 
     private build_voxel_grid( cellSize: number = 0.1 ): void {
 

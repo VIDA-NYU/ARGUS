@@ -1,4 +1,4 @@
-import {onProgressType} from '../../../HistoricalDataView/components/VideoDataView/VideoCard/VideoCard';
+import { onProgressType } from '../../../../components/VideoDataView/VideoCard/VideoCard';
 import React, {useRef} from "react";
 import {format, formatTotalDuration} from '../../../../utils/Helpers';
 import screenful from "screenfull";

@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
 // Tabs
-import HistoricalDataView from './tabs/HistoricalDataView/HistoricalDataView3';
+import HistoricalDataView from './tabs/HistoricalDataView/HistoricalDataView';
 import LiveDataView from './tabs/LiveDataView/LiveDataView';
 import DebuggingDataView from './tabs/DebuggingDataView/DebuggingDataView';
 import WOZView from './tabs/IntervenorView/WOZView';

@@ -2,7 +2,8 @@
 // material
 import {styled} from '@mui/material';
 import {useEffect, useState} from "react";
-import ComponentTemplate from '../../../../templates/HistoricalViewComponentTemplate/ComponentTemplate';
+// import ComponentTemplate from '../../../../templates/HistoricalViewComponentTemplate/ComponentTemplate';
+import ComponentTemplate from '../../templates/HistoricalViewComponentTemplate/ComponentTemplate';
 
 // local components
 import IMUChart from './charts/IMUChart/IMUChart';
