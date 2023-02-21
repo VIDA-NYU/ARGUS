@@ -8,12 +8,13 @@ const SceneViewer = ( {pointCloudData} : any ) => {
 
     // DOM Refs
     const containerRef = useRef(null);
+    const tooltipContainerRef = useRef(null);
 
     // Controller
     const sceneViewerController = new SceneViewerController();
 
     useEffect(() => {
-        sceneViewerController.initialize_controller( containerRef.current );
+        sceneViewerController.initialize_controller( containerRef.current, tooltipContainerRef.current );
     }, []);
 
     useEffect(() => {
@@ -39,15 +40,34 @@ const SceneViewer = ( {pointCloudData} : any ) => {
     }, [pointCloudData])
 
     return (
-        <div style={{ 
-            width: '100%', 
-            height: '100%', 
-            position: 'relative', 
-            zIndex: 1, 
-            display: 'inline-block' }} 
-            ref={containerRef}>
+        <div style={{
+            width: '100%',
+            height: '100%',
+            position: 'relative',
+            backgroundColor: 'red'
+        }}>
+
+            <div style={{ 
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                position: 'absolute' }}
+                ref={containerRef}>
+            </div>    
+
+            <div style={{ 
+                top: 20,
+                left: 20,
+                width: '20%',
+                height: '20%',
+                position: 'absolute',
+                backgroundColor: 'red',
+                opacity: 0.5 }}
+                ref={tooltipContainerRef}>
+            </div>   
+
         </div>
-    )
-};
+    )};
 
 export default SceneViewer;

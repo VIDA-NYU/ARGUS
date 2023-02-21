@@ -1,12 +1,13 @@
 import * as THREE from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
-import * as d3 from 'd3';
+import { Raycaster } from './Raycaster';
 
 export class Scene {
 
     // container ref
     public container!: HTMLElement;
+    public tooltipContainer!: HTMLElement;
 
     // scene elements
     public camera!: THREE.PerspectiveCamera;
@@ -15,32 +16,15 @@ export class Scene {
 
     // controls
     public orbitControls!: OrbitControls;
-    public rayCaster!: THREE.Raycaster;
-
-    // sphere test
-    // TODO: remove it from here
-    public sphere!: THREE.Mesh;
-    public pointer: THREE.Vector2 = new THREE.Vector2();
+    public rayCaster!: Raycaster;
 
     constructor(){}
 
-    public init( containerRef: HTMLElement, cameraPosition: number[], near: number = 0.1, far: number = 10  ): void {
+    public init( containerRef: HTMLElement, tooltipContainerRef: HTMLElement, cameraPosition: number[], near: number = 0.1, far: number = 10  ): void {
 
         // saving container ref
         this.container = containerRef;
         const [containerWidth, containerHeight] = [this.container.offsetWidth, this.container.offsetHeight];
-
-        // TODO: remove it from here
-        d3.select(this.container)
-            .append('div')
-            .attr('position', 'absolute')
-            .attr('width', '100px')
-            .attr('height', '100px')
-            .attr('top', 10)
-            .attr('left', 10)
-            .attr('z-index', 999)
-            .style('background-color', 'red');
-        
 
         // initializing camera
         this.initialize_camera( containerWidth, containerHeight, cameraPosition );
@@ -51,39 +35,12 @@ export class Scene {
         // initialize renderer
         this.initialize_renderer( containerWidth, containerHeight );
         
-        // setting scene events
-        this.set_scene_events();
-
         // initializing controls
         this.initialize_orbit_controls();
         this.initialize_raycaster();
 
-
-        // TODO: remove it from here
-        const sphereGeometry = new THREE.SphereGeometry( 0.025, 15, 15 );
-        const sphereMaterial = new THREE.MeshBasicMaterial( { color: 'blue' } );
-        this.sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
-
-        this.scene.add( this.sphere );
-
-
     }
 
-    public on_pointer_move( event ): void {
-
-        // Ref: https://discourse.threejs.org/t/custom-canvas-size-with-orbitcontrols-and-raycaster/18742
-
-        const rect = this.renderer.domElement.getBoundingClientRect();
-        this.pointer.x = ( ( event.clientX - rect.left ) / ( rect.right - rect.left ) ) * 2 - 1;
-        this.pointer.y = - ( ( event.clientY - rect.top ) / ( rect.bottom - rect.top) ) * 2 + 1;
-    }
-
-
-    public set_scene_events(): void {
-
-        this.container.addEventListener('pointermove', (event) => this.on_pointer_move(event) )
-
-    }
 
     public clear_scene(): void {
 
@@ -96,24 +53,13 @@ export class Scene {
 
         requestAnimationFrame( () => this.render() );
         
+        // orbit controls
         this.orbitControls.update();
 
-        // update the picking ray with the camera and pointer position
-        this.rayCaster.setFromCamera( this.pointer, this.camera );
-
-        if( this.scene.getObjectByName('gazepointcloud') ){
-
-            const intersects = this.rayCaster.intersectObjects( [this.scene.getObjectByName('gazepointcloud')], false );
-            if(intersects.length > 0){
-                this.sphere.position.copy(intersects[0].point);
-                this.sphere.scale.set(1,1,1);
-                // intersects[0].object.scale.set( 10,10,10 );
-            } else {
-                this.sphere.scale.set(0,0,0);
-            }
-        }
-
+        // picking
+        this.rayCaster.get_intersected_point( this.camera );
         
+        // rendering
         this.renderer.render( this.scene, this.camera );
 
     }
@@ -191,8 +137,10 @@ export class Scene {
     }
 
     private initialize_raycaster() {
-        this.rayCaster = new THREE.Raycaster();
-        this.rayCaster.params.Points.threshold = 0.01;
+
+        this.rayCaster = new Raycaster( this.scene );
+        this.rayCaster.set_scene_events( this.container );
+        
     }
 
 }

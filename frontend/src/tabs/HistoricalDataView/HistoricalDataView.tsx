@@ -31,9 +31,9 @@ const HistoricalDataView = () => {
   const [availableRecordings, setAvailableRecordings] = React.useState([]);
   const [selectedRecordingName, setSelectedRecordingName] = React.useState<string>('');
 
-  useEffect(() => {
-    availableRecordings && availableRecordings[0] && setSelectedRecordingName(availableRecordings[0].name);
-  }, [availableRecordings]);
+  // useEffect(() => {
+  //   availableRecordings && availableRecordings[0] && setSelectedRecordingName(availableRecordings[0].name);
+  // }, [availableRecordings]);
 
   const handleChangeSelectRecording = (newSelection) => {
       setSelectedRecordingName(newSelection);
@@ -65,7 +65,7 @@ const HistoricalDataView = () => {
           <Divider orientation='vertical'/>
 
           <Box sx={{ flex: 1, display: 'flex' }}>
-              <SessionView></SessionView>
+              <SessionView recordingName={selectedRecordingName}></SessionView>
           </Box>
 
           <Divider orientation='vertical'/>

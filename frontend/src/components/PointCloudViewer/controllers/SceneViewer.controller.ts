@@ -10,14 +10,14 @@ export class SceneViewerController {
     
     constructor(){}
 
-    public initialize_controller( containerRef: HTMLElement ): void {
+    public initialize_controller( containerRef: HTMLElement, tooltipContainerRef: HTMLElement ): void {
 
         // initializing dataset
         const dataset: Dataset = this.initialize_dataset();
         this.dataset = dataset;
 
         // initializing scene
-        const scene: Scene = this.initialize_scene( containerRef );
+        const scene: Scene = this.initialize_scene( containerRef, tooltipContainerRef );
         this.scene = scene;
 
         this.scene.render();
@@ -35,11 +35,11 @@ export class SceneViewerController {
     }
 
 
-    public initialize_scene( containerRef: HTMLElement ): Scene {
+    public initialize_scene( containerRef: HTMLElement, tooltipContainerRef: HTMLElement ): Scene {
 
         // creating scene
         const scene: Scene = new Scene();
-        scene.init( containerRef, [0,0,10] );
+        scene.init( containerRef, tooltipContainerRef, [0,0,10] );
 
         return scene;
 
