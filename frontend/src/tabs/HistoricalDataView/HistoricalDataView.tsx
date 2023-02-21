@@ -57,7 +57,7 @@ const HistoricalDataView = () => {
             <Divider />
 
             <Box sx={{ flex: 1, display: 'flex' }}>
-              <SessionListView></SessionListView>
+              <SessionListView recordings={availableRecordings} onChangeSelectRecording={handleChangeSelectRecording}></SessionListView>
             </Box>
 
           </Box>
