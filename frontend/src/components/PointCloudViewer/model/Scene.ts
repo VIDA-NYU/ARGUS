@@ -1,9 +1,8 @@
 import * as THREE from 'three';
+import { Vector3 } from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHelper';
 import { VoxelCube } from '../types/types';
-// import { VoxelCube } from '../../../types/DataTypes';
-// import { VoxelCube } from '../../../types/types';
 
 export class Scene {
 
@@ -17,6 +16,12 @@ export class Scene {
 
     // controls
     public  orbitControls!: OrbitControls;
+    public rayCaster!: THREE.Raycaster;
+
+    // sphere test
+    // TODO: remove it from here
+    public sphere!: THREE.Mesh;
+    public pointer: THREE.Vector2 = new THREE.Vector2();
 
     constructor(){}
 
@@ -34,9 +39,38 @@ export class Scene {
 
         // initialize renderer
         this.initialize_renderer( containerWidth, containerHeight );
+        
+        // setting scene events
+        this.set_scene_events();
 
         // initializing controls
         this.initialize_orbit_controls();
+        this.initialize_raycaster();
+
+
+        // testing
+        const sphereGeometry = new THREE.SphereGeometry( 0.025, 15, 15 );
+        const sphereMaterial = new THREE.MeshBasicMaterial( { color: 'blue' } );
+        this.sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
+
+        this.scene.add( this.sphere );
+
+
+    }
+
+    public on_pointer_move( event ): void {
+
+        // Ref: https://discourse.threejs.org/t/custom-canvas-size-with-orbitcontrols-and-raycaster/18742
+
+        const rect = this.renderer.domElement.getBoundingClientRect();
+        this.pointer.x = ( ( event.clientX - rect.left ) / ( rect.right - rect.left ) ) * 2 - 1;
+        this.pointer.y = - ( ( event.clientY - rect.top ) / ( rect.bottom - rect.top) ) * 2 + 1;
+    }
+
+
+    public set_scene_events(): void {
+
+        this.container.addEventListener('pointermove', (event) => this.on_pointer_move(event) )
 
     }
 
@@ -53,6 +87,22 @@ export class Scene {
         
         this.orbitControls.update();
 
+        // update the picking ray with the camera and pointer position
+        this.rayCaster.setFromCamera( this.pointer, this.camera );
+
+        if( this.scene.getObjectByName('gazepointcloud') ){
+
+            const intersects = this.rayCaster.intersectObjects( [this.scene.getObjectByName('gazepointcloud')], false );
+            if(intersects.length > 0){
+                this.sphere.position.copy(intersects[0].point);
+                this.sphere.scale.set(1,1,1);
+                // intersects[0].object.scale.set( 10,10,10 );
+            } else {
+                this.sphere.scale.set(0,0,0);
+            }
+        }
+
+        
         this.renderer.render( this.scene, this.camera );
 
     }
@@ -94,7 +144,7 @@ export class Scene {
 
         const renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer();
         renderer.setPixelRatio( window.devicePixelRatio );
-        renderer.setSize( width - 10, height - 10 );
+        renderer.setSize( width, height );
 
         // appending renderer
         this.container.appendChild( renderer.domElement );
@@ -104,24 +154,34 @@ export class Scene {
 
     }
 
-    public add__point_cloud( positions: number[], colors: number[] = [], normals: number[] = []  ): THREE.Points {
+    public add_point_cloud( name: string, positions: number[], colors: number[] = [], normals: number[] = []  ): THREE.Points {
 
         // loading positions
         const pointgeometry = new THREE.BufferGeometry();
         pointgeometry.setAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
-        pointgeometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
+
+        if(colors.length > 0) pointgeometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
+        
+        // pointgeometry.name = name;
         pointgeometry.computeBoundingSphere();
 
         // defining material
-        const pointmaterial = new THREE.PointsMaterial( { size: 0.01, vertexColors: true } );
+        let pointmaterial: THREE.PointsMaterial = new THREE.PointsMaterial( { size: 0.025, color: 'red' } );;
+        if(colors.length > 0) pointmaterial = new THREE.PointsMaterial( { size: 0.025, vertexColors: true } );
         const points = new THREE.Points( pointgeometry, pointmaterial );
 
         // adding to scene
+        points.name = name
         this.scene.add( points );
 
         // returning points
         return points;
 
+    }
+
+    private initialize_raycaster() {
+        this.rayCaster = new THREE.Raycaster();
+        this.rayCaster.params.Points.threshold = 0.01;
     }
 
 }

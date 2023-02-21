@@ -10,10 +10,10 @@ export class SceneViewerController {
     
     constructor(){}
 
-    public async initialize_controller( containerRef: HTMLElement ): Promise<void> {
+    public initialize_controller( containerRef: HTMLElement ): void {
 
         // initializing dataset
-        const dataset: Dataset = await this.initialize_dataset();
+        const dataset: Dataset = this.initialize_dataset();
         this.dataset = dataset;
 
         // initializing scene
@@ -24,7 +24,7 @@ export class SceneViewerController {
 
     }
 
-    public async initialize_dataset(): Promise<Dataset> {
+    public initialize_dataset(): Dataset {
 
         // creating dataset
         const dataset: Dataset = new Dataset();

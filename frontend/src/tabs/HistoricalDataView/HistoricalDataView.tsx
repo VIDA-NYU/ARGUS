@@ -23,6 +23,7 @@ import Controls from '../../utils/Controls';
 import SummaryView from '../../components/SummaryView/SummaryView';
 import SessionListView from '../../components/SessionListView/SessionListView';
 import ModelView from '../../components/ModelView/ModelView';
+import SessionView from '../../views/SessionView/SessionView';
 
 const HistoricalDataView = () => {
 
@@ -64,7 +65,7 @@ const HistoricalDataView = () => {
           <Divider orientation='vertical'/>
 
           <Box sx={{ flex: 1, display: 'flex' }}>
-              {/* <SessionView></SessionView> */}
+              <SessionView></SessionView>
           </Box>
 
           <Divider orientation='vertical'/>

@@ -6,7 +6,9 @@ import { CircularProgress } from '@mui/material';
 import Box from '@mui/material/Box';
 
 // api
-import { getPointCloudData } from '../../api/rest';
+import { getPointCloudData, getEyeData } from '../../api/rest';
+
+// components
 import SceneViewer from './SceneViewer';
 
 
@@ -14,13 +16,23 @@ const PointCloudViewer = ( {recordingName} : any ) => {
 
   // Attributes
   const [pointCloudData, setPointCloudData] = React.useState({});
+  const [loadingPointCloud, setLoadingPointCloud ] = React.useState(false);
 
   useEffect(() => {
 
     const fetchPointCloudData = async() => {
 
+      // setting spinner
+      setLoadingPointCloud(true);
+      
       const pointCloudJSONFile = await getPointCloudData( recordingName );
-      setPointCloudData( {'world': pointCloudJSONFile} );
+      const eyeGazeJSONFile = await getEyeData( recordingName );
+      
+      setPointCloudData( {'world': pointCloudJSONFile, 'gaze': eyeGazeJSONFile} );
+      
+      // setting spinner
+      setLoadingPointCloud(false)
+
 
     }
 
@@ -29,9 +41,18 @@ const PointCloudViewer = ( {recordingName} : any ) => {
   }, [recordingName])
 
 
+  const loadingSpinner = () => {
+    return (
+      <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <CircularProgress/>
+      </Box>
+    )
+  };
+
+
   return (
     <Box sx={{ flex: 1, display: 'flex' }}>
-      <SceneViewer pointCloudData={pointCloudData}></SceneViewer>
+      { loadingPointCloud ? loadingSpinner() : ( <SceneViewer pointCloudData={pointCloudData}></SceneViewer> ) }
     </Box>
   )
 

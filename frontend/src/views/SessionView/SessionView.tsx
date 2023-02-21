@@ -2,16 +2,16 @@
 import { useEffect, useRef, useState } from 'react';
 
 // material
-import { CircularProgress } from '@mui/material';
 import Box from '@mui/material/Box';
-import PointCloudViewer from '../../components/PointCloudViewerBak/PointCloudViewer';
+
+// components
+import PointCloudViewer from '../../components/PointCloudViewer/PointCloudViewer';
 
 const SessionView = ( {recordingName} : any ) => {
 
   return (
-    <Box sx={{ flex: 1, display: 'flex' }} style={{marginLeft: 15}}>
-        <h2>Selected Recording: {recordingName}</h2>
-        <PointCloudViewer recordingName='test-looking-around-office-9.19'></PointCloudViewer>
+    <Box sx={{ flex: 1, display: 'flex'}}>
+        <PointCloudViewer recordingName={'2023.02.13-22.58.38'}></PointCloudViewer>
     </Box>
   )
 

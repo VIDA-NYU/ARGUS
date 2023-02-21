@@ -19,11 +19,14 @@ def load_point_cloud( filepath ):
         ## parsing raw data
         xyz = timestamp['xyz_world']
         colors = list( map( lambda row: [row[i]/255.0 for i in range(3)], timestamp['color'] ) )
+        
+        testTimestamp = [ 15 for i in range(len(timestamp['xyz_world']))]
 
         ## appeding to open3d data structure
         pcl = o3d.geometry.PointCloud()
         pcl.points = o3d.utility.Vector3dVector(xyz)
         pcl.colors = o3d.utility.Vector3dVector(colors)
+        pcl.timestamps = o3d.utility.Vector3dVector(testTimestamp)
         timestampedPointClouds.append(pcl)
 
     return timestampedPointClouds
@@ -65,14 +68,14 @@ def merge_point_clouds( pointClouds ):
     
     mergedPointClouds = []
     mergedColors = []
-    # mergedNormals = []
+    mergedNormals = []
     for pcd in pointClouds:
 
         mergedPointClouds.extend( np.asarray(pcd.points).tolist() )
         mergedColors.extend( np.asarray(pcd.colors).tolist() )
-        # mergedNormals.extend( np.asarray(pcd.normals).tolist() )
+        mergedNormals.extend( np.asarray(pcd.normals).tolist() )
     
-    return {'xyz_world': mergedPointClouds, 'colors': mergedColors}
+    return {'xyz_world': mergedPointClouds, 'colors': mergedColors, 'normals': mergedNormals}
 
 def main( pointCloudPath, gazePointCloudPath, voxelization = True ):
 
@@ -88,12 +91,11 @@ def main( pointCloudPath, gazePointCloudPath, voxelization = True ):
     open3DPointClouds = load_point_cloud( pointCloudPath )
     print('\tTime taken: ', timer() - start )
 
-    print('Loading gaze cloud...')
-    start = timer()
-    open3DGazeClouds = load_user_gaze( gazePointCloudPath )
-    print('\tTime taken: ', timer() - start )
+    # print('Loading gaze cloud...')
+    # start = timer()
+    # open3DGazeClouds = load_user_gaze( gazePointCloudPath )
+    # print('\tTime taken: ', timer() - start )
 
-    
     if(voxelization == True):
         start = timer()
         print('Downsampling point cloud...')
@@ -102,7 +104,7 @@ def main( pointCloudPath, gazePointCloudPath, voxelization = True ):
         print('\tNumber of pcs: ', len(open3DPointClouds))
 
 
-    print("Recompute the normal of the point cloud")
+    print("Recompute the normals of the point cloud")
     start = timer()
     for pcd in open3DPointClouds:
         pcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=voxelSize*2.0, max_nn=30))
@@ -117,7 +119,7 @@ def main( pointCloudPath, gazePointCloudPath, voxelization = True ):
     pcl.points = o3d.utility.Vector3dVector(mergedPointClouds['xyz_world'])
     pcl.colors = o3d.utility.Vector3dVector(mergedPointClouds['colors'])
 
-    print('Number of points: ', len(mergedPointClouds['xyz_world']))
+    # print('Number of points: ', len(mergedPointClouds['xyz_world']))
 
     o3d.visualization.draw_geometries([pcl, open3DGazeClouds], point_show_normal=True)
 

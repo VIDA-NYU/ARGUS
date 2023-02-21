@@ -168,7 +168,6 @@ const SummaryView = ({...props}) => {
       const filteredDataByDuration = appliedFilters.duration ? getFilteredData(recordings, "duration_secs", appliedFilters.duration): recordings;
       const filteredDataBySize = appliedFilters.size ? getFilteredData(filteredDataByDuration, "size_mb", appliedFilters.size): recordings;
       recordings && props.updateRecordings(filteredDataBySize);
-      console.log(filteredDataBySize);
     }, [recordings]);
     
     const handleChangeDuration = (newValue) => {

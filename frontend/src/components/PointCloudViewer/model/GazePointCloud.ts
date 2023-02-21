@@ -12,19 +12,16 @@ export class GazePointCloud {
         let positions: number[][] = this.points;
         let normals: number[][] = this.normals;
         if(start !== -1 && end !== -1){
-            positions = positions.slice( start, end );
-            normals = normals.slice( start, end );
+            positions = positions.slice( 0, positions.length );
+            normals = normals.slice( 0, positions.length );
         }
-
-        // const positions: number[] = this.points.flat();
-        // const normals: number[] = this.normals.flat();
 
         return [positions.flat(), normals.flat()];
     }
 
     // return all timestamps in the gaze point cloud
-    public get_all_timestamps(): number[] {
-        return this.timestamps;
-    }
+    // public get_all_timestamps(): number[] {
+    //     return this.timestamps;
+    // }
 
 }
