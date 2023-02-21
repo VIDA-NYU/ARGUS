@@ -33,7 +33,6 @@ const PointCloudViewer = ( {recordingName} : any ) => {
       // setting spinner
       setLoadingPointCloud(false)
 
-
     }
 
     fetchPointCloudData();
@@ -51,8 +50,12 @@ const PointCloudViewer = ( {recordingName} : any ) => {
 
 
   return (
-    <Box sx={{ flex: 1, display: 'flex' }}>
-      { loadingPointCloud ? loadingSpinner() : ( <SceneViewer pointCloudData={pointCloudData}></SceneViewer> ) }
+    <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ flex: 2, display: 'flex',  }}>
+        { loadingPointCloud ? loadingSpinner() : ( <SceneViewer pointCloudData={pointCloudData}></SceneViewer> ) }
+      </Box>
+      <Box sx={{ flex: 1, display: 'flex', backgroundColor: 'red' }}></Box>
+      
     </Box>
   )
 

@@ -11,7 +11,8 @@ const SessionView = ( {recordingName} : any ) => {
 
   return (
     <Box sx={{ flex: 1, display: 'flex'}}>
-        <PointCloudViewer recordingName={'2023.02.13-22.58.38'}></PointCloudViewer>
+        <h1>{ recordingName }</h1>
+        {/* <PointCloudViewer recordingName={'2023.02.13-22.58.38'}></PointCloudViewer> */}
     </Box>
   )
 

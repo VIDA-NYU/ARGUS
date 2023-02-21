@@ -36,9 +36,6 @@ const SceneViewer = ( {pointCloudData} : any ) => {
 
         }
 
-        
-
-
     }, [pointCloudData])
 
     return (
