@@ -1,8 +1,7 @@
 import * as THREE from 'three';
-import { Vector3 } from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHelper';
-import { VoxelCube } from '../types/types';
+
+import * as d3 from 'd3';
 
 export class Scene {
 
@@ -15,7 +14,7 @@ export class Scene {
     public renderer!: THREE.WebGLRenderer;
 
     // controls
-    public  orbitControls!: OrbitControls;
+    public orbitControls!: OrbitControls;
     public rayCaster!: THREE.Raycaster;
 
     // sphere test
@@ -30,6 +29,18 @@ export class Scene {
         // saving container ref
         this.container = containerRef;
         const [containerWidth, containerHeight] = [this.container.offsetWidth, this.container.offsetHeight];
+
+        // TODO: remove it from here
+        d3.select(this.container)
+            .append('div')
+            .attr('position', 'absolute')
+            .attr('width', '100px')
+            .attr('height', '100px')
+            .attr('top', 10)
+            .attr('left', 10)
+            .attr('z-index', 999)
+            .style('background-color', 'red');
+        
 
         // initializing camera
         this.initialize_camera( containerWidth, containerHeight, cameraPosition );
@@ -48,7 +59,7 @@ export class Scene {
         this.initialize_raycaster();
 
 
-        // testing
+        // TODO: remove it from here
         const sphereGeometry = new THREE.SphereGeometry( 0.025, 15, 15 );
         const sphereMaterial = new THREE.MeshBasicMaterial( { color: 'blue' } );
         this.sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );

@@ -12,6 +12,7 @@ import Typography from '@mui/material/Typography';
 import Chip from '@mui/material/Chip';
 import Tooltip from '@mui/material/Tooltip';
 import Stack from '@mui/material/Stack';
+import { CompressedPixelFormat } from 'three';
 
 const SeeMoreStack = ({ children, label=null, limit=4, defaultCollapsed=true }) => {
     const [ collapsed, setCollapsed ] = useState(defaultCollapsed)

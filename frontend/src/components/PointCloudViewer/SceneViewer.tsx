@@ -39,7 +39,14 @@ const SceneViewer = ( {pointCloudData} : any ) => {
     }, [pointCloudData])
 
     return (
-        <div style={{ flex: 1 }} ref={containerRef}></div>
+        <div style={{ 
+            width: '100%', 
+            height: '100%', 
+            position: 'relative', 
+            zIndex: 1, 
+            display: 'inline-block' }} 
+            ref={containerRef}>
+        </div>
     )
 };
 
