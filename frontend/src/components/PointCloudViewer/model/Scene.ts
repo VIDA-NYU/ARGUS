@@ -2,12 +2,12 @@ import * as THREE from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 import { Raycaster } from './Raycaster';
+import { Tooltip } from './Tooltip';
 
 export class Scene {
 
     // container ref
     public container!: HTMLElement;
-    public tooltipContainer!: HTMLElement;
 
     // scene elements
     public camera!: THREE.PerspectiveCamera;
@@ -17,10 +17,13 @@ export class Scene {
     // controls
     public orbitControls!: OrbitControls;
     public rayCaster!: Raycaster;
+    public tooltip!: Tooltip;
 
     constructor(){}
 
     public init( containerRef: HTMLElement, tooltipContainerRef: HTMLElement, cameraPosition: number[], near: number = 0.1, far: number = 10  ): void {
+
+        console.log('Initializing scene....');
 
         // saving container ref
         this.container = containerRef;
@@ -38,6 +41,9 @@ export class Scene {
         // initializing controls
         this.initialize_orbit_controls();
         this.initialize_raycaster();
+
+        // creating tooltip
+        this.initialize_tooltip( tooltipContainerRef );
 
     }
 
@@ -57,7 +63,10 @@ export class Scene {
         this.orbitControls.update();
 
         // picking
-        this.rayCaster.get_intersected_point( this.camera );
+        const intersect: {mousePosition: {top: number, left: number}, intersectPosition: THREE.Vector3 } = this.rayCaster.get_intersected_point( this.camera );
+
+        // positioning tooltip
+        this.tooltip.position_tooltip(intersect.mousePosition.top, intersect.mousePosition.left);
         
         // rendering
         this.renderer.render( this.scene, this.camera );
@@ -109,6 +118,10 @@ export class Scene {
         // saving ref
         this.renderer = renderer;
 
+    }
+
+    private initialize_tooltip( tooltipContainer: HTMLElement ): void {
+        this.tooltip = new Tooltip( tooltipContainer )
     }
 
     public add_point_cloud( name: string, positions: number[], colors: number[] = [], normals: number[] = []  ): THREE.Points {

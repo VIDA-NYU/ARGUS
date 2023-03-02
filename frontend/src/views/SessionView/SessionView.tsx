@@ -8,7 +8,7 @@ import { Typography } from '@mui/material';
 // components
 import PointCloudViewer from '../../components/PointCloudViewer/PointCloudViewer';
 
-const SessionView = ( {recordingName} : any ) => { 
+const SessionView = ( {sessionInfo}: any ) => { 
 
   const emptySelection = () => {
     return( 
@@ -16,13 +16,12 @@ const SessionView = ( {recordingName} : any ) => {
         <Typography variant="h4" color="text.secondary">
             <b>No Session selected...</b>
         </Typography>
-        
       </Box>
   )}
 
   return (
     <Box sx={{ flex: 1, display: 'flex'}}>
-        { recordingName ? ( <PointCloudViewer recordingName={recordingName}></PointCloudViewer> ) : emptySelection() }
+        { sessionInfo.recordingName ? ( <PointCloudViewer sessionInfo={sessionInfo}></PointCloudViewer> ) : emptySelection() }
     </Box>
   )
 

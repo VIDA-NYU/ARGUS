@@ -12,7 +12,7 @@ import { getPointCloudData, getEyeData } from '../../api/rest';
 import SceneViewer from './SceneViewer';
 
 
-const PointCloudViewer = ( {recordingName} : any ) => {
+const PointCloudViewer = ( {sessionInfo} : any ) => {
 
   // Attributes
   const [pointCloudData, setPointCloudData] = React.useState({});
@@ -25,8 +25,8 @@ const PointCloudViewer = ( {recordingName} : any ) => {
       // setting spinner
       setLoadingPointCloud(true);
       
-      const pointCloudJSONFile = await getPointCloudData( recordingName );
-      const eyeGazeJSONFile = await getEyeData( recordingName );
+      const pointCloudJSONFile = await getPointCloudData( sessionInfo.recordingName );
+      const eyeGazeJSONFile = await getEyeData( sessionInfo.recordingName );
       
       setPointCloudData( {'world': pointCloudJSONFile, 'gaze': eyeGazeJSONFile} );
       
@@ -37,7 +37,7 @@ const PointCloudViewer = ( {recordingName} : any ) => {
 
     fetchPointCloudData();
 
-  }, [recordingName])
+  }, [sessionInfo])
 
 
   const loadingSpinner = () => {
@@ -47,7 +47,6 @@ const PointCloudViewer = ( {recordingName} : any ) => {
       </Box>
     )
   };
-
 
   return (
     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>

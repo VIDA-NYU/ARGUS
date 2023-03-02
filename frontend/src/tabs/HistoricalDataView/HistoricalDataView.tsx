@@ -10,6 +10,7 @@ import { Divider } from '@mui/material';
 import { useToken } from '../../api/TokenContext';
 import { 
   useGetAllRecordings, 
+  getVideoPath,
   // useGetRecording, 
   // useDeleteRecording, 
   // getPointCloudData, 
@@ -29,19 +30,20 @@ const HistoricalDataView = () => {
 
   // Recordings
   const [availableRecordings, setAvailableRecordings] = React.useState([]);
-  const [selectedRecordingName, setSelectedRecordingName] = React.useState<string>('');
 
-  // useEffect(() => {
-  //   availableRecordings && availableRecordings[0] && setSelectedRecordingName(availableRecordings[0].name);
-  // }, [availableRecordings]);
+  // session info
+  const [sessionInfo, setSessionInfo] = React.useState<any>({});
 
   const handleChangeSelectRecording = (newSelection) => {
-      setSelectedRecordingName(newSelection);
+
+      const mainCameraPath: string = getVideoPath( newSelection, 'main' );
+
+      // setting session info
+      setSessionInfo({recordingName:newSelection, mainCameraPath});
   }
   const updateAvailableRecordings = (updatedAvailableRecordings) => {
       setAvailableRecordings(updatedAvailableRecordings);
   }
-
 
     return (
       <Box sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -67,7 +69,7 @@ const HistoricalDataView = () => {
           <Divider orientation='vertical'/>
 
           <Box sx={{ flex: 1, display: 'flex' }}>
-              <SessionView recordingName={selectedRecordingName}></SessionView>
+              <SessionView sessionInfo={sessionInfo}></SessionView>
           </Box>
 
           <Divider orientation='vertical'/>

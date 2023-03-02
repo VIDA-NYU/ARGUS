@@ -62,8 +62,7 @@ const SceneViewer = ( {pointCloudData} : any ) => {
                 width: '20%',
                 height: '20%',
                 position: 'absolute',
-                backgroundColor: 'red',
-                opacity: 0.5 }}
+                backgroundColor: 'red'}}
                 ref={tooltipContainerRef}>
             </div>   
 

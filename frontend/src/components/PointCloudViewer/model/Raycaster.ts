@@ -7,6 +7,7 @@ export class Raycaster {
 
     // Mouse pointer
     public pointer: THREE.Vector2 = new THREE.Vector2();
+    public pointerEvent!: MouseEvent;
 
     // ray intersection highlight
     public sphere!: THREE.Mesh;
@@ -28,7 +29,7 @@ export class Raycaster {
 
     }
 
-    public get_intersected_point( camera: THREE.PerspectiveCamera ): {mousePosition: THREE.Vector2, intersectPosition: THREE.Vector3 } {
+    public get_intersected_point( camera: THREE.PerspectiveCamera ): {mousePosition: {top: number, left: number}, intersectPosition: THREE.Vector3 } {
 
         // update the picking ray with the camera and pointer position
         this.rayCaster.setFromCamera( this.pointer, camera );
@@ -43,7 +44,7 @@ export class Raycaster {
             this.sphere.scale.set(1,1,1);
             
             // returning positions
-            return {mousePosition: this.pointer, intersectPosition: intersects[0].point}
+            return {mousePosition: {top: this.pointerEvent.offsetY, left: this.pointerEvent.offsetX}, intersectPosition: intersects[0].point}
         
         } else {
 
@@ -51,15 +52,14 @@ export class Raycaster {
             this.sphere.scale.set(0,0,0);
 
             // returning positions
-            return {mousePosition: new THREE.Vector2(0,0), intersectPosition: new THREE.Vector3(0,0,0)}
+            return {mousePosition: {top: 0, left: 0}, intersectPosition: new THREE.Vector3(0,0,0)}
         }
     }
 
-    public on_pointer_move( event, canvasContainer: HTMLElement ): void {
+    public on_pointer_move( event: MouseEvent, canvasContainer: HTMLElement ): void {
 
-        // d3.select(this.tooltipContainer)
-        //     .style('top', `${event.clientY}px`)
-        //     .style('left', `${event.clientX}px`)
+        // saving event pointer
+        this.pointerEvent = event;
         
         // Ref: https://discourse.threejs.org/t/custom-canvas-size-with-orbitcontrols-and-raycaster/18742
         const rect = canvasContainer.getBoundingClientRect();
