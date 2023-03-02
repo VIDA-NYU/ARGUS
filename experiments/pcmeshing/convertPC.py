@@ -2,7 +2,7 @@ import json
 import open3d as o3d
 from timeit import default_timer as timer
 
-voxel_size = 0.025
+voxel_size = 0.01
 
 
 #filename = "2023.02.09-16.41.00-pointcloud"

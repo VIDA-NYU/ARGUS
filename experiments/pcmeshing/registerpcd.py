@@ -108,11 +108,20 @@ def full_registration(pcds, max_correspondence_distance_coarse,
 
 start = timer()
 
+filenames = []
+filenames.append("./pointcloud/2023.02.09-16.41.00-pointcloud0.025")
+filenames.append("./pointcloud/2023.02.09-17.41.40-pointcloud0.025")
+filenames.append("./pointcloud/2023.02.13-22.58.38-pointcloud0.025")
+filenames.append("./pointcloud/2023.02.13-23.00.42-pointcloud0.025")
+
 pcds = []
-pcds.append(o3d.io.read_point_cloud("./pointcloud/2023.02.09-16.41.00-pointcloud0.025.pcd"))
-pcds.append(o3d.io.read_point_cloud("./pointcloud/2023.02.09-17.41.40-pointcloud0.025.pcd"))
-pcds.append(o3d.io.read_point_cloud("./pointcloud/2023.02.13-22.58.38-pointcloud0.025.pcd"))
-pcds.append(o3d.io.read_point_cloud("./pointcloud/2023.02.13-23.00.42-pointcloud0.025.pcd"))
+for filename in filenames:
+    print("Loading file: " + filename)
+    pcds.append(o3d.io.read_point_cloud(filename + ".pcd"))
+#pcds.append(o3d.io.read_point_cloud("./pointcloud/2023.02.09-16.41.00-pointcloud0.025.pcd"))
+#pcds.append(o3d.io.read_point_cloud("./pointcloud/2023.02.09-17.41.40-pointcloud0.025.pcd"))
+#pcds.append(o3d.io.read_point_cloud("./pointcloud/2023.02.13-22.58.38-pointcloud0.025.pcd"))
+#pcds.append(o3d.io.read_point_cloud("./pointcloud/2023.02.13-23.00.42-pointcloud0.025.pcd"))
 print("Time for loading the data:", timer() - start)
 
 #pcds[0].paint_uniform_color([0.7, 0.3, 0.0])
@@ -151,9 +160,13 @@ for idx in range(1, len(pcds)):
     #draw_registration_result(source, target, result_icp.transformation)
 
     source.transform(result_icp.transformation)
+    print("Transformation matrix for " + filenames[idx] + ":")
+    print(result_icp.transformation)
+    # o3d.io.write_point_cloud(filenames[idx] + "reg.pcd", source, False, True)
     target += source
     target = target.voxel_down_sample(voxel_size_orig)
 
+quit()
 
 print("Recompute the normal of the point cloud")
 start = timer()
@@ -173,6 +186,6 @@ radii = [voxel_size_orig*1.5, voxel_size_orig*3.0]
 mesh = o3d.geometry.TriangleMesh.create_from_point_cloud_ball_pivoting(target, o3d.utility.DoubleVector(radii))
 print("Time for running ball pivoting:", timer() - start)
 print("Mesh vertices:", len(mesh.vertices))
-#o3d.visualization.draw([mesh])
-
 o3d.io.write_triangle_mesh("./pointcloud/result.ply", mesh)
+
+#o3d.visualization.draw([mesh])
