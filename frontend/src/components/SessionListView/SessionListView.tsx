@@ -81,6 +81,7 @@ const RecordingCard = (props) => {
   }
 
 const SessionListView = ({ sortby='first-entry', ...props }) => {
+
     const { recordings } = props;
     const [value, setValue] = React.useState("");
     const handleChangeSelectedRecording = (newValue) => {
@@ -91,6 +92,7 @@ const SessionListView = ({ sortby='first-entry', ...props }) => {
     return (
       // display='flex' flexWrap='wrap' gap={2} mt={5} m={'2em'} justifyContent='center'
         <Box display='flex' flexWrap='wrap' gap={2} pt={2} flexDirection='column'>
+
           {recordings && <Typography color="text.secondary">  About {recordings && recordings.length} results:</Typography>}
           {recordings && recordings
             .filter(d=>d.duration && !d.duration.startsWith('0:00:0'))
