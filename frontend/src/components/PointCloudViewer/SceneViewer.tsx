@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 // controller
 import { SceneViewerController } from './controllers/SceneViewer.controller';
 
-const SceneViewer = ( {pointCloudData} : any ) => {
+const SceneViewer = ( {sceneData} : any ) => {
 
     // DOM Refs
     const containerRef = useRef(null);
@@ -20,31 +20,34 @@ const SceneViewer = ( {pointCloudData} : any ) => {
     useEffect(() => {
         
         // initializing dataset
-        if( 'world' in pointCloudData ){    
+        if( 'pointCloudData' in sceneData && 'world' in sceneData.pointCloudData ){    
             
             // initializing world point cloud data
-            sceneViewerController.dataset.initialize_world_pointcloud_dataset( pointCloudData['world'] );
+            sceneViewerController.dataset.initialize_world_pointcloud_dataset( sceneData.pointCloudData['world'] );
             const [worldBufferPositions, worldBufferColors]: [number[], number[]] = sceneViewerController.dataset.worldPointCloud.get_buffer_positions();
             sceneViewerController.scene.add_point_cloud( 'worldpointcloud', worldBufferPositions, worldBufferColors);
             
         }
 
-        if( 'gaze' in pointCloudData ){
+        if( 'pointCloudData' in sceneData && 'gaze' in sceneData.pointCloudData ){
 
-            sceneViewerController.dataset.initialize_gaze_pointcloud_dataset( pointCloudData['gaze'] );
+            sceneViewerController.dataset.initialize_gaze_pointcloud_dataset( sceneData.pointCloudData['gaze'] );
             const [gazeBufferPositions, gazeBufferNormals]: [number[], number[]] = sceneViewerController.dataset.gazePointCloud.get_buffer_positions();
             sceneViewerController.scene.add_point_cloud('gazepointcloud', gazeBufferPositions, [], gazeBufferNormals);            
 
         }
 
-    }, [pointCloudData])
+        if( 'videoData' in sceneData ){
+            sceneViewerController.initialize_tooltip( sceneData.videoData );
+        }
+
+    }, [sceneData])
 
     return (
         <div style={{
             width: '100%',
             height: '100%',
-            position: 'relative',
-            backgroundColor: 'red'
+            position: 'relative'
         }}>
 
             <div style={{ 
@@ -61,8 +64,7 @@ const SceneViewer = ( {pointCloudData} : any ) => {
                 left: 20,
                 width: '20%',
                 height: '20%',
-                position: 'absolute',
-                backgroundColor: 'red'}}
+                position: 'absolute'}}
                 ref={tooltipContainerRef}>
             </div>   
 

@@ -34,7 +34,6 @@ export class SceneViewerController {
 
     }
 
-
     public initialize_scene( containerRef: HTMLElement, tooltipContainerRef: HTMLElement ): Scene {
 
         // creating scene
@@ -42,6 +41,12 @@ export class SceneViewerController {
         scene.init( containerRef, tooltipContainerRef, [0,0,10] );
 
         return scene;
+
+    }
+
+    public initialize_tooltip( videoPath: string ){
+
+        this.scene.tooltip.add_video_tag(videoPath);
 
     }
 }

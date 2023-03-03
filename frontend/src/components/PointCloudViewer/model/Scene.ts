@@ -23,8 +23,6 @@ export class Scene {
 
     public init( containerRef: HTMLElement, tooltipContainerRef: HTMLElement, cameraPosition: number[], near: number = 0.1, far: number = 10  ): void {
 
-        console.log('Initializing scene....');
-
         // saving container ref
         this.container = containerRef;
         const [containerWidth, containerHeight] = [this.container.offsetWidth, this.container.offsetHeight];
@@ -67,6 +65,7 @@ export class Scene {
 
         // positioning tooltip
         this.tooltip.position_tooltip(intersect.mousePosition.top, intersect.mousePosition.left);
+        if (intersect.mousePosition.top !== 0) this.tooltip.set_video_timestamp(intersect.mousePosition.top*0.05);
         
         // rendering
         this.renderer.render( this.scene, this.camera );

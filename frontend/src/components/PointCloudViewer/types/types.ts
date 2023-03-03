@@ -1,3 +1,10 @@
+export interface SceneData {
+
+    // TODO: define interface
+
+}
+
+
 export interface VoxelCube {
 
     center: number[],

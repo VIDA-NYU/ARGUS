@@ -4,7 +4,10 @@ export class Tooltip{
 
     public container!: d3.Selection<any,any,any,any>;
 
-    constructor( tooltipContainer: HTMLElement ){
+    // video ref
+    public videoTag!: HTMLVideoElement;
+
+    constructor( public tooltipContainer: HTMLElement ){
 
         this.container = d3.select(tooltipContainer);
 
@@ -19,6 +22,35 @@ export class Tooltip{
 
     }
 
+
+    public add_video_tag( videoPath: string ): void{
+
+        // Create video element
+        const videoTag: HTMLVideoElement = document.createElement('video');
+        this.videoTag = videoTag;
+
+        // // Use remote file
+        videoTag.src = `${videoPath}`;
+
+        videoTag.controls = false;
+        videoTag.muted = true;
+        videoTag.preload = 'auto';
+
+        videoTag.width = this.container.node().getBoundingClientRect().width; // in px
+        videoTag.height = this.container.node().getBoundingClientRect().height; // in px
+
+        // Include in HTML as child of #box
+        this.tooltipContainer.appendChild(videoTag);
+
+    }
+
+    public set_video_timestamp( timestamp: number ): void {
+
+        if( this.videoTag && this.videoTag.duration ){
+            this.videoTag.currentTime = timestamp;
+        }
+
+    } 
 
 
 }

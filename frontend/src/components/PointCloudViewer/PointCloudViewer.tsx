@@ -15,7 +15,7 @@ import SceneViewer from './SceneViewer';
 const PointCloudViewer = ( {sessionInfo} : any ) => {
 
   // Attributes
-  const [pointCloudData, setPointCloudData] = React.useState({});
+  const [sceneData, setSceneData] = React.useState({});
   const [loadingPointCloud, setLoadingPointCloud ] = React.useState(false);
 
   useEffect(() => {
@@ -28,10 +28,11 @@ const PointCloudViewer = ( {sessionInfo} : any ) => {
       const pointCloudJSONFile = await getPointCloudData( sessionInfo.recordingName );
       const eyeGazeJSONFile = await getEyeData( sessionInfo.recordingName );
       
-      setPointCloudData( {'world': pointCloudJSONFile, 'gaze': eyeGazeJSONFile} );
+      // setting scene data
+      setSceneData({videoData: sessionInfo.mainCameraPath, pointCloudData: {'world': pointCloudJSONFile, 'gaze': eyeGazeJSONFile}} );
       
       // setting spinner
-      setLoadingPointCloud(false)
+      setLoadingPointCloud(false);
 
     }
 
@@ -50,7 +51,7 @@ const PointCloudViewer = ( {sessionInfo} : any ) => {
 
   return (
     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-      { loadingPointCloud ? loadingSpinner() : ( <SceneViewer pointCloudData={pointCloudData}></SceneViewer> ) }
+      { loadingPointCloud ? loadingSpinner() : ( <SceneViewer sceneData={sceneData}></SceneViewer> ) }
     </Box>
   )
 
