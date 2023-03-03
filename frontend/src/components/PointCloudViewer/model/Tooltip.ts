@@ -16,12 +16,16 @@ export class Tooltip{
 
     public position_tooltip( top: number, left: number ): void {
 
-        this.container
-            .style('top', `${top}px` )
-            .style('left', `${left}px` );
-
+        if(top === 0){
+            this.container
+                .style('visibility', 'hidden');
+        } else {
+            this.container
+                .style('visibility', 'visible')
+                .style('top', `${top}px` )
+                .style('left', `${left}px` );
+        }
     }
-
 
     public add_video_tag( videoPath: string ): void{
 
