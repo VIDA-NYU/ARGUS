@@ -40,8 +40,13 @@ export class Raycaster {
         if(intersects && intersects.length > 0){
 
             // plotting highlight sphere
+
+            console.log(intersects[0].index);
+
             this.sphere.position.copy(intersects[0].point);
             this.sphere.scale.set(1,1,1);
+
+            console.log(intersects);
             
             // returning positions
             return {mousePosition: {top: this.pointerEvent.offsetY, left: this.pointerEvent.offsetX}, intersectPosition: intersects[0].point}

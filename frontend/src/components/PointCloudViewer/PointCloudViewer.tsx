@@ -10,6 +10,7 @@ import { getPointCloudData, getEyeData } from '../../api/rest';
 
 // components
 import SceneViewer from './SceneViewer';
+import TimestampManager from '../../tabs/HistoricalDataView/services/TimestampManager';
 
 
 const PointCloudViewer = ( {sessionInfo} : any ) => {
@@ -27,7 +28,7 @@ const PointCloudViewer = ( {sessionInfo} : any ) => {
       
       const pointCloudJSONFile = await getPointCloudData( sessionInfo.recordingName );
       const eyeGazeJSONFile = await getEyeData( sessionInfo.recordingName );
-      
+
       // setting scene data
       setSceneData({videoData: sessionInfo.mainCameraPath, pointCloudData: {'world': pointCloudJSONFile, 'gaze': eyeGazeJSONFile}} );
       

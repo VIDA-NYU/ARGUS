@@ -66,7 +66,7 @@ export class Scene {
         // positioning tooltip
         this.tooltip.position_tooltip(intersect.mousePosition.top, intersect.mousePosition.left);
         if (intersect.mousePosition.top !== 0) this.tooltip.set_video_timestamp(intersect.mousePosition.top*0.05);
-        
+
         // rendering
         this.renderer.render( this.scene, this.camera );
 
@@ -123,14 +123,15 @@ export class Scene {
         this.tooltip = new Tooltip( tooltipContainer )
     }
 
-    public add_point_cloud( name: string, positions: number[], colors: number[] = [], normals: number[] = []  ): THREE.Points {
+    public add_point_cloud( name: string, positions: number[], colors: number[] = [], normals: number[] = [], timestamps: number[] = []  ): THREE.Points {
 
         // loading positions
         const pointgeometry = new THREE.BufferGeometry();
         pointgeometry.setAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
 
         if(colors.length > 0) pointgeometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
-        
+        if(timestamps.length > 0) pointgeometry.userData = timestamps; //('testest', new THREE.Float32BufferAttribute(timestamps, 1) );
+
         // pointgeometry.name = name;
         pointgeometry.computeBoundingSphere();
 

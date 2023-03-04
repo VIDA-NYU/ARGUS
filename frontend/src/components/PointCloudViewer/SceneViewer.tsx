@@ -1,5 +1,6 @@
 // react
 import React, { useEffect, useRef, useState } from 'react';
+import TimestampManager from '../../tabs/HistoricalDataView/services/TimestampManager';
 
 // controller
 import { SceneViewerController } from './controllers/SceneViewer.controller';
@@ -32,8 +33,8 @@ const SceneViewer = ( {sceneData} : any ) => {
         if( 'pointCloudData' in sceneData && 'gaze' in sceneData.pointCloudData ){
 
             sceneViewerController.dataset.initialize_gaze_pointcloud_dataset( sceneData.pointCloudData['gaze'] );
-            const [gazeBufferPositions, gazeBufferNormals]: [number[], number[]] = sceneViewerController.dataset.gazePointCloud.get_buffer_positions();
-            sceneViewerController.scene.add_point_cloud('gazepointcloud', gazeBufferPositions, [], gazeBufferNormals);            
+            const [gazeBufferPositions, gazeBufferNormals, gazeTimestamps]: [number[], number[], number[]] = sceneViewerController.dataset.gazePointCloud.get_buffer_positions();
+            sceneViewerController.scene.add_point_cloud('gazepointcloud', gazeBufferPositions, [], gazeBufferNormals, gazeTimestamps);            
 
         }
 
