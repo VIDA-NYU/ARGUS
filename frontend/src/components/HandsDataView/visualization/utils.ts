@@ -30,6 +30,11 @@ function computeFrameMovement(frame0, frame1){
 
 }
 function isEmpty(obj) {
+
+    if(!obj){
+        return true;
+    }
+
     return Object.keys(obj).length === 0;
 }
 
@@ -101,7 +106,8 @@ function preprocessIfJSON(dataItem){
 }
 
 function preprocessData(data){
-    if(isEmpty(data)){
+    console.log('DATA: ', data);
+    if(!data || isEmpty(data)){
         return data;
     }
     const targetLen = 100;

@@ -1,11 +1,11 @@
+import {styled} from "@mui/material";
+
 import React, { useEffect, useRef } from "react";
 import ReactPlayer from 'react-player';
-import { MediaState } from "../../HistoricalDataView";
 
-// material
-import Card from "@mui/material/Card";
-import Box from '@mui/material/Box';
-import { Typography } from "@mui/material";
+import { MediaState } from "../../Controls/types/types";
+
+// templates
 
 interface VideoCardProps {
     title: string;
@@ -24,6 +24,30 @@ export interface onProgressType {
     totalDuration?: string;
     currentTime?: string;
 }
+
+
+// styles
+const VideoContainer = styled("div")({
+   width: '100%',
+   height: '100%',
+   display: 'flex',
+   flexDirection: 'column',
+})
+
+const ContainerHeader = styled("div")({
+    width: '100%',
+    height: '50px',
+    display: 'flex',
+    justifyContent: 'center'
+})
+
+const ContainerBody = styled("div")({
+    width: '100%',
+    height: `calc(100% - 80px)`,
+    display: 'flex',
+    position: 'relative'
+})
+
 
 function VideoCard(props: VideoCardProps) {
 
@@ -59,27 +83,31 @@ function VideoCard(props: VideoCardProps) {
           props.onSeek(e);
       }
 
-
     return (
-        <Card sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <Box sx={{ height: '50px', width: '100%', display: 'flex', alignItems: 'center', paddingLeft: '10px'}}>
-                <Typography>{props.title}</Typography>
-            </Box>
 
-            <Box sx={{ height: 'calc(100% - 50px)', width: '100%', position: 'relative' }}>
-                <ReactPlayer
-                    className='react-player'
-                    ref = {playerRef}
-                    url={props.path}
-                    width='100%'
-                    height='100%'
-                    playing = {playing}
-                    controls = {false}
-                    playbackRate={playbackRate}
-                    onProgress={handleProgress}
-                    onSeek={handleSeeking}/>
-            </Box>            
-        </Card>
+        <VideoContainer>
+            
+            <ContainerHeader>
+                <h3 style={{ color: 'grey' }}>{props.title}</h3>  
+            </ContainerHeader>
+
+            <ContainerBody>
+              <ReactPlayer
+                     className='react-player'
+                     ref = {playerRef}
+                     url={props.path}
+                     width='100%'
+                     height='100%'
+                     playing = {playing}
+                     controls = {false}
+                     playbackRate={playbackRate}
+                     onProgress={handleProgress}
+                     onSeek={handleSeeking}/>
+            </ContainerBody>
+
+
+        </VideoContainer>
+        
     );
 }
 

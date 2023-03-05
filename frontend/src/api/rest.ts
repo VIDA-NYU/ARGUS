@@ -1,7 +1,7 @@
 import axios, {AxiosResponse, AxiosRequestConfig} from 'axios';
 import React, { useEffect, useRef, useCallback, useState } from 'react';
 import useSWR, { Key } from 'swr';
-import { DeleteInfo } from '../components/HistoricalDataView';
+import { DeleteInfo } from '../components/DeleteBox/types/types';
 import { API_URL, WS_API_URL, RECORDINGS_STATIC_PATH } from '../config';
 import { RequestStatus } from './types';
 import { useToken } from './TokenContext';
@@ -23,6 +23,48 @@ export function useGetAllRecordings(token, fetchAuth) {
     const { data: response, error } = useSWR([uid, random], fetcher);
     return {
         data: response && response.data,
+        response,
+        error
+    };
+}
+
+/* fetch list of available recordings */
+export function useGetAllRecordingInfo(token, fetchAuth) {
+    // const { fetchAuth } = useToken();
+    // get the authenticated fetch function
+    const fetcher = (url: string) => fetchAuth && fetchAuth(url).then((res) => res.json());
+    // query the streamings endpoint (only if we have a token)
+    const uid: Key = token && fetchAuth && `${API_URL}/recordings?info=true`;
+    const random = React.useRef(Date.now());
+    const { data: response, error, mutate } = useSWR([uid, random], fetcher, {
+        revalidateOnFocus: false,
+        revalidateOnMount: false,
+        revalidateOnReconnect: false
+    });
+    // console.log(response)
+    useEffect(() => {(response === undefined) && mutate(undefined, true)}, [])
+    return {
+        data: response?.data,
+        response,
+        error
+    };
+}
+export function useGetAllRecordingInfoNotoken() {
+    const { fetchAuth } = useToken();
+    // get the authenticated fetch function
+    const fetcher = (url: string) => fetchAuth && fetchAuth(url).then((res) => res.json());
+    // query the streamings endpoint (only if we have a token)
+    const uid: Key = fetchAuth && `${API_URL}/recordings?info=true`;
+    const random = React.useRef(Date.now());
+    const { data: response, error, mutate } = useSWR([uid, random], fetcher, {
+        revalidateOnFocus: false,
+        revalidateOnMount: false,
+        revalidateOnReconnect: false
+    });
+    // console.log(response)
+    useEffect(() => {(response === undefined) && mutate(undefined, true)}, [])
+    return {
+        data: response?.data,
         response,
         error
     };
@@ -299,7 +341,7 @@ export async function getPointCloudData(recordingName) {
     // const url ="https://api.ptg.poly.edu/recordings/static/coffee-test-1/pointcloud.json";
     // const url = API_URL +  RECORDINGS_STATIC_PATH + `${recordingName}/pointcloud.json`;
     const url = API_URL +  RECORDINGS_STATIC_PATH + `${recordingName}/pointcloud.json`;
-    const response = await fetch(url).then((res) => res.json());
+    const response = await fetch(url).then((res) => res.json() );
     return response;
 }
 

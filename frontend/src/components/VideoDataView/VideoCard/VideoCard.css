@@ -2,9 +2,14 @@
     position: absolute;
     top: 0;
     left: 0;
-  }
-  .react-player-intervenor {
-    position: relative;
-    top: 0;
-    left: 0;
-  }
+}
+
+/* .video-card-container{
+
+  display: flex;
+  flex: 1;
+  
+  justify-content: center;
+  align-items: center;
+
+} */

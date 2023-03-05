@@ -1,4 +1,5 @@
 // templates
+// import AccordionView from '../../templates/AccordionView/AccordionView';
 import AccordionView from '../../templates/AccordionView/AccordionView';
 
 // material
@@ -112,7 +113,7 @@ const HandsDataView = ({type, title, data, recordingName, state, onProgress, onS
         <AccordionView title='Hands Data' height={300}>
             <Box sx={{display: 'flex', width: '100%', height: '100%', overflow: 'auto'}}>
                 <Container>
-                    {!isEmpty(processedData) && <Card>
+                    {/* {!isEmpty(processedData) && <Card>
                         <CardHeader
                             titleTypographyProps={{
                                 fontSize: 16,
@@ -124,7 +125,7 @@ const HandsDataView = ({type, title, data, recordingName, state, onProgress, onS
                                 frameData={frameData}
                                 state={state} variant={"overview"} data={processedData}/>
                         </CardContent>
-                    </Card>}
+                    </Card>} */}
                     {!isEmpty(processedData) && <Card
                         sx={{
                             marginLeft: 10,
@@ -167,7 +168,8 @@ const HandsDataView = ({type, title, data, recordingName, state, onProgress, onS
                             <HandsActivityBarChart data={handsActivity}></HandsActivityBarChart>
                         </CardContent>
                     </Card>
-                    <JsonDataContainer>
+
+                    {/* <JsonDataContainer>
                         <CardHeader
                             titleTypographyProps={{
                                 fontSize: 16,
@@ -176,7 +178,7 @@ const HandsDataView = ({type, title, data, recordingName, state, onProgress, onS
                         <JsonContent>
                             <JSONPretty id="json-pretty" data={processedData}></JSONPretty>
                         </JsonContent>
-                    </JsonDataContainer>
+                    </JsonDataContainer> */}
 
                 </Container>
 

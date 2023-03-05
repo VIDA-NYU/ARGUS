@@ -9,9 +9,37 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  width: 100%;
+  height: 100%;
+  display: flex;
+
+}
+
+html, body, #app, #app>div, #root, .main-wrapper {
+  height: 100%;
+  width: 100%;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+#chartduration {
+  background: #fff;
+  margin: 1em auto;
+  width: 100%;
+  min-height: 125px;
+}
+#chartsize {
+  background: #fff;
+  margin: 1em auto;
+  width: 100%;
+  min-height: 125px;
+}
+#chartstreamings {
+  background: #fff;
+  margin: 1em auto;
+  width: 100%;
+  min-height: 100px;
 }
