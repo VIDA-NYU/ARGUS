@@ -1,5 +1,5 @@
 // react imports
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 // material imports
 import Box from '@mui/material/Box';
@@ -28,6 +28,8 @@ import ModelView from '../../components/ModelView/ModelView';
 import SessionView from '../../views/SessionView/SessionView';
 import TimestampManager from './services/TimestampManager';
 import { GazePointCloudRaw } from '../../components/PointCloudViewer/types/types';
+import { AnnotationData } from '../ModelSessionView/components/annotation/types';
+import { createInitialAnnotationData } from '../ModelSessionView/components/annotation/utils';
 
 const HistoricalDataView = () => {
 
@@ -35,13 +37,15 @@ const HistoricalDataView = () => {
   const { token, fetchAuth } = useToken();
 
   // Recordings
-  const [availableRecordings, setAvailableRecordings] = React.useState([]);
-  const [sessionInfo, setSessionInfo] = React.useState<any>({});
-  const [loadingData, setLoadingData] = React.useState<boolean>(false);
+  const [availableRecordings, setAvailableRecordings] = useState([]);
+  const [selectedRecordingName, setSelectedRecordingName] = React.useState<string>('');
 
+  const [sessionInfo, setSessionInfo] = useState<any>({});
+  const [loadingData, setLoadingData] = useState<boolean>(false);
 
   const handleChangeSelectRecording = async (newSelection) => {
 
+    setSelectedRecordingName(newSelection);
     setLoadingData(true);
 
     const mainCameraPath: string = getVideoPath( newSelection, 'main' );
@@ -102,7 +106,9 @@ const HistoricalDataView = () => {
           <Divider orientation='vertical'/>
 
           <Box sx={{ width: '500px', display: 'flex' }}>
-            <ModelView></ModelView>
+          {
+          selectedRecordingName && <ModelView recordingName={selectedRecordingName}></ModelView>
+          }
           </Box>
 
         </Box>

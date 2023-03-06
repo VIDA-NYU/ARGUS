@@ -3,7 +3,7 @@ import { useRecordingControls } from '../../../../api/rest';
 import DoneIcon from '@mui/icons-material/Done';
 import RotateLeftIcon from '@mui/icons-material/RotateLeft';
 import { blue, green } from '@mui/material/colors';
-import WozStatusComp from '../../../IntervenorView/woz-status'; //"../WOZView/woz-status";
+import WozStatusComp from '../../../ModelSessionView/woz-status'; //"../WOZView/woz-status";
 import { StreamView } from './LiveStream';
 import RestaurantOutlinedIcon from '@mui/icons-material/RestaurantOutlined';
 import LunchDiningOutlinedIcon from '@mui/icons-material/LunchDiningOutlined';
