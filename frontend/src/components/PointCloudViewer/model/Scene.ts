@@ -66,6 +66,7 @@ export class Scene {
         const worldIntersect = this.rayCaster.get_intersected_world_point();
 
 
+        
         // positioning tooltip
         this.tooltip.position_tooltip(intersect.mousePosition.top, intersect.mousePosition.left);
         if (intersect.mousePosition.top !== 0) this.tooltip.set_video_timestamp(TimestampManager.get_elapsed_time(intersect.timestamp));
