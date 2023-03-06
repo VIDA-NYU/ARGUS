@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from 'react';
 // material imports
 import Box from '@mui/material/Box';
 import { Divider } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 
 
 // api
@@ -11,10 +12,10 @@ import { useToken } from '../../api/TokenContext';
 import { 
   useGetAllRecordings, 
   getVideoPath,
-  // useGetRecording, 
+  useGetRecording, 
   // useDeleteRecording, 
-  // getPointCloudData, 
-  // getEyeData, 
+  getPointCloudData, 
+  getEyeData, 
   // getIMUAccelData, 
   // getIMUGyroData, 
   getIMUMagData  } from '../../api/rest';
@@ -25,25 +26,51 @@ import SummaryView from '../../components/SummaryView/SummaryView';
 import SessionListView from '../../components/SessionListView/SessionListView';
 import ModelView from '../../components/ModelView/ModelView';
 import SessionView from '../../views/SessionView/SessionView';
+import TimestampManager from './services/TimestampManager';
+import { GazePointCloudRaw } from '../../components/PointCloudViewer/types/types';
 
 const HistoricalDataView = () => {
 
+  // get the token and authenticated fetch function
+  const { token, fetchAuth } = useToken();
+
   // Recordings
   const [availableRecordings, setAvailableRecordings] = React.useState([]);
-
-  // session info
   const [sessionInfo, setSessionInfo] = React.useState<any>({});
+  const [loadingData, setLoadingData] = React.useState<boolean>(false);
 
-  const handleChangeSelectRecording = (newSelection) => {
 
-      const mainCameraPath: string = getVideoPath( newSelection, 'main' );
+  const handleChangeSelectRecording = async (newSelection) => {
 
-      // setting session info
-      setSessionInfo({recordingName:newSelection, mainCameraPath});
+    setLoadingData(true);
+
+    const mainCameraPath: string = getVideoPath( newSelection, 'main' );
+    const pointCloudJSONFile = await getPointCloudData( newSelection );
+    const eyeGazeJSONFile = await getEyeData( newSelection );
+
+    // initializing timestamps
+    TimestampManager.initialize_main_stream( eyeGazeJSONFile.map( (timestamp: GazePointCloudRaw) => parseInt(timestamp.timestamp.split('-')[0]) ) );
+
+    // setting session info
+    setSessionInfo({recordingName:newSelection, mainCameraPath, pointCloudJSONFile, eyeGazeJSONFile});
+
+    // setting spinner flag
+    setLoadingData(false);
+
   }
+
+
   const updateAvailableRecordings = (updatedAvailableRecordings) => {
       setAvailableRecordings(updatedAvailableRecordings);
   }
+
+  const loadingSpinner = () => {
+    return (
+      <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <CircularProgress/>
+      </Box>
+    )
+  };
 
     return (
       <Box sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -69,7 +96,7 @@ const HistoricalDataView = () => {
           <Divider orientation='vertical'/>
 
           <Box sx={{ flex: 1, display: 'flex' }}>
-              <SessionView sessionInfo={sessionInfo}></SessionView>
+              { loadingData ? loadingSpinner() : ( <SessionView sessionInfo={sessionInfo}></SessionView> ) }
           </Box>
 
           <Divider orientation='vertical'/>

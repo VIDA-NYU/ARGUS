@@ -1,8 +1,13 @@
 // third-party
 import * as BinaryTree from 'd3-binarytree';
+import * as d3 from 'd3';
 
 export default class TimestampManager {
 
+
+    // main stream information
+    public static mainStreamExtent: number[] = [];
+    public static mainStreamTimestamps: number[];
 
     // public gaze_timestamp_tree_index!: BinaryTree;
     // public gaze_timestamp_to_index!: { [timestamp: number]: number };
@@ -14,11 +19,29 @@ export default class TimestampManager {
     //     return this.timestampManagerInstance;
     // }
 
+    public static initialize_main_stream( timestamps: number[] ): void {
+        TimestampManager.mainStreamExtent = d3.extent(timestamps);
+    }
+
+    public static get_elapsed_time( timestamp: number ): number {
+
+        /*
+        *
+        *   Get elapsed time since the beginning of the session in seconds
+        * 
+        */
+
+            return (timestamp - TimestampManager.mainStreamExtent[0])/1000;
+
+    }
+    
     public static generate_base_timestamp_index( timestampList: number[] ): void {
 
         
 
     }
+
+
 
     // public singletontest(): void{
     //     console.log(this.test);

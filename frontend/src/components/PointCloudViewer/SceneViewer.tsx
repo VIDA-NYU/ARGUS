@@ -12,17 +12,22 @@ const SceneViewer = ( {sceneData} : any ) => {
     const tooltipContainerRef = useRef(null);
 
     // Controller
-    const sceneViewerController = new SceneViewerController();
+    const sceneViewerController: SceneViewerController = new SceneViewerController();
 
     useEffect(() => {
-        sceneViewerController.initialize_controller( containerRef.current, tooltipContainerRef.current );
-    }, []);
 
-    useEffect(() => {
-        
+        if( 'pointCloudData' in sceneData ){
+
+            // clearing scene
+            sceneViewerController.scene?.clear_scene();
+
+            // creating new scene
+            sceneViewerController.initialize_controller( containerRef.current, tooltipContainerRef.current );
+        }
+
         // initializing dataset
         if( 'pointCloudData' in sceneData && 'world' in sceneData.pointCloudData ){    
-            
+
             // initializing world point cloud data
             sceneViewerController.dataset.initialize_world_pointcloud_dataset( sceneData.pointCloudData['world'] );
             const [worldBufferPositions, worldBufferColors]: [number[], number[]] = sceneViewerController.dataset.worldPointCloud.get_buffer_positions();
@@ -33,7 +38,7 @@ const SceneViewer = ( {sceneData} : any ) => {
         if( 'pointCloudData' in sceneData && 'gaze' in sceneData.pointCloudData ){
 
             sceneViewerController.dataset.initialize_gaze_pointcloud_dataset( sceneData.pointCloudData['gaze'] );
-            const [gazeBufferPositions, gazeBufferNormals, gazeTimestamps]: [number[], number[], number[]] = sceneViewerController.dataset.gazePointCloud.get_buffer_positions();
+            const [gazeBufferPositions, gazeBufferNormals, gazeTimestamps]: [number[], number[][], number[]] = sceneViewerController.dataset.gazePointCloud.get_buffer_positions();
             sceneViewerController.scene.add_point_cloud('gazepointcloud', gazeBufferPositions, [], gazeBufferNormals, gazeTimestamps);            
 
         }
@@ -41,6 +46,7 @@ const SceneViewer = ( {sceneData} : any ) => {
         if( 'videoData' in sceneData ){
             sceneViewerController.initialize_tooltip( sceneData.videoData );
         }
+
 
     }, [sceneData])
 

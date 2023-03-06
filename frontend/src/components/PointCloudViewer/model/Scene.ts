@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import TimestampManager from '../../../tabs/HistoricalDataView/services/TimestampManager';
 
 import { Raycaster } from './Raycaster';
 import { Tooltip } from './Tooltip';
@@ -61,11 +62,14 @@ export class Scene {
         this.orbitControls.update();
 
         // picking
-        const intersect: {mousePosition: {top: number, left: number}, intersectPosition: THREE.Vector3 } = this.rayCaster.get_intersected_point( this.camera );
+        const intersect: {mousePosition: {top: number, left: number}, intersectPosition: THREE.Vector3, timestamp: number } = this.rayCaster.get_intersected_point( this.camera );
+        const worldIntersect = this.rayCaster.get_intersected_world_point();
+
 
         // positioning tooltip
         this.tooltip.position_tooltip(intersect.mousePosition.top, intersect.mousePosition.left);
-        if (intersect.mousePosition.top !== 0) this.tooltip.set_video_timestamp(intersect.mousePosition.top*0.05);
+        if (intersect.mousePosition.top !== 0) this.tooltip.set_video_timestamp(TimestampManager.get_elapsed_time(intersect.timestamp));
+
 
         // rendering
         this.renderer.render( this.scene, this.camera );
@@ -123,22 +127,23 @@ export class Scene {
         this.tooltip = new Tooltip( tooltipContainer )
     }
 
-    public add_point_cloud( name: string, positions: number[], colors: number[] = [], normals: number[] = [], timestamps: number[] = []  ): THREE.Points {
+    public add_point_cloud( name: string, positions: number[], colors: number[] = [], normals: number[][] = [], timestamps: number[] = []  ): THREE.Points {
 
         // loading positions
         const pointgeometry = new THREE.BufferGeometry();
         pointgeometry.setAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
 
         if(colors.length > 0) pointgeometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
-        if(timestamps.length > 0) pointgeometry.userData = timestamps; //('testest', new THREE.Float32BufferAttribute(timestamps, 1) );
+        // if(normals.length > 0) pointgeometry.setAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
+        // if(timestamps.length > 0) pointgeometry.setAttribute( 'timestamp', new THREE.Int32BufferAttribute( timestamps, 1 ) );
 
-        // pointgeometry.name = name;
         pointgeometry.computeBoundingSphere();
 
         // defining material
-        let pointmaterial: THREE.PointsMaterial = new THREE.PointsMaterial( { size: 0.025, color: 'red' } );;
+        let pointmaterial: THREE.PointsMaterial = new THREE.PointsMaterial( { size: 0.025, color: 'red' } );
         if(colors.length > 0) pointmaterial = new THREE.PointsMaterial( { size: 0.025, vertexColors: true } );
         const points = new THREE.Points( pointgeometry, pointmaterial );
+        points.userData = { timestamps, normals };
 
         // adding to scene
         points.name = name

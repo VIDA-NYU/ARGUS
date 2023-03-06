@@ -7,7 +7,7 @@ export class GazePointCloud {
     constructor( public points: number[][], public normals: number[][], public timestamps: number[] ){}
 
     // returns positions and normals
-    public get_buffer_positions( start: number = -1, end: number = -1 ): [number[], number[], number[]]{
+    public get_buffer_positions( start: number = -1, end: number = -1 ): [number[], number[][], number[]]{
 
         let positions: number[][] = this.points;
         let normals: number[][] = this.normals;
@@ -19,7 +19,7 @@ export class GazePointCloud {
             timestamps = timestamps.slice( 0, positions.length );
         }
 
-        return [positions.flat(), normals.flat(), timestamps ];
+        return [positions.flat(), normals, timestamps ];
     }
 
     // return all timestamps in the gaze point cloud

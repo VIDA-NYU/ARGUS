@@ -1,6 +1,3 @@
-// react
-import { useEffect, useRef, useState } from 'react';
-
 // material
 import Box from '@mui/material/Box';
 import { Typography } from '@mui/material';
