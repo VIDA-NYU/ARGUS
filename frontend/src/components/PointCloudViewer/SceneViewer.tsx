@@ -4,6 +4,7 @@ import TimestampManager from '../../tabs/HistoricalDataView/services/TimestampMa
 
 // controller
 import { SceneViewerController } from './controllers/SceneViewer.controller';
+import { DataGenUtils } from './utils/DataGenUtils';
 
 const SceneViewer = ( {sceneData} : any ) => {
 
@@ -39,8 +40,12 @@ const SceneViewer = ( {sceneData} : any ) => {
 
             sceneViewerController.dataset.initialize_gaze_pointcloud_dataset( sceneData.pointCloudData['gaze'] );
             const [gazeBufferPositions, gazeBufferNormals, gazeTimestamps]: [number[], number[][], number[]] = sceneViewerController.dataset.gazePointCloud.get_buffer_positions();
-            sceneViewerController.scene.add_point_cloud('gazepointcloud', gazeBufferPositions, [], gazeBufferNormals, gazeTimestamps);            
+            sceneViewerController.scene.add_point_cloud('gazepointcloud', gazeBufferPositions, [], gazeBufferNormals, gazeTimestamps);
 
+            // generating gaze projection on the point cloud
+            const gazeProjection: number[][] = DataGenUtils.generate_gaze_projection( sceneViewerController.scene, sceneViewerController.dataset.gazePointCloud );
+            sceneViewerController.scene.add_point_cloud( 'projectedgazepointcloud', gazeProjection.flat(), [], [], gazeTimestamps);
+            
         }
 
         if( 'videoData' in sceneData ){

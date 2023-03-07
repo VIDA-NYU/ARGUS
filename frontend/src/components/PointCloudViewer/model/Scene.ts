@@ -46,7 +46,6 @@ export class Scene {
 
     }
 
-
     public clear_scene(): void {
 
         while (this.scene.children.length){
@@ -62,10 +61,7 @@ export class Scene {
         this.orbitControls.update();
 
         // picking
-        const intersect: {mousePosition: {top: number, left: number}, intersectPosition: THREE.Vector3, timestamp: number } = this.rayCaster.get_intersected_point( this.camera );
-        const worldIntersect = this.rayCaster.get_intersected_world_point();
-
-
+        const intersect: {mousePosition: {top: number, left: number}, intersectPosition: THREE.Vector3, timestamp: number, gaze: { origin: THREE.Vector3, direction: THREE.Vector3 } } = this.rayCaster.get_intersected_point( this.camera );
         
         // positioning tooltip
         this.tooltip.position_tooltip(intersect.mousePosition.top, intersect.mousePosition.left);
@@ -141,8 +137,8 @@ export class Scene {
         pointgeometry.computeBoundingSphere();
 
         // defining material
-        let pointmaterial: THREE.PointsMaterial = new THREE.PointsMaterial( { size: 0.025, color: 'red' } );
-        if(colors.length > 0) pointmaterial = new THREE.PointsMaterial( { size: 0.025, vertexColors: true } );
+        let pointmaterial: THREE.PointsMaterial = new THREE.PointsMaterial( { size: 0.015, color: 'red' } );
+        if(colors.length > 0) pointmaterial = new THREE.PointsMaterial( { size: 0.015, vertexColors: true } );
         const points = new THREE.Points( pointgeometry, pointmaterial );
         points.userData = { timestamps, normals };
 
