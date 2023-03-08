@@ -1,5 +1,5 @@
 // react
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import TimestampManager from '../../tabs/HistoricalDataView/services/TimestampManager';
 
 // controller
@@ -14,8 +14,8 @@ const SceneViewer = ( {sceneData} : any ) => {
     const containerRef = useRef(null);
     const tooltipContainerRef = useRef(null);
 
-    // Controller
-    const sceneViewerController: SceneViewerController = new SceneViewerController();
+    // const [sceneViewerController, setSceneViewerController ] = useState<SceneViewerController>( new SceneViewerController() );
+    const sceneViewerController = useMemo( () => new SceneViewerController(), []);
 
     const pointCloudParameterChangeHandler = ( parameters: RenderParameters ) => {
 
@@ -26,12 +26,14 @@ const SceneViewer = ( {sceneData} : any ) => {
     useEffect(() => {
 
         if( 'pointCloudData' in sceneData ){
-
+        
             // clearing scene
             sceneViewerController.scene?.clear_scene();
 
             // creating new scene
             sceneViewerController.initialize_controller( containerRef.current, tooltipContainerRef.current );
+            // sceneViewerController.initialize_event_emitters( eventEmitters );
+            
         }
 
         // initializing dataset
@@ -57,13 +59,16 @@ const SceneViewer = ( {sceneData} : any ) => {
         }
 
         if( 'videoData' in sceneData ){
+
             sceneViewerController.initialize_tooltip( sceneData.videoData );
+
         }
 
 
     }, [sceneData])
 
     return (
+        
         <div style={{
             width: '100%',
             height: '100%',

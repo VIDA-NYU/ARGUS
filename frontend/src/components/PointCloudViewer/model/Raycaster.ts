@@ -15,6 +15,10 @@ export class Raycaster {
     public worldIntersectSphere!: THREE.Mesh;
     public gazeLine!: THREE.Line;
 
+    // current intersection
+    // public intersection!: {mousePosition: {top: number, left: number}, intersectPosition: THREE.Vector3, timestamp: number, gaze: { origin: THREE.Vector3, direction: THREE.Vector3 } };
+
+
     constructor( public scene: Scene ){
 
         // initializing ray caster

@@ -8,6 +8,7 @@ import PointCloudViewer from '../../components/PointCloudViewer/PointCloudViewer
 const SessionView = ( {sessionInfo}: any ) => { 
 
   const emptySelection = () => {
+
     return( 
       <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
         <Typography variant="h4" color="text.secondary">
@@ -18,7 +19,7 @@ const SessionView = ( {sessionInfo}: any ) => {
 
   return (
     <Box sx={{ flex: 1, display: 'flex'}}>
-        { sessionInfo.recordingName ? ( <PointCloudViewer sessionInfo={sessionInfo}></PointCloudViewer> ) : emptySelection() }
+        { sessionInfo.recordingName ? ( <PointCloudViewer sessionInfo={sessionInfo} ></PointCloudViewer> ) : emptySelection() }
     </Box>
   )
 

@@ -44,6 +44,12 @@ export class SceneViewerController {
 
     }
 
+    // public initialize_event_emitters( eventEmitters: { [eventName: string]: any } ): void {
+
+    //     this.scene.initialize_event_emitters( eventEmitters );
+    
+    // }
+
     public initialize_tooltip( videoPath: string ){
 
         this.scene.tooltip.add_video_tag(videoPath);

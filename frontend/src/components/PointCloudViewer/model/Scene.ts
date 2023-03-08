@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { EventsManager } from '../../../tabs/HistoricalDataView/services/EventsManager';
 import TimestampManager from '../../../tabs/HistoricalDataView/services/TimestampManager';
 
 import { Raycaster } from './Raycaster';
@@ -21,6 +22,9 @@ export class Scene {
     public rayCaster!: Raycaster;
     public tooltip!: Tooltip;
     public sceneConfiguration!: SceneConfiguration;
+
+    // TODO: remove it from here
+    public lastSelectedTimestamp: number = 0;
 
     constructor(){}
 
@@ -47,6 +51,7 @@ export class Scene {
         // creating tooltip
         this.initialize_tooltip( tooltipContainerRef );
 
+
     }
 
     public clear_scene(): void {
@@ -68,7 +73,17 @@ export class Scene {
         
         // positioning tooltip
         this.tooltip.position_tooltip(intersect.mousePosition.top, intersect.mousePosition.left);
-        if (intersect.mousePosition.top !== 0) this.tooltip.set_video_timestamp(TimestampManager.get_elapsed_time(intersect.timestamp));
+        if (intersect.mousePosition.top !== 0){ 
+
+            this.tooltip.set_video_timestamp(TimestampManager.get_elapsed_time(intersect.timestamp));
+
+            // emitting events
+            if( intersect.timestamp !== this.lastSelectedTimestamp ){
+                this.lastSelectedTimestamp = intersect.timestamp;
+                EventsManager.emit('onTimestampSelected',  {timestamp : intersect.timestamp} );
+            } 
+        
+        } 
 
 
         // rendering
@@ -128,7 +143,12 @@ export class Scene {
     }
 
     private initialize_scene_configuration(): void {
+        console.log('initializing scene configuration');
         this.sceneConfiguration = new SceneConfiguration( this.scene );
+    }
+
+    public initialize_event_emitters( eventEmitters: { [eventName: string]: Function } ): void {
+        // this.eventEmitters = eventEmitters;
     }
 
     public add_point_cloud( name: string, positions: number[], colors: number[] = [], normals: number[][] = [], timestamps: number[] = []  ): THREE.Points {

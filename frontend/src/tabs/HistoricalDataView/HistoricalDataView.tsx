@@ -30,20 +30,20 @@ import ModelView from '../../components/ModelView/ModelView';
 import SessionView from '../../views/SessionView/SessionView';
 import TimestampManager from './services/TimestampManager';
 import { GazePointCloudRaw } from '../../components/PointCloudViewer/types/types';
-import { AnnotationData } from '../ModelSessionView/components/annotation/types';
-import { createInitialAnnotationData } from '../ModelSessionView/components/annotation/utils';
 
 const HistoricalDataView = () => {
 
   // get the token and authenticated fetch function
-  const { token, fetchAuth } = useToken();
+  // const { token, fetchAuth } = useToken();
 
   // Recordings
   const [availableRecordings, setAvailableRecordings] = useState([]);
   const [selectedRecordingName, setSelectedRecordingName] = React.useState<string>('');
+  const [selectedTimestamp, setSelectedTimestamp] = React.useState<number>(0);
 
   const [sessionInfo, setSessionInfo] = useState<any>({});
   const [loadingData, setLoadingData] = useState<boolean>(false);
+
 
   const handleChangeSelectRecording = async (newSelection) => {
 
@@ -110,7 +110,7 @@ const HistoricalDataView = () => {
           <Divider orientation='vertical'/>
 
           <Box sx={{ width: '500px', display: 'flex' }}>
-            { selectedRecordingName && <ModelView  /*timestamp={} */ recordingName={selectedRecordingName}></ModelView> }
+            { selectedRecordingName && <ModelView recordingName={selectedRecordingName} ></ModelView> }
           </Box>
 
         </Box>

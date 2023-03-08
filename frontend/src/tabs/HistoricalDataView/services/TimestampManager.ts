@@ -4,22 +4,11 @@ import * as d3 from 'd3';
 
 export default class TimestampManager {
 
-
     // main stream information
     public static mainStreamExtent: number[] = [];
     public static mainStreamTimestamps: number[];
 
-    public indexedTimestamps: { [streamName: string]: BinaryTree } = {}
-
-    // public gaze_timestamp_tree_index!: BinaryTree;
-    // public gaze_timestamp_to_index!: { [timestamp: number]: number };
-
-    // private timestampIndex!: BinaryTree;
-
-
-    // public static get_instance(): TimestampManager {
-    //     return this.timestampManagerInstance;
-    // }
+    public static indexedTimestamps: { [streamName: string]: BinaryTree } = {}
 
     public static initialize_main_stream( timestamps: number[] ): void {
         TimestampManager.mainStreamExtent = d3.extent(timestamps);
@@ -37,49 +26,24 @@ export default class TimestampManager {
 
     }
     
-    public static index_stream_timestamp( streamTimestamps: number[] ): void {
+    public static index_stream_timestamp( streamName: string, streamTimestamps: number[] ): void {
 
         // creating binary tree
-        const timestampIndex = BinaryTree.binarytree().x( (x) => x );
+        const timestampIndex: BinaryTree = BinaryTree.binarytree().x( (x) => x );
         timestampIndex.addAll( streamTimestamps );
 
+        // saving stream index
+        TimestampManager.indexedTimestamps[streamName] = timestampIndex;
         
-
     }
 
-    // public generate_gaze_timestamp_index( gazeTimestamps: number[] ): void{
+    public static get_closest_timestamp( streamName: string, timestamp: number ): number {
 
-    //     // creating binary tree
-    //     const tree = BinaryTree.binarytree().x( (x) => x ) ;
+        const indexTree: BinaryTree = TimestampManager.indexedTimestamps[streamName];
+        const closestTimestamp: number = indexTree.find( timestamp );
 
-    //     const timestampToIndex: { [timestamp: number]: number } = {}; 
-    //     gazeTimestamps.forEach( ( timestamp: number, index: number ) => {
+        return closestTimestamp;
 
-    //         timestampToIndex[timestamp] = index;
-    //         tree.add( timestamp );
-
-    //     });
-        
-    //     // saving ref
-    //     this.gaze_timestamp_to_index = timestampToIndex;
-    //     this.gaze_timestamp_tree_index = tree;
-
-    // }
-
-    // public get_gaze_timestamp_index( initialTimestamp: number, timestamp: number ): number {
-
-    //     const currentTimestamp: number = initialTimestamp + (timestamp * 1000);
-    //     const closestTimestamp: number = this.gaze_timestamp_tree_index.find( currentTimestamp );
-    //     return this.gaze_timestamp_to_index[closestTimestamp];
-
-    // }
-
-    // public get_imu_timestamp_index( initialTimestamp: number, timestamp: number ): number {
-
-    //     const currentTimestamp: number = initialTimestamp + (timestamp * 1000);
-    //     const closestTimestamp: number = this.gaze_timestamp_tree_index.find( currentTimestamp );
-    //     return closestTimestamp;
-
-    // }
+    }
 
 }
