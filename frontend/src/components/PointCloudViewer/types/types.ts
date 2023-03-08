@@ -15,6 +15,15 @@ export interface VoxelCube {
 }
 
 
+export interface RenderParameters {
+
+    gazepointcloud: boolean,
+    projectedgazepointcloud: boolean,
+    worldpointcloud: boolean
+
+}
+
+
 // TODO: Remove it once we define the final point cloud output from the server
 // The server still outputs the raw point clouds. However, we will change it to output downsampled point clouds (voxelized)
 

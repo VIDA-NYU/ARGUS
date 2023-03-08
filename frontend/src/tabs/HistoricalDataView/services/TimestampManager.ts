@@ -9,6 +9,8 @@ export default class TimestampManager {
     public static mainStreamExtent: number[] = [];
     public static mainStreamTimestamps: number[];
 
+    public indexedTimestamps: { [streamName: string]: BinaryTree } = {}
+
     // public gaze_timestamp_tree_index!: BinaryTree;
     // public gaze_timestamp_to_index!: { [timestamp: number]: number };
 
@@ -35,17 +37,15 @@ export default class TimestampManager {
 
     }
     
-    public static generate_base_timestamp_index( timestampList: number[] ): void {
+    public static index_stream_timestamp( streamTimestamps: number[] ): void {
+
+        // creating binary tree
+        const timestampIndex = BinaryTree.binarytree().x( (x) => x );
+        timestampIndex.addAll( streamTimestamps );
 
         
 
     }
-
-
-
-    // public singletontest(): void{
-    //     console.log(this.test);
-    // }
 
     // public generate_gaze_timestamp_index( gazeTimestamps: number[] ): void{
 

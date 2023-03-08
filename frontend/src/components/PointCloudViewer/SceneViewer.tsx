@@ -4,6 +4,8 @@ import TimestampManager from '../../tabs/HistoricalDataView/services/TimestampMa
 
 // controller
 import { SceneViewerController } from './controllers/SceneViewer.controller';
+import ParameterBox from './ParameterBox';
+import { RenderParameters } from './types/types';
 import { DataGenUtils } from './utils/DataGenUtils';
 
 const SceneViewer = ( {sceneData} : any ) => {
@@ -14,6 +16,12 @@ const SceneViewer = ( {sceneData} : any ) => {
 
     // Controller
     const sceneViewerController: SceneViewerController = new SceneViewerController();
+
+    const pointCloudParameterChangeHandler = ( parameters: RenderParameters ) => {
+
+        sceneViewerController.scene.sceneConfiguration.set_render_visibility( parameters );
+        
+    };
 
     useEffect(() => {
 
@@ -78,7 +86,20 @@ const SceneViewer = ( {sceneData} : any ) => {
                 height: '20%',
                 position: 'absolute'}}
                 ref={tooltipContainerRef}>
-            </div>   
+            </div>
+
+
+            <div style={{ 
+                top: 20,
+                left: 20,
+                // width: '400px',
+                height: '200px',
+                position: 'absolute',
+                display: 'flex'}}>
+                    <ParameterBox 
+                        onParameterChange={pointCloudParameterChangeHandler}>    
+                    </ParameterBox>
+            </div>    
 
         </div>
     )};

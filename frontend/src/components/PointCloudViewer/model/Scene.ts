@@ -3,6 +3,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import TimestampManager from '../../../tabs/HistoricalDataView/services/TimestampManager';
 
 import { Raycaster } from './Raycaster';
+import { SceneConfiguration } from './SceneConfiguration';
 import { Tooltip } from './Tooltip';
 
 export class Scene {
@@ -19,6 +20,7 @@ export class Scene {
     public orbitControls!: OrbitControls;
     public rayCaster!: Raycaster;
     public tooltip!: Tooltip;
+    public sceneConfiguration!: SceneConfiguration;
 
     constructor(){}
 
@@ -40,6 +42,7 @@ export class Scene {
         // initializing controls
         this.initialize_orbit_controls();
         this.initialize_raycaster();
+        this.initialize_scene_configuration();
 
         // creating tooltip
         this.initialize_tooltip( tooltipContainerRef );
@@ -124,6 +127,10 @@ export class Scene {
         this.tooltip = new Tooltip( tooltipContainer )
     }
 
+    private initialize_scene_configuration(): void {
+        this.sceneConfiguration = new SceneConfiguration( this.scene );
+    }
+
     public add_point_cloud( name: string, positions: number[], colors: number[] = [], normals: number[][] = [], timestamps: number[] = []  ): THREE.Points {
 
         // loading positions
@@ -157,5 +164,4 @@ export class Scene {
         this.rayCaster.set_scene_events( this.container );
         
     }
-
 }

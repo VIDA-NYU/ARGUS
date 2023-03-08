@@ -35,7 +35,7 @@ interface WozDataConsumerProps {
 }
 
 export default function WozDataConsumer({recordingName, annotationData, setAnnotationData}: WozDataConsumerProps) {
-    console.log(annotationData);
+    // console.log(annotationData);
 
     // Update annotationData if the selected recording changes. 
     const setAnnotationMeta = (newMeta: AnnotationMeta) => {

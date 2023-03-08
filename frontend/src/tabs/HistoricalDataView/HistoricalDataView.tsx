@@ -13,12 +13,14 @@ import {
   useGetAllRecordings, 
   getVideoPath,
   useGetRecording, 
+  getVoxelizedPointCloudData,
   // useDeleteRecording, 
   getPointCloudData, 
   getEyeData, 
   // getIMUAccelData, 
   // getIMUGyroData, 
-  getIMUMagData  } from '../../api/rest';
+  getIMUMagData,  
+  getPerceptionData} from '../../api/rest';
 
 // global components
 import Controls from '../../utils/Controls';
@@ -49,11 +51,14 @@ const HistoricalDataView = () => {
     setLoadingData(true);
 
     const mainCameraPath: string = getVideoPath( newSelection, 'main' );
-    const pointCloudJSONFile = await getPointCloudData( newSelection );
+    const pointCloudJSONFile = await getVoxelizedPointCloudData( newSelection );
     const eyeGazeJSONFile = await getEyeData( newSelection );
+    const perceptionJSONFile = await getPerceptionData( newSelection );    
 
-    // initializing timestamps
+    // // initializing timestamps
     TimestampManager.initialize_main_stream( eyeGazeJSONFile.map( (timestamp: GazePointCloudRaw) => parseInt(timestamp.timestamp.split('-')[0]) ) );
+    // TimestampManager.index_stream_timestamp( perceptionJSONFile.map( (timestamp: any) => parseInt(timestamp.timestamp.split('-')[0]) ) );
+    
 
     // setting session info
     setSessionInfo({recordingName:newSelection, mainCameraPath, pointCloudJSONFile, eyeGazeJSONFile});
@@ -62,7 +67,6 @@ const HistoricalDataView = () => {
     setLoadingData(false);
 
   }
-
 
   const updateAvailableRecordings = (updatedAvailableRecordings) => {
       setAvailableRecordings(updatedAvailableRecordings);
@@ -100,15 +104,13 @@ const HistoricalDataView = () => {
           <Divider orientation='vertical'/>
 
           <Box sx={{ flex: 1, display: 'flex' }}>
-              { loadingData ? loadingSpinner() : ( <SessionView sessionInfo={sessionInfo}></SessionView> ) }
+            { loadingData ? loadingSpinner() : ( <SessionView sessionInfo={sessionInfo}></SessionView> ) }
           </Box>
 
           <Divider orientation='vertical'/>
 
           <Box sx={{ width: '500px', display: 'flex' }}>
-          {
-          selectedRecordingName && <ModelView recordingName={selectedRecordingName}></ModelView>
-          }
+            { selectedRecordingName && <ModelView  /*timestamp={} */ recordingName={selectedRecordingName}></ModelView> }
           </Box>
 
         </Box>

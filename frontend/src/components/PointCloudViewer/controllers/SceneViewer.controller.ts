@@ -1,6 +1,6 @@
 import { Dataset } from "../model/Dataset";
 import { Scene } from "../model/Scene";
-import { WorldPointCloudRaw } from "../types/types";
+import { RenderParameters, WorldPointCloudRaw } from "../types/types";
 
 export class SceneViewerController {
 
@@ -49,4 +49,5 @@ export class SceneViewerController {
         this.scene.tooltip.add_video_tag(videoPath);
 
     }
+    
 }
