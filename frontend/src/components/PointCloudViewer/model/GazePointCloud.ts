@@ -1,8 +1,7 @@
 export class GazePointCloud {
-
-    // highlighted gaze
-    public currentHighlightedGazePoint!: THREE.Points;
-    public currentHighlightedGazeDirection!: THREE.Line;
+    
+    // projection of the gaze point into world point cloud
+    public gazeWorldProjection!: number[][];
 
     constructor( public points: number[][], public normals: number[][], public timestamps: number[] ){}
 
@@ -22,9 +21,8 @@ export class GazePointCloud {
         return [positions.flat(), normals, timestamps ];
     }
 
-    // return all timestamps in the gaze point cloud
-    // public get_all_timestamps(): number[] {
-    //     return this.timestamps;
-    // }
+    public set_gaze_world_projection( gazeProjection: number[][] ): void{
+        this.gazeWorldProjection = gazeProjection;
+    }
 
 }

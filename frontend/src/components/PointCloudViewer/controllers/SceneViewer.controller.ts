@@ -1,6 +1,6 @@
 import { Dataset } from "../model/Dataset";
 import { Scene } from "../model/Scene";
-import { WorldPointCloudRaw } from "../types/types";
+import { RenderParameters, WorldPointCloudRaw } from "../types/types";
 
 export class SceneViewerController {
 
@@ -44,9 +44,16 @@ export class SceneViewerController {
 
     }
 
+    // public initialize_event_emitters( eventEmitters: { [eventName: string]: any } ): void {
+
+    //     this.scene.initialize_event_emitters( eventEmitters );
+    
+    // }
+
     public initialize_tooltip( videoPath: string ){
 
         this.scene.tooltip.add_video_tag(videoPath);
 
     }
+    
 }

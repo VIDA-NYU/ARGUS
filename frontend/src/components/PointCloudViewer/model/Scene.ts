@@ -1,8 +1,10 @@
 import * as THREE from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { EventsManager } from '../../../tabs/HistoricalDataView/services/EventsManager';
 import TimestampManager from '../../../tabs/HistoricalDataView/services/TimestampManager';
 
 import { Raycaster } from './Raycaster';
+import { SceneConfiguration } from './SceneConfiguration';
 import { Tooltip } from './Tooltip';
 
 export class Scene {
@@ -19,6 +21,10 @@ export class Scene {
     public orbitControls!: OrbitControls;
     public rayCaster!: Raycaster;
     public tooltip!: Tooltip;
+    public sceneConfiguration!: SceneConfiguration;
+
+    // TODO: remove it from here
+    public lastSelectedTimestamp: number = 0;
 
     constructor(){}
 
@@ -40,12 +46,13 @@ export class Scene {
         // initializing controls
         this.initialize_orbit_controls();
         this.initialize_raycaster();
+        this.initialize_scene_configuration();
 
         // creating tooltip
         this.initialize_tooltip( tooltipContainerRef );
 
-    }
 
+    }
 
     public clear_scene(): void {
 
@@ -62,13 +69,21 @@ export class Scene {
         this.orbitControls.update();
 
         // picking
-        const intersect: {mousePosition: {top: number, left: number}, intersectPosition: THREE.Vector3, timestamp: number } = this.rayCaster.get_intersected_point( this.camera );
-        const worldIntersect = this.rayCaster.get_intersected_world_point();
-
-
+        const intersect: {mousePosition: {top: number, left: number}, intersectPosition: THREE.Vector3, timestamp: number, gaze: { origin: THREE.Vector3, direction: THREE.Vector3 } } = this.rayCaster.get_intersected_point( this.camera );
+        
         // positioning tooltip
         this.tooltip.position_tooltip(intersect.mousePosition.top, intersect.mousePosition.left);
-        if (intersect.mousePosition.top !== 0) this.tooltip.set_video_timestamp(TimestampManager.get_elapsed_time(intersect.timestamp));
+        if (intersect.mousePosition.top !== 0){ 
+
+            this.tooltip.set_video_timestamp(TimestampManager.get_elapsed_time(intersect.timestamp));
+
+            // emitting events
+            if( intersect.timestamp !== this.lastSelectedTimestamp ){
+                this.lastSelectedTimestamp = intersect.timestamp;
+                EventsManager.emit('onTimestampSelected',  {timestamp : intersect.timestamp} );
+            } 
+        
+        } 
 
 
         // rendering
@@ -127,6 +142,11 @@ export class Scene {
         this.tooltip = new Tooltip( tooltipContainer )
     }
 
+    private initialize_scene_configuration(): void {
+        console.log('initializing scene configuration');
+        this.sceneConfiguration = new SceneConfiguration( this.scene );
+    }
+
     public add_point_cloud( name: string, positions: number[], colors: number[] = [], normals: number[][] = [], timestamps: number[] = []  ): THREE.Points {
 
         // loading positions
@@ -140,8 +160,8 @@ export class Scene {
         pointgeometry.computeBoundingSphere();
 
         // defining material
-        let pointmaterial: THREE.PointsMaterial = new THREE.PointsMaterial( { size: 0.025, color: 'red' } );
-        if(colors.length > 0) pointmaterial = new THREE.PointsMaterial( { size: 0.025, vertexColors: true } );
+        let pointmaterial: THREE.PointsMaterial = new THREE.PointsMaterial( { size: 0.015, color: 'red' } );
+        if(colors.length > 0) pointmaterial = new THREE.PointsMaterial( { size: 0.015, vertexColors: true } );
         const points = new THREE.Points( pointgeometry, pointmaterial );
         points.userData = { timestamps, normals };
 
@@ -160,5 +180,4 @@ export class Scene {
         this.rayCaster.set_scene_events( this.container );
         
     }
-
 }
