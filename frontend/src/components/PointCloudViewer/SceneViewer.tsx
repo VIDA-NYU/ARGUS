@@ -6,7 +6,7 @@ import IMUViewer from '../IMUViewer/IMUViewer';
 // controller
 import { SceneViewerController } from './controllers/SceneViewer.controller';
 import ParameterBox from './ParameterBox';
-import { RenderParameters } from './types/types';
+import { RenderParameters, RenderStyle } from './types/types';
 import { DataGenUtils } from './utils/DataGenUtils';
 
 const SceneViewer = ( {sceneData} : any ) => {
@@ -23,6 +23,12 @@ const SceneViewer = ( {sceneData} : any ) => {
         sceneViewerController.scene.sceneConfiguration.set_render_visibility( parameters );
         
     };
+
+    const pointCloudStyleChangeHandler = ( renderStyle: RenderStyle ) => {
+
+        sceneViewerController.scene.sceneConfiguration.set_render_style( renderStyle )
+
+    }
 
     useEffect(() => {
 
@@ -113,6 +119,7 @@ const SceneViewer = ( {sceneData} : any ) => {
                 position: 'absolute',
                 display: 'flex'}}>
                     <ParameterBox 
+                        onStyleChange={pointCloudStyleChangeHandler}
                         onParameterChange={pointCloudParameterChangeHandler}>    
                     </ParameterBox>
             </div>    

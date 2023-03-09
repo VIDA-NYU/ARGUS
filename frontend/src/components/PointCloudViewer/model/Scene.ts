@@ -143,8 +143,9 @@ export class Scene {
     }
 
     private initialize_scene_configuration(): void {
-        console.log('initializing scene configuration');
+
         this.sceneConfiguration = new SceneConfiguration( this.scene );
+
     }
 
     public add_point_cloud( name: string, positions: number[], colors: number[] = [], normals: number[][] = [], timestamps: number[] = []  ): THREE.Points {
@@ -161,9 +162,10 @@ export class Scene {
 
         // defining material
         let pointmaterial: THREE.PointsMaterial = new THREE.PointsMaterial( { size: 0.015, color: 'red' } );
-        if(colors.length > 0) pointmaterial = new THREE.PointsMaterial( { size: 0.015, vertexColors: true } );
+        if(colors.length > 0) pointmaterial = new THREE.PointsMaterial( { size: 0.015, vertexColors: true, opacity: 0.1 } );
         const points = new THREE.Points( pointgeometry, pointmaterial );
         points.userData = { timestamps, normals };
+
 
         // adding to scene
         points.name = name

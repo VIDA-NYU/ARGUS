@@ -1,4 +1,4 @@
-import { RenderParameters } from "../types/types";
+import { RenderParameters, RenderStyle } from "../types/types";
 
 export class SceneConfiguration {
 
@@ -21,6 +21,16 @@ export class SceneConfiguration {
         }
 
     }
+
+    public set_render_style( renderParameters: RenderStyle ): void {
+
+        const currentObject: any = this.scene.getObjectByName(renderParameters.pointCloudName);
+        if( currentObject ) currentObject.material[renderParameters.attribute] = renderParameters.value;
+
+    }
+
+
+
 
 
 

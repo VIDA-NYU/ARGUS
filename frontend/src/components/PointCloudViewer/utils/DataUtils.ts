@@ -15,18 +15,6 @@ export class DataUtils {
 
     public static parse_world_point_cloud_data( dataset: WorldPointCloudRaw ): WorldPointCloud {
 
-        const points: number[][] = [];
-        const colors: number[][] = [];
-
-        
-
-        // dataset.forEach( (timestamp: any) => {
-        //     for(let i = 0; i < timestamp.xyz_world.length; i++){
-        //         points.push(timestamp.xyz_world[i])
-        //         colors.push([timestamp.color[i][0]/255.0, timestamp.color[i][1]/255.0, timestamp.color[i][2]/255.0 ])
-        //     }    
-        // })
-
         // creating world point cloud object
         const worldPointCloud: WorldPointCloud = new WorldPointCloud(dataset.xyz_world, dataset.colors);
         return worldPointCloud;

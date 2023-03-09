@@ -26,9 +26,9 @@ export interface RenderParameters {
 export interface RenderStyle {
 
     pointCloudName: string, 
-    size: number,
-    opacity: number
-
+    attribute: string,
+    value: number | string
+    
 }
 
 

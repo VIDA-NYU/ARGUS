@@ -12,13 +12,16 @@ import { RenderParameters, RenderStyle } from './types/types';
 const ParameterBox = ( props ) => {
 
     const [selectedParameters, setSelectedParameters] = useState<RenderParameters>({gazepointcloud: true, projectedgazepointcloud: true, worldpointcloud: true});
-    const [selectedStyles, setSelectedStyles] = useState<RenderStyle[]>([]);
+    // const [selectedStyles, setSelectedStyles] = useState<RenderStyle>();
 
     const styleChangeHandler = (event: any) => {
+        
+        const [pointCloudName, attribute] = event.target.name.split(':');
+        const value: number = event.target.value;
+        const renderStyle: RenderStyle = { pointCloudName, attribute, value };
 
-        console.log('event: ', event);
-        // const [pointCloudName, style] = event.target.id.split(':')
-        // const currentRenderStyle: RenderStyle = { }
+        // firing event
+        props.onStyleChange( renderStyle );
 
     }
 
@@ -55,7 +58,7 @@ const ParameterBox = ( props ) => {
                             <h4>opacity</h4>
                         </Box>
                         <Box sx={{ display: 'flex', flex: 1, alignItems: 'center' }}>
-                            <Slider/>
+                            <Slider name='worldpointcloud:opacity' onChange={styleChangeHandler} min={0} max={1} step={0.1}/>
                         </Box>
 
                     </Box>
@@ -66,7 +69,7 @@ const ParameterBox = ( props ) => {
                             <h4>size</h4>
                         </Box>
                         <Box sx={{ display: 'flex', flex: 1, alignItems: 'center' }}>
-                            <Slider id='worldpointcloud:size' onChangeCommitted={styleChangeHandler}/>
+                            <Slider name='worldpointcloud:size' onChange={styleChangeHandler} min={0} max={0.065} step={0.002}/>
                         </Box>
 
                     </Box>
