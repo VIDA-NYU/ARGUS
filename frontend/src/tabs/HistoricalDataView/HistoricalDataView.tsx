@@ -6,7 +6,6 @@ import Box from '@mui/material/Box';
 import { Divider } from '@mui/material';
 import { CircularProgress } from '@mui/material';
 
-
 // api
 import { useToken } from '../../api/TokenContext';
 import { 
@@ -53,7 +52,8 @@ const HistoricalDataView = () => {
     const mainCameraPath: string = getVideoPath( newSelection, 'main' );
     const pointCloudJSONFile = await getVoxelizedPointCloudData( newSelection );
     const eyeGazeJSONFile = await getEyeData( newSelection );
-    const perceptionJSONFile = await getPerceptionData( newSelection );    
+    const perceptionJSONFile = await getPerceptionData( newSelection );   
+    // const 
 
     // // initializing timestamps
     TimestampManager.initialize_main_stream( eyeGazeJSONFile.map( (timestamp: GazePointCloudRaw) => parseInt(timestamp.timestamp.split('-')[0]) ) );

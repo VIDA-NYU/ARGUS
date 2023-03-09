@@ -24,9 +24,6 @@ const ModelView = ({...props}) => {
 
   }, []);
 
-  // subscrib
-  document.addEventListener( 'timestampEvent', () => {console.log('event fired');} )
-
   return (
     <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
       <h1>{currentTimestamp}</h1>

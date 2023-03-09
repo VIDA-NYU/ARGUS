@@ -1,6 +1,7 @@
 // react
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import TimestampManager from '../../tabs/HistoricalDataView/services/TimestampManager';
+import IMUViewer from '../IMUViewer/IMUViewer';
 
 // controller
 import { SceneViewerController } from './controllers/SceneViewer.controller';
@@ -92,7 +93,17 @@ const SceneViewer = ( {sceneData} : any ) => {
                 position: 'absolute'}}
                 ref={tooltipContainerRef}>
             </div>
-
+            
+            <div style={{ 
+                top: 20,
+                left: 'calc(100% - 620px)',
+                width: '600px',
+                height: '600px',
+                position: 'absolute',
+                display: 'flex',
+                backgroundColor: 'red'}}>
+                    <IMUViewer></IMUViewer>
+            </div> 
 
             <div style={{ 
                 top: 20,
