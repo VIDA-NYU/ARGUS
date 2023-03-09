@@ -46,20 +46,20 @@ const HistoricalDataView = () => {
   const handleChangeSelectRecording = async (newSelection) => {
 
     setSelectedRecordingName(newSelection);
-    setLoadingData(true);
+    // setLoadingData(true);
 
-    const mainCameraPath: string = getVideoPath( newSelection, 'main' );
-    const pointCloudJSONFile = await getPointCloudData( newSelection );
-    const eyeGazeJSONFile = await getEyeData( newSelection );
+    // const mainCameraPath: string = getVideoPath( newSelection, 'main' );
+    // const pointCloudJSONFile = await getPointCloudData( newSelection );
+    // const eyeGazeJSONFile = await getEyeData( newSelection );
 
-    // initializing timestamps
-    TimestampManager.initialize_main_stream( eyeGazeJSONFile.map( (timestamp: GazePointCloudRaw) => parseInt(timestamp.timestamp.split('-')[0]) ) );
+    // // initializing timestamps
+    // TimestampManager.initialize_main_stream( eyeGazeJSONFile.map( (timestamp: GazePointCloudRaw) => parseInt(timestamp.timestamp.split('-')[0]) ) );
 
-    // setting session info
-    setSessionInfo({recordingName:newSelection, mainCameraPath, pointCloudJSONFile, eyeGazeJSONFile});
+    // // setting session info
+    // setSessionInfo({recordingName:newSelection, mainCameraPath, pointCloudJSONFile, eyeGazeJSONFile});
 
-    // setting spinner flag
-    setLoadingData(false);
+    // // setting spinner flag
+    // setLoadingData(false);
 
   }
 
@@ -100,7 +100,7 @@ const HistoricalDataView = () => {
           <Divider orientation='vertical'/>
 
           <Box sx={{ flex: 1, display: 'flex' }}>
-              { loadingData ? loadingSpinner() : ( <SessionView sessionInfo={sessionInfo}></SessionView> ) }
+              {/* { loadingData ? loadingSpinner() : ( <SessionView sessionInfo={sessionInfo}></SessionView> ) } */}
           </Box>
 
           <Divider orientation='vertical'/>

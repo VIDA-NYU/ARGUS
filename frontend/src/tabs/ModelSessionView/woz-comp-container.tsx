@@ -11,6 +11,7 @@ import MachineReasoningRecorder from "./components/annotation/machine-reasoning-
 import OnlineStreamInitializer from "./components/annotation/online-stream-initializer";
 import ErrorAlert from "./components/common/error-alert";
 import {AnnotationData} from "./components/annotation/types";
+import ObjectsTemporalOverview from "./components/overview/objects-temporal-overview";
 
 
 interface RecipeData {
@@ -72,6 +73,24 @@ export default function WozCompContainer({
                 boundingBoxData={boundingBoxData}
                 recordingMeta={recordingData}
             ></TemporalOverview>)
+        }else if (annotationData.meta.mode === "offline" && (!reasoningData || reasoningData.length === 0)) {
+            return (<ErrorAlert message={"Reasoning data is not available for this recording"}/>)
+        }
+
+    }
+
+    const renderObjectsTemporalOverview = (annotationData: AnnotationData) => {
+        // if(annotationData.meta.mode === "offline" && recordingData && reasoningData && boundingBoxData && reasoningData.length && clipActionData){
+        if(annotationData.meta.mode === "offline" && recordingData && boundingBoxData){
+
+            return (<ObjectsTemporalOverview
+                annotationData={annotationData}
+                state={state}
+                clipActionData={clipActionData}
+                reasoningData={reasoningData}
+                boundingBoxData={boundingBoxData}
+                recordingMeta={recordingData}
+            ></ObjectsTemporalOverview>)
         }else if (annotationData.meta.mode === "offline" && (!reasoningData || reasoningData.length === 0)) {
             return (<ErrorAlert message={"Reasoning data is not available for this recording"}/>)
         }
@@ -182,13 +201,25 @@ export default function WozCompContainer({
                             ({annotationData}) => (
                                 <Box sx={{gridArea: 'g'}}>
                                     {
-                                        renderTemporalOverview(annotationData)
+                                        renderObjectsTemporalOverview(annotationData)
 
                                     }
                                 </Box>
                             )
                         }
                     </AnnotationContext.Consumer>
+                    {/* <AnnotationContext.Consumer>
+                        {
+                            ({annotationData}) => (
+                                <Box sx={{gridArea: 'g'}}>
+                                    {
+                                        renderTemporalOverview(annotationData)
+
+                                    }
+                                </Box>
+                            )
+                        }
+                    </AnnotationContext.Consumer> */}
 
                 </Box>
             </Box>

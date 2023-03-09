@@ -5,7 +5,7 @@ import {extractIndividualActionData, preprocessTimestampData} from "./preprocess
 import {schemeGnBu, interpolateTurbo, interpolateBuPu} from "d3-scale-chromatic";
 import {Tooltip} from "react-svg-tooltip"
 import Card from "@mui/material/Card";
-import ActionRow from "./action-row";
+import ActionRow from "./histogram-row";
 import {generateHumanAnnotationTemporalData} from "../annotation/utils";
 
 const Container = styled(Card)({})

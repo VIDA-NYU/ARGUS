@@ -2,7 +2,7 @@ import {interpolateBuPu} from "d3-scale-chromatic";
 import {Tooltip} from "react-svg-tooltip";
 import {useRef} from "react";
 
-interface ActionRowProps {
+interface HistogramRowProps {
     transform: string,
     cellSize: number,
     actionCellHeight: number
@@ -14,21 +14,21 @@ interface ActionRowProps {
     timedData: any
 }
 
-export default function ActionRow({transform, cellSize, actionCellHeight,
+export default function HistogramRow({transform, cellSize, actionCellHeight,
                                       yAxisLabelOffsetY, yAxisLabelWidth,
-                                      index, xScale, playedTimes, timedData}: ActionRowProps){
-    const actionRef = useRef(null);
-
+                                      index, xScale, playedTimes, timedData}: HistogramRowProps){
+    const actionRef = useRef(null);                                  
     return (
         <g
             transform={transform}
         >
-            {/*<text*/}
-            {/*    ref={actionRef}*/}
-            {/*    x={0}*/}
-            {/*    y={cellSize / 2 + yAxisLabelOffsetY}*/}
-            {/*> A{index}*/}
-            {/*</text>*/}
+            <text
+                ref={actionRef}
+                x={0}
+                y={cellSize / 2 + yAxisLabelOffsetY}
+                fontSize = {"x-small"}
+            > {timedData.label.slice(0, 10)}...
+            </text>
             <g
                 transform={`translate(${yAxisLabelWidth}, 0)`}
             >
