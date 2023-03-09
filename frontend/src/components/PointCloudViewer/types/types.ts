@@ -23,6 +23,15 @@ export interface RenderParameters {
 
 }
 
+export interface RenderStyle {
+
+    pointCloudName: string, 
+    size: number,
+    opacity: number
+
+}
+
+
 
 // TODO: Remove it once we define the final point cloud output from the server
 // The server still outputs the raw point clouds. However, we will change it to output downsampled point clouds (voxelized)

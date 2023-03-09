@@ -4,11 +4,23 @@ import React, { useState } from 'react';
 // material
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
-import { RenderParameters } from './types/types';
+import Slider from '@mui/material/Slider';
+
+// types
+import { RenderParameters, RenderStyle } from './types/types';
 
 const ParameterBox = ( props ) => {
 
     const [selectedParameters, setSelectedParameters] = useState<RenderParameters>({gazepointcloud: true, projectedgazepointcloud: true, worldpointcloud: true});
+    const [selectedStyles, setSelectedStyles] = useState<RenderStyle[]>([]);
+
+    const styleChangeHandler = (event: any) => {
+
+        console.log('event: ', event);
+        // const [pointCloudName, style] = event.target.id.split(':')
+        // const currentRenderStyle: RenderStyle = { }
+
+    }
 
     const parameterChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
 
@@ -27,13 +39,41 @@ const ParameterBox = ( props ) => {
     }
 
     return(
-        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', backgroundColor: 'gray'}}>
+        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column'}}>
 
-            <Box>
-                
+            <Box sx={{ display: 'flex', width: '100%', height: '120px', flexDirection: 'column' }} >
+                <Box sx={{ display: 'flex', width: '100%', height: '50px', alignItems: 'center' }}>
+                    <Checkbox id='worldpointcloud' onChange={parameterChangeHandler} checked={selectedParameters.worldpointcloud}/>
+                    <h4>World points</h4>
+                </Box>
+
+                <Box sx={{ display: 'flex', flex: 1, flexDirection:'column' }}>
+
+                    <Box sx={{ display: 'flex', flex: 1, alignItems: 'center' }}>
+
+                        <Box sx={{ display: 'flex', width: '100px', alignItems: 'center', justifyContent: 'center' }}>
+                            <h4>opacity</h4>
+                        </Box>
+                        <Box sx={{ display: 'flex', flex: 1, alignItems: 'center' }}>
+                            <Slider/>
+                        </Box>
+
+                    </Box>
+
+                    <Box sx={{ display: 'flex', flex: 1, alignItems: 'center' }}>
+
+                        <Box sx={{ display: 'flex', width: '100px', alignItems: 'center', justifyContent: 'center' }}>
+                            <h4>size</h4>
+                        </Box>
+                        <Box sx={{ display: 'flex', flex: 1, alignItems: 'center' }}>
+                            <Slider id='worldpointcloud:size' onChangeCommitted={styleChangeHandler}/>
+                        </Box>
+
+                    </Box>
+
+
+                </Box>
             </Box>
-
-
 
             {/* <Box sx={{ display: 'flex', width: '100%', height: '50px' }}>
                 <Checkbox id='gazepointcloud' onChange={parameterChangeHandler} checked={selectedParameters.gazepointcloud}/>

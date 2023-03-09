@@ -108,7 +108,7 @@ const SceneViewer = ( {sceneData} : any ) => {
             <div style={{ 
                 top: 20,
                 left: 20,
-                // width: '400px',
+                width: '400px',
                 height: '200px',
                 position: 'absolute',
                 display: 'flex'}}>
