@@ -101,7 +101,7 @@ const SceneViewer = ( {sceneData} : any ) => {
                 height: '600px',
                 position: 'absolute',
                 display: 'flex',
-                backgroundColor: 'red'}}>
+                backgroundColor: 'white'}}>
                     <IMUViewer></IMUViewer>
             </div> 
 

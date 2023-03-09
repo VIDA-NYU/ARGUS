@@ -147,10 +147,6 @@ export class Scene {
         this.sceneConfiguration = new SceneConfiguration( this.scene );
     }
 
-    public initialize_event_emitters( eventEmitters: { [eventName: string]: Function } ): void {
-        // this.eventEmitters = eventEmitters;
-    }
-
     public add_point_cloud( name: string, positions: number[], colors: number[] = [], normals: number[][] = [], timestamps: number[] = []  ): THREE.Points {
 
         // loading positions
