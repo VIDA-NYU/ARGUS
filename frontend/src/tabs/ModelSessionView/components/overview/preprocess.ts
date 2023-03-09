@@ -33,6 +33,22 @@ function extractAllLabels(wholeActionData){
     return labels;
 
 }
+
+function extractAllObjectLabels(wholeBoundingBoxData){
+    const labels = []
+    for(let timedBoundingBoxData of wholeBoundingBoxData){
+        // let timedLabels = Object.keys(timedBoundingBoxData).filter(d => d != "timestamp");
+        let timedLabels = timedBoundingBoxData.data;
+        for(let objLabel of timedLabels){
+            if(!labels.includes(objLabel.label)){
+                labels.push(objLabel.label);
+            }
+        }
+    }
+    return labels;
+
+}
+
 function extractIndividualActionData(wholeActionData){
     let actionLabels = extractAllLabels(wholeActionData);
     let result = [];
@@ -45,4 +61,17 @@ function extractIndividualActionData(wholeActionData){
     return result
 }
 
-export {preprocessTimestampData, extractIndividualActionData}
+function extractIndividualBoundingBoxData(wholeBoundingBoxData){
+    let objectLabels = extractAllObjectLabels(wholeBoundingBoxData);
+    let result = [];
+    for(let objLabel of objectLabels){
+        result.push({
+            "label": objLabel,
+            data: wholeBoundingBoxData.map(d=> d.data.map((o) => o.label).indexOf(objLabel) != -1 ?
+            d["data"][d.data.map((o) => o.label).indexOf(objLabel)].confidence : 0)
+        })
+    }
+    return result
+}
+
+export {preprocessTimestampData, extractIndividualActionData, extractIndividualBoundingBoxData}
