@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import Slider from '@mui/material/Slider';
+import { Divider } from '@mui/material';
 
 // types
 import { RenderParameters, RenderStyle } from './types/types';
@@ -52,7 +53,7 @@ const ParameterBox = ( props ) => {
 
                 <Box sx={{ display: 'flex', flex: 1, flexDirection:'column' }}>
 
-                    <Box sx={{ display: 'flex', flex: 1, alignItems: 'center' }}>
+                    {/* <Box sx={{ display: 'flex', flex: 1, alignItems: 'center' }}>
 
                         <Box sx={{ display: 'flex', width: '100px', alignItems: 'center', justifyContent: 'center' }}>
                             <h4>opacity</h4>
@@ -61,7 +62,7 @@ const ParameterBox = ( props ) => {
                             <Slider name='worldpointcloud:opacity' onChange={styleChangeHandler} min={0} max={1} step={0.1}/>
                         </Box>
 
-                    </Box>
+                    </Box> */}
 
                     <Box sx={{ display: 'flex', flex: 1, alignItems: 'center' }}>
 
@@ -76,26 +77,27 @@ const ParameterBox = ( props ) => {
 
 
                 </Box>
+
+                <Divider />
+
+                <Box sx={{ display: 'flex', flex: 1, flexDirection:'column' }} >
+                    <Box sx={{ display: 'flex', width: '100%', height: '50px', alignItems: 'center' }}>
+                        <Checkbox id='gazepointcloud' onChange={parameterChangeHandler} checked={selectedParameters.gazepointcloud}/>
+                        <h4>User Position</h4>
+                    </Box>
+                </Box>
+
+                <Divider />
+
+                <Box sx={{ display: 'flex', flex: 1, flexDirection:'column' }} >
+                    <Box sx={{ display: 'flex', width: '100%', height: '50px', alignItems: 'center' }}>
+                        <Checkbox id='projectedgazepointcloud' onChange={parameterChangeHandler} checked={selectedParameters.projectedgazepointcloud}/>
+                        <h4>Gaze Heatmap</h4>
+                    </Box>
+                </Box>
+
+                
             </Box>
-
-            {/* <Box sx={{ display: 'flex', width: '100%', height: '50px' }}>
-                <Checkbox id='gazepointcloud' onChange={parameterChangeHandler} checked={selectedParameters.gazepointcloud}/>
-                <p>User position</p>
-                TODO: Change to typography
-            </Box>   */}
-            {/* <Box sx={{ display: 'flex', width: '100%', height: '50px' }}>
-                <Checkbox id='projectedgazepointcloud' onChange={parameterChangeHandler} checked={selectedParameters.projectedgazepointcloud}/>
-                <p>Gaze heatmap</p>
-                TODO: Change to typography
-            </Box> */}
-            {/* <Box sx={{ display: 'flex', width: '100%', height: '50px' }}>
-                <Checkbox id='worldpointcloud' onChange={parameterChangeHandler} checked={selectedParameters.worldpointcloud}/>
-                <p>World points</p>
-                TODO: Change to typography
-            </Box> */}
-
-
-
 
         </Box>
     )
