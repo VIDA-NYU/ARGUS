@@ -6,7 +6,7 @@ import IMUViewer from '../IMUViewer/IMUViewer';
 // controller
 import { SceneViewerController } from './controllers/SceneViewer.controller';
 import ParameterBox from './ParameterBox';
-import { RenderParameters } from './types/types';
+import { RenderParameters, RenderStyle } from './types/types';
 import { DataGenUtils } from './utils/DataGenUtils';
 
 const SceneViewer = ( {sceneData} : any ) => {
@@ -24,6 +24,12 @@ const SceneViewer = ( {sceneData} : any ) => {
         
     };
 
+    const pointCloudStyleChangeHandler = ( renderStyle: RenderStyle ) => {
+
+        sceneViewerController.scene.sceneConfiguration.set_render_style( renderStyle )
+
+    }
+
     useEffect(() => {
 
         if( 'pointCloudData' in sceneData ){
@@ -33,7 +39,6 @@ const SceneViewer = ( {sceneData} : any ) => {
 
             // creating new scene
             sceneViewerController.initialize_controller( containerRef.current, tooltipContainerRef.current );
-            // sceneViewerController.initialize_event_emitters( eventEmitters );
             
         }
 
@@ -108,11 +113,12 @@ const SceneViewer = ( {sceneData} : any ) => {
             <div style={{ 
                 top: 20,
                 left: 20,
-                // width: '400px',
+                width: '400px',
                 height: '200px',
                 position: 'absolute',
                 display: 'flex'}}>
                     <ParameterBox 
+                        onStyleChange={pointCloudStyleChangeHandler}
                         onParameterChange={pointCloudParameterChangeHandler}>    
                     </ParameterBox>
             </div>    

@@ -13,7 +13,6 @@ export class Dataset {
     public worldPointCloud!: WorldPointCloud;
     public gazePointCloud!: GazePointCloud;
 
-
     constructor(){}
 
     public initialize_world_pointcloud_dataset( worldPointCloudRaw: WorldPointCloudRaw ): void {

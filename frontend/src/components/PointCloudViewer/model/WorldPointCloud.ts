@@ -1,12 +1,15 @@
 // third-party
 // import * as d3 from 'd3';
+import * as THREE from 'three';
 
-export class WorldPointCloud{
+export class WorldPointCloud {
 
     // world extents
     public xExtent: number[] = [];
     public yExtent: number[] = [];
     public zExtent: number[] = [];
+
+    // 
 
     constructor( public worldCoords: number[][], public worldColors: number[][] ){
 
@@ -20,6 +23,35 @@ export class WorldPointCloud{
         return [this.worldCoords.flat(), this.worldColors.flat()];
 
     }
+
+    public add_to_scene( scene: THREE.Scene ): void {
+
+        // getting raw data
+        const [coords, colors] = this.get_buffer_positions();
+
+        // loading positions
+        const pointgeometry = new THREE.BufferGeometry();
+        pointgeometry.setAttribute( 'position', new THREE.Float32BufferAttribute( coords, 3 ) );
+        pointgeometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
+        pointgeometry.computeBoundingBox();
+        // pointgeometry.computeBoundingSphere();
+
+        // defining material
+        // let pointmaterial: THREE.PointsMaterial = new THREE.PointsMaterial( { size: 0.015, color: 'red' } );
+        const pointmaterial = new THREE.PointsMaterial( { size: 0.015, vertexColors: true } );
+        const points = new THREE.Points( pointgeometry, pointmaterial );
+        // points.userDatas = { timestamps, normals };
+
+
+        // // adding to scene
+        // points.name = name
+        // this.scene.add( points );
+
+        // // returning points
+        // return points;
+
+    }
+
 
     private calculate_world_extents( points: number[][] ): void {
 
