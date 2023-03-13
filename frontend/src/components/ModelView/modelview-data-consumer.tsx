@@ -1,8 +1,7 @@
 import {useToken} from "../../api/TokenContext";
-import {useGetAllRecordings, useGetRecipeInfo, useGetRecipes} from "../../api/rest";
-import { useGetStreamInfo} from "./components/utils/rest";
+import {useGetAllRecordings, useGetRecipeInfo, useGetRecipes, useGetStreamInfo} from "../../api/rest";
 import {parseVideoStateTime} from "./components/utils/video-time";
-import WozCompContainer from "./woz-comp-container";
+import ModelViewCompContainer from "./modelview-comp-container";
 import {useVideoControl} from "./components/video/video-hook";
 import {dataType} from '../../api/types'; //"../../../api/types";
 import ReplayPlayer from "./components/video/replay-player";
@@ -28,13 +27,13 @@ interface RecipeData {
 }
 
 
-interface WozDataConsumerProps {
+interface ModelViewDataConsumerProps {
     recordingName: string,
     annotationData: AnnotationData,
     setAnnotationData: (newData: AnnotationData) => void
 }
 
-export default function WozDataConsumer({recordingName, annotationData, setAnnotationData}: WozDataConsumerProps) {
+export default function ModelViewDataConsumer({recordingName, annotationData, setAnnotationData}: ModelViewDataConsumerProps) {
     // console.log(annotationData);
 
     // Update annotationData if the selected recording changes. 
@@ -155,7 +154,7 @@ export default function WozDataConsumer({recordingName, annotationData, setAnnot
     )
     const currentStep = computeCurrentStep(annotationData, 0, currentTime);
     return (
-        <WozCompContainer
+        <ModelViewCompContainer
             state={state}
             currentTime={currentTime}
             currentStep={currentStep}

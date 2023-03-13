@@ -1,9 +1,8 @@
 import {Box, styled} from "@mui/material";
 import {AnnotationContext} from "./components/annotation/provider";
 import MachineReasoningInitializer from "./components/annotation/machine-reasoning-initializer";
-import {StreamView} from '../LiveDataView/components/StreamDataView/LiveStream';
-import {ReasoningOutputsWOZView} from "../LiveDataView/components/StreamDataView/ReasoningOutputsView";
-import TemporalOverview from "./components/overview/temporal-overview";
+// import {StreamView} from '../LiveDataView/components/StreamDataView/LiveStream';
+// import {ReasoningOutputsWOZView} from "../LiveDataView/components/StreamDataView/ReasoningOutputsView";
 import {ReactElement} from "react";
 import {REASONING_CHECK_STREAM} from "../../config";
 import {ImageView} from './components/video/online-image-view';
@@ -11,7 +10,7 @@ import MachineReasoningRecorder from "./components/annotation/machine-reasoning-
 import OnlineStreamInitializer from "./components/annotation/online-stream-initializer";
 import ErrorAlert from "./components/common/error-alert";
 import {AnnotationData} from "./components/annotation/types";
-import ObjectsTemporalOverview from "./components/overview/objects-temporal-overview";
+import TemporalOverview from "./components/overview/temporal-overview";
 
 
 interface RecipeData {
@@ -53,7 +52,7 @@ interface WozCompContainerProps {
 
 const Container = styled("div")({});
 
-export default function WozCompContainer({
+export default function ModelViewCompContainer({
                                              state, recordingID, recordingList, recipeIDList,
                                              recordingData, reasoningData, reasoningFrameData, recipeData,
                                              boundingBoxData, boundingBoxFrameData,
@@ -64,7 +63,9 @@ export default function WozCompContainer({
                                          }: WozCompContainerProps) {
 
     const renderTemporalOverview = (annotationData: AnnotationData) => {
-        if(annotationData.meta.mode === "offline" && recordingData && reasoningData && boundingBoxData && reasoningData.length && clipActionData){
+        // if(annotationData.meta.mode === "offline" && recordingData && reasoningData && boundingBoxData && reasoningData.length && clipActionData){
+        if(annotationData.meta.mode === "offline" && recordingData && boundingBoxData){
+
             return (<TemporalOverview
                 annotationData={annotationData}
                 state={state}
@@ -73,24 +74,6 @@ export default function WozCompContainer({
                 boundingBoxData={boundingBoxData}
                 recordingMeta={recordingData}
             ></TemporalOverview>)
-        }else if (annotationData.meta.mode === "offline" && (!reasoningData || reasoningData.length === 0)) {
-            return (<ErrorAlert message={"Reasoning data is not available for this recording"}/>)
-        }
-
-    }
-
-    const renderObjectsTemporalOverview = (annotationData: AnnotationData) => {
-        // if(annotationData.meta.mode === "offline" && recordingData && reasoningData && boundingBoxData && reasoningData.length && clipActionData){
-        if(annotationData.meta.mode === "offline" && recordingData && boundingBoxData){
-
-            return (<ObjectsTemporalOverview
-                annotationData={annotationData}
-                state={state}
-                clipActionData={clipActionData}
-                reasoningData={reasoningData}
-                boundingBoxData={boundingBoxData}
-                recordingMeta={recordingData}
-            ></ObjectsTemporalOverview>)
         }else if (annotationData.meta.mode === "offline" && (!reasoningData || reasoningData.length === 0)) {
             return (<ErrorAlert message={"Reasoning data is not available for this recording"}/>)
         }
@@ -162,31 +145,17 @@ export default function WozCompContainer({
                             {recipePicker}
                         </Box>
                     </Box>
-                    {/* <Box sx={{ gridArea: 'r' }}>
-                        <StreamView utf streamId={REASONING_CHECK_STREAM} showStreamId={false} showTime={false}>
-                            {data => (<Box>{<ReasoningOutputsWOZView
-                                currentTimestampValue={currentTime}
-                                recipeIDList={recipeIDList}
-                                clipActionFrameData={clipActionFrameData}
-                                egovlpActionFrameData={egovlpActionFrameData}
-                                reasoningFrameData={reasoningFrameData}
-                                worldFrameData={boundingBoxFrameData}
-                                state={state}
-                                recordingList={recordingList}
-                                currentStep={currentStep}
-                                recipe={recipeData} data={JSON.parse(data)}/>}</Box>)}
-                        </StreamView>
-                    </Box> */}
+                    {/*{recordingData && videoPlayer }*/}
                     <AnnotationContext.Consumer>
                         {({annotationData}) => (
                             <Box sx={{gridArea: 'M'}}>
-                                {/*{recordingData && videoPlayer }*/}
                                 {annotationData.meta.mode === "offline" && recordingData && videoPlayer}
                                 { annotationData.meta.mode === "online" && <ImageView streamId='main' boxStreamId='detic:image' confidence={annotationData.perceptronParameters.objectConfidenceThreshold} debugMode={false}/>}
                             </Box>
                         )}
 
                     </AnnotationContext.Consumer>
+                    {/*{Video Player Controls }*/}
                     <AnnotationContext.Consumer>
                         {({annotationData}) => (
                             <Box
@@ -196,19 +165,8 @@ export default function WozCompContainer({
                             </Box>
                         )}
                     </AnnotationContext.Consumer>
+                    {/*{Action and Object Temporal Overview }*/}
                     <AnnotationContext.Consumer>
-                        {
-                            ({annotationData}) => (
-                                <Box sx={{gridArea: 'g'}}>
-                                    {
-                                        renderObjectsTemporalOverview(annotationData)
-
-                                    }
-                                </Box>
-                            )
-                        }
-                    </AnnotationContext.Consumer>
-                    {/* <AnnotationContext.Consumer>
                         {
                             ({annotationData}) => (
                                 <Box sx={{gridArea: 'g'}}>
@@ -219,8 +177,7 @@ export default function WozCompContainer({
                                 </Box>
                             )
                         }
-                    </AnnotationContext.Consumer> */}
-
+                    </AnnotationContext.Consumer>
                 </Box>
             </Box>
         </Container>

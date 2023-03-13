@@ -1,6 +1,5 @@
 import {useVideoTime} from "./video-time";
-import {useGetRecordingJson} from "./rest";
-import {useGetRecording, useStreamData} from  '../../../../api/rest';
+import {useGetRecording, useGetRecordingJson, useStreamData} from  '../../../../api/rest';
 import {useEffect, useState} from "react";
 
 function preprocessResponse(response: any){

@@ -1,5 +1,5 @@
 import {useEffect, useRef, useState} from "react";
-import {Dataset} from "./model/dataset";
+import {Dataset} from "./dataset";
 
 function useVideoTime (currentTime, data, recordingMetaData){
     const [frameIndex, setFrameIndex] = useState<number>(0);

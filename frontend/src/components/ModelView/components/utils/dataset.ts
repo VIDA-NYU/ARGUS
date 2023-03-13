@@ -1,11 +1,5 @@
-// utils
-import { Utils } from "./Utils";
-
 // third-party
 import * as BinaryTree from 'd3-binarytree';
-
-// types
-import { Vector3D } from './scene';
 
 
 interface TransformationUtils{
@@ -43,19 +37,6 @@ export class Dataset {
 
         // saving recording metadata
         this.recordingMetadata = recordingMetadata;
-    }
-
-
-    public transform_point_to_cube_coords(point: Vector3D): number[] {
-
-        const positions: number[] = [
-            Utils.scaleLinear(point.x, this.transformationParams.extents.x, this.transformationParams.scales.x),
-            Utils.scaleLinear(point.y, this.transformationParams.extents.y, this.transformationParams.scales.y),
-            Utils.scaleLinear(point.z, this.transformationParams.extents.z, this.transformationParams.scales.z),
-        ]
-
-        return positions;
-
     }
 
     public get_corresponding_point(timestamp: number): any {

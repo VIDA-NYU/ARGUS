@@ -39,39 +39,7 @@ const chartErrorHighlightColor = "red";
 const yAxisLabelWidth = 60; //70 // label width
 const yAxisLabelOffsetY = 6;
 
-
-
-interface HeatmapCellWithLabelProps {
-    x: number, y: number, cellSize: number,
-    rectFill: string, textFill: string, label
-}
-
-const HeatmapCellWithLabel = ({x, y, cellSize, label, rectFill, textFill}: HeatmapCellWithLabelProps) => {
-    return (
-        <g
-            transform={`translate(${x}, ${y})`}
-        >
-            <rect
-                x={0}
-                y={0}
-                width={cellSize}
-                height={cellSize}
-                fill={rectFill}
-            >
-            </rect>
-            <text
-                x={cellSize / 2 }
-                y={cellSize / 2 + yAxisLabelOffsetY}
-                fill={textFill}
-                textAnchor={"middle"}
-            >
-                {label}
-            </text>
-        </g>
-    )
-}
-
-export default function ObjectsTemporalOverview({reasoningData, boundingBoxData,
+export default function TemporalOverview({reasoningData, boundingBoxData,
                                              clipActionData, recordingMeta,
                                              state, annotationData}) {
     const visRef = useRef(null);
@@ -181,7 +149,9 @@ export default function ObjectsTemporalOverview({reasoningData, boundingBoxData,
                 <g
                     transform={`translate(${xMargin}, ${yMargin})`}
                 >
+                    {/* Actions Temporal Overview */}
                     {renderActions(individualActionDataList)}
+                    {/* Objects Temporal Overview */}
                     {renderObjects(individualBoundingBoxList)}
                     
                     {/* X-axis labels */}

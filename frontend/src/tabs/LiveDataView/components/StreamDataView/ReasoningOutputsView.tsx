@@ -3,13 +3,13 @@ import { useRecordingControls } from '../../../../api/rest';
 import DoneIcon from '@mui/icons-material/Done';
 import RotateLeftIcon from '@mui/icons-material/RotateLeft';
 import { blue, green } from '@mui/material/colors';
-import WozStatusComp from '../../../ModelSessionView/woz-status'; //"../WOZView/woz-status";
 import { StreamView } from './LiveStream';
 import RestaurantOutlinedIcon from '@mui/icons-material/RestaurantOutlined';
 import LunchDiningOutlinedIcon from '@mui/icons-material/LunchDiningOutlined';
 import { DETIC_IMAGE_STREAM, REASONING_ENTITIES_STREAM } from '../../../../config';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import WozStatusComp from '../../../IntervenorView/woz-status';
 
 interface Entity {
   ingredients: string [],

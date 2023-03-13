@@ -4,10 +4,11 @@ import { useEffect, useRef, useState } from 'react';
 // material
 import { CircularProgress } from '@mui/material';
 import Box from '@mui/material/Box';
-import WOZView from '../../tabs/ModelSessionView/WOZView';
 import { TimestampManager } from '../PointCloudViewerBak/controller/TimestampManager';
 import { EventsManager } from '../../tabs/HistoricalDataView/services/EventsManager';
 
+import {AnnotationContext, AnnotationProvider, useAnnotationContext} from "./components/annotation/provider";
+import ModelViewDataConsumer from "./modelview-data-consumer";
 
 const ModelView = ({...props}) => {
 
@@ -26,9 +27,21 @@ const ModelView = ({...props}) => {
 
   return (
     <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-      <h1>{currentTimestamp}</h1>
+      {/* <h1>{currentTimestamp}</h1> */}
       {/* {props.} */}
-      {/* <WOZView recordingName={props.recordingName}/> */}
+      <AnnotationProvider>
+            <AnnotationContext.Consumer>
+                {({annotationData, setAnnotationData}) => (
+                    <ModelViewDataConsumer
+                        recordingName={props.recordingName}
+                        annotationData={annotationData}
+                        setAnnotationData={setAnnotationData}
+                    />
+                )}
+            </AnnotationContext.Consumer>
+
+
+        </AnnotationProvider>
     </Box>
   )
 

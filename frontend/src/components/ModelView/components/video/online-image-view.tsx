@@ -4,8 +4,8 @@ import Slider from '@mui/material/Slider';
 import Badge from '@mui/material/Badge';
 import Tooltip from '@mui/material/Tooltip';
 import { useStreamData } from '../../../../api/rest';
-import { StreamInfo } from '../../../LiveDataView/components/StreamDataView/LiveStream';
 import Grid from '@mui/material/Grid/Grid';
+import { StreamInfo } from '../../../../tabs/LiveDataView/components/StreamDataView/LiveStream';
 
 const useCanvas = ({}={}) => {
     const canvasRef = useRef<HTMLCanvasElement>(null)
