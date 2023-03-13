@@ -1,11 +1,13 @@
 // import { VoxelCube } from "../../../types/DataTypes";
 import { VoxelCube  } from '../../types/types';
 
-
 export class VoxelCell {
 
     public points: number[][] = [];
     public colors: number[][] = [];
+
+    // stream counters
+    public counters: {[streamName: string]: number} = {};
 
     constructor( public xExtent: number[], public yExtent: number[], public zExtent: number[] ){}
 
@@ -26,9 +28,14 @@ export class VoxelCell {
 
     }
 
+    public get_counter( streamCounter: string ): number {
+
+        if( streamCounter in this.counters ) return this.counters[streamCounter];
+        return -1;
+    }
+
     public get_buffer_positions( sampleSize: number = -1 ): [number[], number[]] {
 
-        
         if(sampleSize === -1){
             return [ this.points.flat(), this.colors.flat() ];
         }

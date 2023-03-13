@@ -5,7 +5,7 @@ import { DataUtils  } from "../utils/DataUtils";
 import { GazePointCloudRaw, WorldPointCloudRaw } from "../types/types";
 
 import { WorldPointCloud } from "./WorldPointCloud";
-import { GazePointCloud } from "./GazePointCloud";
+import { GazePointCloud } from "./gaze/GazePointCloud";
 
 export class Dataset {
 

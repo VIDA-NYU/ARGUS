@@ -148,33 +148,33 @@ export class Scene {
 
     }
 
-    public add_point_cloud( name: string, positions: number[], colors: number[] = [], normals: number[][] = [], timestamps: number[] = []  ): THREE.Points {
+    // public add_point_cloud( name: string, positions: number[], colors: number[] = [], normals: number[][] = [], timestamps: number[] = []  ): THREE.Points {
 
-        // loading positions
-        const pointgeometry = new THREE.BufferGeometry();
-        pointgeometry.setAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
+    //     // loading positions
+    //     const pointgeometry = new THREE.BufferGeometry();
+    //     pointgeometry.setAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
 
-        if(colors.length > 0) pointgeometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
-        // if(normals.length > 0) pointgeometry.setAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
-        // if(timestamps.length > 0) pointgeometry.setAttribute( 'timestamp', new THREE.Int32BufferAttribute( timestamps, 1 ) );
+    //     if(colors.length > 0) pointgeometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
+    //     // if(normals.length > 0) pointgeometry.setAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
+    //     // if(timestamps.length > 0) pointgeometry.setAttribute( 'timestamp', new THREE.Int32BufferAttribute( timestamps, 1 ) );
 
-        pointgeometry.computeBoundingSphere();
+    //     pointgeometry.computeBoundingSphere();
 
-        // defining material
-        let pointmaterial: THREE.PointsMaterial = new THREE.PointsMaterial( { size: 0.015, color: 'red' } );
-        if(colors.length > 0) pointmaterial = new THREE.PointsMaterial( { size: 0.015, vertexColors: true, opacity: 0.1 } );
-        const points = new THREE.Points( pointgeometry, pointmaterial );
-        points.userData = { timestamps, normals };
+    //     // defining material
+    //     let pointmaterial: THREE.PointsMaterial = new THREE.PointsMaterial( { size: 0.015, color: 'red' } );
+    //     if(colors.length > 0) pointmaterial = new THREE.PointsMaterial( { size: 0.015, vertexColors: true, opacity: 0.1 } );
+    //     const points = new THREE.Points( pointgeometry, pointmaterial );
+    //     points.userData = { timestamps, normals };
 
 
-        // adding to scene
-        points.name = name
-        this.scene.add( points );
+    //     // adding to scene
+    //     points.name = name
+    //     this.scene.add( points );
 
-        // returning points
-        return points;
+    //     // returning points
+    //     return points;
 
-    }
+    // }
 
     private initialize_raycaster() {
 
