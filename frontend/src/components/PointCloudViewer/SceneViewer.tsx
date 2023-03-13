@@ -39,7 +39,6 @@ const SceneViewer = ( {sceneData} : any ) => {
 
             // creating new scene
             sceneViewerController.initialize_controller( containerRef.current, tooltipContainerRef.current );
-            // sceneViewerController.initialize_event_emitters( eventEmitters );
             
         }
 

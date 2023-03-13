@@ -38,7 +38,7 @@ const HistoricalDataView = () => {
   // Recordings
   const [availableRecordings, setAvailableRecordings] = useState([]);
   const [selectedRecordingName, setSelectedRecordingName] = React.useState<string>('');
-  const [selectedTimestamp, setSelectedTimestamp] = React.useState<number>(0);
+  // const [selectedTimestamp, setSelectedTimestamp] = React.useState<number>(0);
 
   const [sessionInfo, setSessionInfo] = useState<any>({});
   const [loadingData, setLoadingData] = useState<boolean>(false);
@@ -52,7 +52,7 @@ const HistoricalDataView = () => {
     const mainCameraPath: string = getVideoPath( newSelection, 'main' );
     const pointCloudJSONFile = await getVoxelizedPointCloudData( newSelection );
     const eyeGazeJSONFile = await getEyeData( newSelection );
-    const perceptionJSONFile = await getPerceptionData( newSelection );   
+    // const perceptionJSONFile = await getPerceptionData( newSelection );   
 
     // // initializing timestamps
     TimestampManager.initialize_main_stream( eyeGazeJSONFile.map( (timestamp: GazePointCloudRaw) => parseInt(timestamp.timestamp.split('-')[0]) ) );
