@@ -70,6 +70,7 @@ export default function ModelViewCompContainer({
                 annotationData={annotationData}
                 state={state}
                 clipActionData={clipActionData}
+                egovlpActionData={egovlpActionData}
                 reasoningData={reasoningData}
                 boundingBoxData={boundingBoxData}
                 recordingMeta={recordingData}

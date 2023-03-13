@@ -41,7 +41,7 @@ const yAxisLabelWidth = 60; //70 // label width
 const yAxisLabelOffsetY = 6;
 
 export default function TemporalOverview({reasoningData, boundingBoxData,
-                                             clipActionData, recordingMeta,
+                                             clipActionData, egovlpActionData, recordingMeta,
                                              state, annotationData}) {
     const visRef = useRef(null);
     const xAxisRef = useRef(null);
@@ -71,8 +71,16 @@ export default function TemporalOverview({reasoningData, boundingBoxData,
     // const reasoningCellData = preprocessTimestampData(reasoningData, recordingMeta, playedTimes, state.totalDuration);
     // const humanCellData = preprocessTimestampData(humanReasoningData, recordingMeta, playedTimes, state.totalDuration);
     let clipActionStatus = clipActionData && clipActionData.length !== 0;
-    const clipActionTimedData = clipActionStatus  && preprocessTimestampData(clipActionData, recordingMeta, playedTimes, state.totalDuration);
-    const individualActionDataList = clipActionStatus  && extractIndividualActionData(clipActionTimedData);
+    let egovlpActionStatus = egovlpActionData && egovlpActionData.length !== 0;
+
+    let actionTimedData, individualActionDataList = [];
+    if (clipActionStatus) {
+        actionTimedData = clipActionStatus  && preprocessTimestampData(clipActionData, recordingMeta, playedTimes, state.totalDuration);
+        individualActionDataList = clipActionStatus  ? extractIndividualActionData(actionTimedData) : [];
+    } else {
+        actionTimedData = egovlpActionStatus  && preprocessTimestampData(egovlpActionData, recordingMeta, playedTimes, state.totalDuration);
+        individualActionDataList = egovlpActionStatus  ? extractIndividualActionData(actionTimedData) : [];
+    }
     // bounding box
     let boundingBoxStatus = boundingBoxData && boundingBoxData.length !== 0;
     const boundingBoxTimedData = boundingBoxStatus && preprocessTimestampData(boundingBoxData, recordingMeta, playedTimes, state.totalDuration);
@@ -155,7 +163,7 @@ export default function TemporalOverview({reasoningData, boundingBoxData,
                     transform={`translate(${xMargin}, ${yMargin})`}
                 >
                     {/* Actions Temporal Overview */}
-                    {clipActionStatus && renderActions(individualActionDataList)}
+                    {(clipActionStatus || egovlpActionStatus) && renderActions(individualActionDataList)}
                     {/* Objects Temporal Overview */}
                     {boundingBoxStatus && renderObjects(individualBoundingBoxList)}
                     
