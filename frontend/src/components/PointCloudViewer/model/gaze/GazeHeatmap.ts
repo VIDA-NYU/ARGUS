@@ -17,11 +17,8 @@ export class GazeHeatmap {
 
     public generate_color_scale(): d3.ScaleLinear<string, number> {    
 
-        console.log(d3.extent(this.counts));
-
         const colorScale: any = d3.scaleSequential()
             .domain(d3.extent(this.counts))
-            // .range(['#fff7ec','#fee8c8','#fdd49e','#fdbb84','#fc8d59', '#ef6548','#d7301f','#b30000','#7f0000']);
             .interpolator(d3.interpolateReds);
             
         return colorScale;
@@ -83,9 +80,7 @@ export class GazeHeatmap {
 
 
         const [cubes, counts] = this.worldVoxelGrid.get_voxel_cubes('gazePoint');
-        
-        console.log('counts: ', counts);
-        
+                
         this.voxelCubes = cubes;
         this.counts = counts;
 

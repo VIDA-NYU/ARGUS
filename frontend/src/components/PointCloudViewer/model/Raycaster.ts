@@ -15,6 +15,10 @@ export class Raycaster {
     public worldIntersectSphere!: THREE.Mesh;
     public gazeLine!: THREE.Line;
 
+    public projectedGazeIntersectSphere!: THREE.Mesh;
+    public projectedGazeOriginSphere!: THREE.Mesh;
+    public projectedGazeLine!: THREE.Line;
+
     // current intersection
     // public intersection!: {mousePosition: {top: number, left: number}, intersectPosition: THREE.Vector3, timestamp: number, gaze: { origin: THREE.Vector3, direction: THREE.Vector3 } };
 
@@ -48,7 +52,7 @@ export class Raycaster {
 
     }
 
-    public get_intersected_world_point( origin: Vector3, direction: Vector3 ): THREE.Vector3 {
+    public get_intersected_world_point( origin: Vector3, direction: Vector3, line: boolean = false ): THREE.Vector3 {
 
         this.worldRaycaster.set( origin, direction.normalize() );
 
@@ -61,6 +65,10 @@ export class Raycaster {
             this.worldIntersectSphere.position.copy(intersects[0].point);
             this.worldIntersectSphere.scale.set(1,1,1);
 
+            if( line ){
+                this.gazeLine.geometry = new THREE.BufferGeometry().setFromPoints( [origin, intersects[0].point] );
+            }
+            
             return intersects[0].point;
 
         }
@@ -69,7 +77,9 @@ export class Raycaster {
 
     }
 
-    public get_intersected_point( camera: THREE.PerspectiveCamera ): {mousePosition: {top: number, left: number}, intersectPosition: THREE.Vector3, timestamp: number, gaze: { origin: THREE.Vector3, direction: THREE.Vector3 } } {
+    public get_intersected_point( camera: THREE.PerspectiveCamera ): {mousePosition: {top: number, left: number}, timestamp: number } {
+
+        // {mousePosition: {top: number, left: number}, intersectPosition: THREE.Vector3, timestamp: number, gaze: { origin: THREE.Vector3, direction: THREE.Vector3 } }
 
         // update the picking ray with the camera and pointer position
         this.rayCaster.setFromCamera( this.pointer, camera );
@@ -77,7 +87,7 @@ export class Raycaster {
         // getting scene objects
         const sceneObject = this.scene.getObjectByName('gazepointcloud');
         const intersects = sceneObject ? this.rayCaster.intersectObjects( [sceneObject], false ) : [];
-        if(intersects && intersects.length > 0){
+        if(intersects && intersects.length > 0 ){
 
             // setting visibility
             this.gazeIntersectSphere.visible = true;
@@ -95,31 +105,49 @@ export class Raycaster {
 
             // setting current gaze direction line
             const origin: THREE.Vector3 = intersects[0].point;
-            const destination: THREE.Vector3 = origin.clone().add(direction);
-            this.gazeLine.geometry = new THREE.BufferGeometry().setFromPoints( [origin, destination] );
-
+            
             // intersection with world
-            this.get_intersected_world_point( origin, direction);
+            this.get_intersected_world_point( origin, direction, true );
 
             // returning positions
             return {
                 mousePosition: {top: this.pointerEvent.offsetY, left: this.pointerEvent.offsetX}, 
-                intersectPosition: intersects[0].point, 
+                // intersectPosition: intersects[0].point, 
                 timestamp:  intersects[0].object.userData['timestamps'][intersects[0].index],
-                gaze: { origin, direction }
+                // gaze: { origin, direction }
             }
             
-        } else {
+        } 
+        
+        // getting scene objects
+        const projectedGaze = this.scene.getObjectByName('projectedgazepointcloud');
+        const projectedGazeIntersection = projectedGaze ? this.rayCaster.intersectObjects( [projectedGaze], false ) : [];
+        if(projectedGazeIntersection && projectedGazeIntersection.length > 0 ){
 
-            // setting visibility
-            this.gazeIntersectSphere.visible = false;
-            this.worldIntersectSphere.visible = false;
-            this.gazeLine.visible = false;
+
 
             // returning positions
-            const emptyLine: THREE.Vector3 = new THREE.Vector3(0,0,0);
-            return {mousePosition: {top: 0, left: 0}, intersectPosition: new THREE.Vector3(0,0,0), timestamp: -1, gaze: { origin: emptyLine, direction: emptyLine }};
+            return {
+                mousePosition: {top: this.pointerEvent.offsetY, left: this.pointerEvent.offsetX}, 
+                // intersectPosition: intersects[0].point, 
+                timestamp:  intersects[0].object.userData['timestamps'][intersects[0].index],
+                // gaze: { origin, direction }
+            }
+
+
         }
+
+
+        // setting visibility
+        this.gazeIntersectSphere.visible = false;
+        this.worldIntersectSphere.visible = false;
+        this.gazeLine.visible = false;
+
+        // returning positions
+        const emptyLine: THREE.Vector3 = new THREE.Vector3(0,0,0);
+        // return {mousePosition: {top: 0, left: 0}, intersectPosition: new THREE.Vector3(0,0,0), timestamp: -1, gaze: { origin: emptyLine, direction: emptyLine }};
+        return {mousePosition: {top: 0, left: 0}, timestamp: -1};
+        
     }
 
     public on_pointer_move( event: MouseEvent, canvasContainer: HTMLElement ): void {

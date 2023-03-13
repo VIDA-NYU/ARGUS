@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 // material
 import { CircularProgress } from '@mui/material';
 import Box from '@mui/material/Box';
-import { TimestampManager } from '../PointCloudViewerBak/controller/TimestampManager';
+// import { TimestampManager } from '../PointCloudViewerBak/controller/TimestampManager';
 import { EventsManager } from '../../tabs/HistoricalDataView/services/EventsManager';
 
 import {AnnotationContext, AnnotationProvider, useAnnotationContext} from "./components/annotation/provider";

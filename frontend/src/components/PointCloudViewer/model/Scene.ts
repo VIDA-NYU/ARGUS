@@ -69,12 +69,13 @@ export class Scene {
         this.orbitControls.update();
 
         // picking
-        const intersect: {mousePosition: {top: number, left: number}, intersectPosition: THREE.Vector3, timestamp: number, gaze: { origin: THREE.Vector3, direction: THREE.Vector3 } } = this.rayCaster.get_intersected_point( this.camera );
+        const intersect: {mousePosition: {top: number, left: number}, timestamp: number } = this.rayCaster.get_intersected_point( this.camera );
         
         // positioning tooltip
         this.tooltip.position_tooltip(intersect.mousePosition.top, intersect.mousePosition.left);
         if (intersect.mousePosition.top !== 0){ 
 
+            // setting video timestamp
             this.tooltip.set_video_timestamp(TimestampManager.get_elapsed_time(intersect.timestamp));
 
             // emitting events
@@ -84,7 +85,6 @@ export class Scene {
             } 
         
         } 
-
 
         // rendering
         this.renderer.render( this.scene, this.camera );
