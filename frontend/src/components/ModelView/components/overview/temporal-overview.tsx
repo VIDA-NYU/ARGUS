@@ -32,6 +32,7 @@ function generatePlayedTimes(cellNumber) {
 // chart margins
 const yMargin = 2; //20
 const xMargin = 10;  //50
+const marginTop = 40;
 
 
 const chartErrorNormalColor = "#e3e3e3";
@@ -69,32 +70,36 @@ export default function TemporalOverview({reasoningData, boundingBoxData,
 
     // const reasoningCellData = preprocessTimestampData(reasoningData, recordingMeta, playedTimes, state.totalDuration);
     // const humanCellData = preprocessTimestampData(humanReasoningData, recordingMeta, playedTimes, state.totalDuration);
-    const clipActionTimedData = preprocessTimestampData(clipActionData, recordingMeta, playedTimes, state.totalDuration);
-    const individualActionDataList = extractIndividualActionData(clipActionTimedData);
+    let clipActionStatus = clipActionData && clipActionData.length !== 0;
+    const clipActionTimedData = clipActionStatus  && preprocessTimestampData(clipActionData, recordingMeta, playedTimes, state.totalDuration);
+    const individualActionDataList = clipActionStatus  && extractIndividualActionData(clipActionTimedData);
     // bounding box
-    const boundingBoxTimedData = preprocessTimestampData(boundingBoxData, recordingMeta, playedTimes, state.totalDuration)
+    let boundingBoxStatus = boundingBoxData && boundingBoxData.length !== 0;
+    const boundingBoxTimedData = boundingBoxStatus && preprocessTimestampData(boundingBoxData, recordingMeta, playedTimes, state.totalDuration);
     // console.log("boundingBoxTimedData");
     // console.log(boundingBoxTimedData);
-    const individualBoundingBoxList = extractIndividualBoundingBoxData(boundingBoxTimedData);
-    // console.log("individualBoundingBoxList");
-    // console.log(individualBoundingBoxList);
-    //end bounding box
+    const individualBoundingBoxList = boundingBoxStatus && extractIndividualBoundingBoxData(boundingBoxTimedData);
 
-    const actionCellHeight = 10; //5
+    const cellHeight = 10; //5
+    let computeContainerHeight = (a, b) => {
+        return a * 1.2 * (b.length ? b.length : 0);
+     }
+    const actionContainerHeight = computeContainerHeight(cellHeight, individualActionDataList);
+    const objectContainerHeight = computeContainerHeight(cellHeight, individualBoundingBoxList);
 
-    const chartHeight = 420 + actionCellHeight * 1.2 * individualBoundingBoxList.length + 40; // 120
+    const chartHeight = marginTop + actionContainerHeight + objectContainerHeight + 40; // 120
 
     const xAxisY = chartHeight - 20;
 
     let renderHistogramRow = (timedData, index) => {
-        let transform = `translate(${0}, ${index * actionCellHeight * 1.2})`;
+        let transform = `translate(${0}, ${index * cellHeight * 1.2})`;
         return (
             <HistogramRow
                 key={`action-row-${index}`}
                 transform={transform} cellSize={cellSize}
                 yAxisLabelOffsetY={yAxisLabelOffsetY} yAxisLabelWidth={yAxisLabelWidth}
                 index={index} xScale={xScale}
-                actionCellHeight={actionCellHeight}
+                actionCellHeight={cellHeight}
                 playedTimes={playedTimes} timedData={timedData}></HistogramRow>
         )
     }
@@ -121,7 +126,7 @@ export default function TemporalOverview({reasoningData, boundingBoxData,
     }
     let renderObjects = (timedDataList) => {
         return (<g
-            transform={`translate(0, 380)`} // 120
+            transform={`translate(0, ${marginTop + actionContainerHeight})`} // 120
         >
             <text
                 x={0}
@@ -150,15 +155,14 @@ export default function TemporalOverview({reasoningData, boundingBoxData,
                     transform={`translate(${xMargin}, ${yMargin})`}
                 >
                     {/* Actions Temporal Overview */}
-                    {renderActions(individualActionDataList)}
+                    {clipActionStatus && renderActions(individualActionDataList)}
                     {/* Objects Temporal Overview */}
-                    {renderObjects(individualBoundingBoxList)}
+                    {boundingBoxStatus && renderObjects(individualBoundingBoxList)}
                     
                     {/* X-axis labels */}
                     <g
                         transform={`translate(${yAxisLabelWidth}, ${xAxisY})`}
                         ref={xAxisRef}>
-
                     </g>
                     {/* Tracking time: Draw a vertical line that intersect both actions and objects charts */}
                     <g transform={`translate(${yAxisLabelWidth + xScale(state.played)}, ${0})`}>
