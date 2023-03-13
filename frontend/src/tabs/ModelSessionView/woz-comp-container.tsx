@@ -162,7 +162,7 @@ export default function WozCompContainer({
                             {recipePicker}
                         </Box>
                     </Box>
-                    <Box sx={{ gridArea: 'r' }}>
+                    {/* <Box sx={{ gridArea: 'r' }}>
                         <StreamView utf streamId={REASONING_CHECK_STREAM} showStreamId={false} showTime={false}>
                             {data => (<Box>{<ReasoningOutputsWOZView
                                 currentTimestampValue={currentTime}
@@ -176,7 +176,7 @@ export default function WozCompContainer({
                                 currentStep={currentStep}
                                 recipe={recipeData} data={JSON.parse(data)}/>}</Box>)}
                         </StreamView>
-                    </Box>
+                    </Box> */}
                     <AnnotationContext.Consumer>
                         {({annotationData}) => (
                             <Box sx={{gridArea: 'M'}}>

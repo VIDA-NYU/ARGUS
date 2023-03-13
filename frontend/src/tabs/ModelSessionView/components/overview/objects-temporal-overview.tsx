@@ -11,7 +11,7 @@ import {generateHumanAnnotationTemporalData} from "../annotation/utils";
 const Container = styled(Card)({})
 
 let xCellNumber = 420; //50
-const chartWidth = 440; //1440
+const chartWidth = 420; //1440
 const cellMargin = 1; // 5
 
 function computeCellSize(cellNumber, width) {
@@ -31,7 +31,7 @@ function generatePlayedTimes(cellNumber) {
 
 // chart margins
 const yMargin = 2; //20
-const xMargin = 5;  //50
+const xMargin = 10;  //50
 
 
 const chartErrorNormalColor = "#e3e3e3";
@@ -101,8 +101,8 @@ export default function ObjectsTemporalOverview({reasoningData, boundingBoxData,
 
     // const reasoningCellData = preprocessTimestampData(reasoningData, recordingMeta, playedTimes, state.totalDuration);
     // const humanCellData = preprocessTimestampData(humanReasoningData, recordingMeta, playedTimes, state.totalDuration);
-    // const clipActionTimedData = preprocessTimestampData(clipActionData, recordingMeta, playedTimes, state.totalDuration);
-    // const individualActionDataList = extractIndividualActionData(clipActionTimedData);
+    const clipActionTimedData = preprocessTimestampData(clipActionData, recordingMeta, playedTimes, state.totalDuration);
+    const individualActionDataList = extractIndividualActionData(clipActionTimedData);
     // bounding box
     const boundingBoxTimedData = preprocessTimestampData(boundingBoxData, recordingMeta, playedTimes, state.totalDuration)
     // console.log("boundingBoxTimedData");
@@ -114,7 +114,7 @@ export default function ObjectsTemporalOverview({reasoningData, boundingBoxData,
 
     const actionCellHeight = 10; //5
 
-    const chartHeight = 120 + actionCellHeight * 1.2 * individualBoundingBoxList.length + 40; // 120
+    const chartHeight = 420 + actionCellHeight * 1.2 * individualBoundingBoxList.length + 40; // 120
 
     const xAxisY = chartHeight - 20;
 
@@ -122,7 +122,7 @@ export default function ObjectsTemporalOverview({reasoningData, boundingBoxData,
         let transform = `translate(${0}, ${index * actionCellHeight * 1.2})`;
         return (
             <HistogramRow
-                key={`object-row-${index}`}
+                key={`action-row-${index}`}
                 transform={transform} cellSize={cellSize}
                 yAxisLabelOffsetY={yAxisLabelOffsetY} yAxisLabelWidth={yAxisLabelWidth}
                 index={index} xScale={xScale}
@@ -133,11 +133,11 @@ export default function ObjectsTemporalOverview({reasoningData, boundingBoxData,
 
     let renderActions = (timedDataList) => {
         return (<g
-            transform={`translate(0, 120)`}
+            transform={`translate(0, 15)`} //120
         >
             <text
                 x={0}
-                y={cellSize / 2 + yAxisLabelOffsetY + actionCellHeight * 1.2 * timedDataList.length/2}
+                y={-5}
             >
                 Actions
             </text>
@@ -153,8 +153,14 @@ export default function ObjectsTemporalOverview({reasoningData, boundingBoxData,
     }
     let renderObjects = (timedDataList) => {
         return (<g
-            transform={`translate(0, 120)`}
+            transform={`translate(0, 380)`} // 120
         >
+            <text
+                x={0}
+                y={-5}
+            >
+                Objects
+            </text>
             <g>
                 {
                     timedDataList.map((timedData, i) => {
@@ -175,6 +181,7 @@ export default function ObjectsTemporalOverview({reasoningData, boundingBoxData,
                 <g
                     transform={`translate(${xMargin}, ${yMargin})`}
                 >
+                    {renderActions(individualActionDataList)}
                     {renderObjects(individualBoundingBoxList)}
                     
                     {/* X-axis labels */}
@@ -183,6 +190,7 @@ export default function ObjectsTemporalOverview({reasoningData, boundingBoxData,
                         ref={xAxisRef}>
 
                     </g>
+                    {/* Tracking time: Draw a vertical line that intersect both actions and objects charts */}
                     <g transform={`translate(${yAxisLabelWidth + xScale(state.played)}, ${0})`}>
                         <rect
                             x={0}
