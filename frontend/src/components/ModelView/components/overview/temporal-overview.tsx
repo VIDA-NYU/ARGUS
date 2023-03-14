@@ -84,10 +84,7 @@ export default function TemporalOverview({reasoningData, boundingBoxData,
     // bounding box
     let boundingBoxStatus = boundingBoxData && boundingBoxData.length !== 0;
     const boundingBoxTimedData = boundingBoxStatus && preprocessTimestampData(boundingBoxData, recordingMeta, playedTimes, state.totalDuration);
-    // console.log("boundingBoxTimedData");
-    // console.log(boundingBoxTimedData);
     const individualBoundingBoxList = boundingBoxStatus && extractIndividualBoundingBoxData(boundingBoxTimedData);
-
     const cellHeight = 10; //5
     let computeContainerHeight = (a, b) => {
         return a * 1.2 * (b.length ? b.length : 0);

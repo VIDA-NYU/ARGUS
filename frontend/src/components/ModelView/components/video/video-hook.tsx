@@ -97,13 +97,22 @@ export function useVideoControl (recordingData: any){
         // console.log({ value: e.target });
         setState({...state, seeking: true});
     };
+
     const handleSeekChange = (e) => {
         // console.log("handleSeekChange", e.target.value);
         const temporal = parseFloat(e.target.value); // parseFloat(e.target.value) / 100;
         setState({...state, played: temporal});
     };
+
+    const handleSeekChangePlayedTime = (temporal) => {
+        setState({...state, seeking: true, played: temporal});
+    };
+
     const handleSeekMouseUp = (e) => {
         // console.log("handleSeekMouseUp", { value: e.target });
+        setState({...state, seeking: false});
+    };
+    const handleSeekMouseUpPlayedTime = () => {
         setState({...state, seeking: false});
     };
 
@@ -113,6 +122,6 @@ export function useVideoControl (recordingData: any){
         handleRewind, handleFastForward, handleDuration, handleDisplayFormat,
         timeDisplayFormat, setTimeDisplayFormat, elapsedTime,
         totalDurationValue, handlePlaybackRate, toggleFullScreen,
-        handleSeekMouseDown, handleSeekMouseUp, handleSeekChange
+        handleSeekMouseDown, handleSeekMouseUp, handleSeekChange, handleSeekChangePlayedTime, handleSeekMouseUpPlayedTime
     }
 }

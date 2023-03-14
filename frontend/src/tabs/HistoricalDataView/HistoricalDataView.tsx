@@ -109,7 +109,7 @@ const HistoricalDataView = () => {
           <Divider orientation='vertical'/>
 
           <Box sx={{ width: '500px', display: 'flex' }}>
-            {/* { selectedRecordingName && <ModelView recordingName={selectedRecordingName} ></ModelView> } */}
+            { selectedRecordingName && <ModelView sessionInfo={sessionInfo} recordingName={selectedRecordingName} ></ModelView> }
           </Box>
 
         </Box>
