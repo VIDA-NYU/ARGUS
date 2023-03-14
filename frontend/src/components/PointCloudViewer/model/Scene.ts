@@ -69,12 +69,13 @@ export class Scene {
         this.orbitControls.update();
 
         // picking
-        const intersect: {mousePosition: {top: number, left: number}, intersectPosition: THREE.Vector3, timestamp: number, gaze: { origin: THREE.Vector3, direction: THREE.Vector3 } } = this.rayCaster.get_intersected_point( this.camera );
+        const intersect: {mousePosition: {top: number, left: number}, timestamp: number } = this.rayCaster.get_intersected_point( this.camera );
         
         // positioning tooltip
         this.tooltip.position_tooltip(intersect.mousePosition.top, intersect.mousePosition.left);
         if (intersect.mousePosition.top !== 0){ 
 
+            // setting video timestamp
             this.tooltip.set_video_timestamp(TimestampManager.get_elapsed_time(intersect.timestamp));
 
             // emitting events
@@ -84,7 +85,6 @@ export class Scene {
             } 
         
         } 
-
 
         // rendering
         this.renderer.render( this.scene, this.camera );
@@ -148,33 +148,33 @@ export class Scene {
 
     }
 
-    public add_point_cloud( name: string, positions: number[], colors: number[] = [], normals: number[][] = [], timestamps: number[] = []  ): THREE.Points {
+    // public add_point_cloud( name: string, positions: number[], colors: number[] = [], normals: number[][] = [], timestamps: number[] = []  ): THREE.Points {
 
-        // loading positions
-        const pointgeometry = new THREE.BufferGeometry();
-        pointgeometry.setAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
+    //     // loading positions
+    //     const pointgeometry = new THREE.BufferGeometry();
+    //     pointgeometry.setAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
 
-        if(colors.length > 0) pointgeometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
-        // if(normals.length > 0) pointgeometry.setAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
-        // if(timestamps.length > 0) pointgeometry.setAttribute( 'timestamp', new THREE.Int32BufferAttribute( timestamps, 1 ) );
+    //     if(colors.length > 0) pointgeometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
+    //     // if(normals.length > 0) pointgeometry.setAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
+    //     // if(timestamps.length > 0) pointgeometry.setAttribute( 'timestamp', new THREE.Int32BufferAttribute( timestamps, 1 ) );
 
-        pointgeometry.computeBoundingSphere();
+    //     pointgeometry.computeBoundingSphere();
 
-        // defining material
-        let pointmaterial: THREE.PointsMaterial = new THREE.PointsMaterial( { size: 0.015, color: 'red' } );
-        if(colors.length > 0) pointmaterial = new THREE.PointsMaterial( { size: 0.015, vertexColors: true, opacity: 0.1 } );
-        const points = new THREE.Points( pointgeometry, pointmaterial );
-        points.userData = { timestamps, normals };
+    //     // defining material
+    //     let pointmaterial: THREE.PointsMaterial = new THREE.PointsMaterial( { size: 0.015, color: 'red' } );
+    //     if(colors.length > 0) pointmaterial = new THREE.PointsMaterial( { size: 0.015, vertexColors: true, opacity: 0.1 } );
+    //     const points = new THREE.Points( pointgeometry, pointmaterial );
+    //     points.userData = { timestamps, normals };
 
 
-        // adding to scene
-        points.name = name
-        this.scene.add( points );
+    //     // adding to scene
+    //     points.name = name
+    //     this.scene.add( points );
 
-        // returning points
-        return points;
+    //     // returning points
+    //     return points;
 
-    }
+    // }
 
     private initialize_raycaster() {
 
