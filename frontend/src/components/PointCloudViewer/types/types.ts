@@ -18,7 +18,8 @@ export interface RenderParameters {
 
     gazepointcloud: boolean,
     projectedgazepointcloud: boolean,
-    worldpointcloud: boolean
+    worldpointcloud: boolean,
+    gazeheatmap: boolean
 
 }
 

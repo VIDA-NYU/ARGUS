@@ -12,7 +12,7 @@ import { RenderParameters, RenderStyle } from './types/types';
 
 const ParameterBox = ( props ) => {
 
-    const [selectedParameters, setSelectedParameters] = useState<RenderParameters>({gazepointcloud: true, projectedgazepointcloud: true, worldpointcloud: true});
+    const [selectedParameters, setSelectedParameters] = useState<RenderParameters>({gazepointcloud: true, projectedgazepointcloud: true, worldpointcloud: true, gazeheatmap: true});
     // const [selectedStyles, setSelectedStyles] = useState<RenderStyle>();
 
     const styleChangeHandler = (event: any) => {
@@ -92,6 +92,11 @@ const ParameterBox = ( props ) => {
                 <Box sx={{ display: 'flex', flex: 1, flexDirection:'column' }} >
                     <Box sx={{ display: 'flex', width: '100%', height: '50px', alignItems: 'center' }}>
                         <Checkbox id='projectedgazepointcloud' onChange={parameterChangeHandler} checked={selectedParameters.projectedgazepointcloud}/>
+                        <h4>Gaze Points</h4>
+                    </Box>
+
+                    <Box sx={{ display: 'flex', width: '100%', height: '50px', alignItems: 'center' }}>
+                        <Checkbox id='gazeheatmap' onChange={parameterChangeHandler} checked={selectedParameters.gazeheatmap}/>
                         <h4>Gaze Heatmap</h4>
                     </Box>
                 </Box>
