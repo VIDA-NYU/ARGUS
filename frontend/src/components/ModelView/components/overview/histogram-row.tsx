@@ -4,6 +4,7 @@ import {useRef} from "react";
 
 interface HistogramRowProps {
     transform: string,
+    detectedItems : {isVideoStart: boolean, data: string []},
     cellSize: number,
     actionCellHeight: number
     yAxisLabelOffsetY: number,
@@ -14,13 +15,14 @@ interface HistogramRowProps {
     timedData: any
 }
 
-export default function HistogramRow({transform, cellSize, actionCellHeight,
+export default function HistogramRow({transform, detectedItems, cellSize, actionCellHeight,
                                       yAxisLabelOffsetY, yAxisLabelWidth,
                                       index, xScale, playedTimes, timedData}: HistogramRowProps){
     const actionRef = useRef(null);                                  
     return (
         <g
             transform={transform}
+            fillOpacity={detectedItems.isVideoStart ? '1' : detectedItems.data.includes(timedData.label) ? "1" : '0.1'}
         >
             <text
                 ref={actionRef}

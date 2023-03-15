@@ -67,10 +67,15 @@ export default function ModelViewCompContainer({
         if(annotationData.meta.mode === "offline" && recordingData && boundingBoxData){
 
             return (<TemporalOverview
+                currentTime={currentTime}
+                boundingBoxFrameData={boundingBoxFrameData}
+                reasoningFrameData={reasoningFrameData}
                 annotationData={annotationData}
                 state={state}
                 clipActionData={clipActionData}
                 egovlpActionData={egovlpActionData}
+                clipActionFrameData={clipActionFrameData}
+                egovlpActionFrameData={egovlpActionFrameData}
                 reasoningData={reasoningData}
                 boundingBoxData={boundingBoxData}
                 recordingMeta={recordingData}

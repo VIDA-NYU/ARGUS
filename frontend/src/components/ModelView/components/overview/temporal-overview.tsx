@@ -7,6 +7,7 @@ import {Tooltip} from "react-svg-tooltip"
 import Card from "@mui/material/Card";
 import HistogramRow from "./histogram-row";
 import {generateHumanAnnotationTemporalData} from "../annotation/utils";
+import { preprocessFrameBoundingBoxData, syncWithVideoTime } from "../video/utils/wrapper";
 
 const Container = styled(Card)({})
 
@@ -40,8 +41,8 @@ const chartErrorHighlightColor = "red";
 const yAxisLabelWidth = 60; //70 // label width
 const yAxisLabelOffsetY = 6;
 
-export default function TemporalOverview({reasoningData, boundingBoxData,
-                                             clipActionData, egovlpActionData, recordingMeta,
+export default function TemporalOverview({currentTime, boundingBoxFrameData, reasoningFrameData, reasoningData, boundingBoxData,
+                                             clipActionData, egovlpActionData, clipActionFrameData, egovlpActionFrameData, recordingMeta,
                                              state, annotationData}) {
     const visRef = useRef(null);
     const xAxisRef = useRef(null);
@@ -85,6 +86,14 @@ export default function TemporalOverview({reasoningData, boundingBoxData,
     let boundingBoxStatus = boundingBoxData && boundingBoxData.length !== 0;
     const boundingBoxTimedData = boundingBoxStatus && preprocessTimestampData(boundingBoxData, recordingMeta, playedTimes, state.totalDuration);
     const individualBoundingBoxList = boundingBoxStatus && extractIndividualBoundingBoxData(boundingBoxTimedData);
+
+    // find detected actions and objects
+    const detectedObjects = boundingBoxFrameData && boundingBoxFrameData.data ? boundingBoxFrameData.data.filter(d => d.confidence > annotationData.perceptronParameters.objectConfidenceThreshold).map(d => d.label) : [];
+    const detectedActions = clipActionStatus ?
+                            clipActionFrameData && Object.keys(clipActionFrameData).length > 0 ? Object.keys(clipActionFrameData).filter((key) => clipActionFrameData[key]> 0.1)  : []
+                            :
+                            egovlpActionFrameData && Object.keys(egovlpActionFrameData).length > 0 ? Object.keys(egovlpActionFrameData).filter((key) => egovlpActionFrameData[key]> 0.1) : [];
+
     const cellHeight = 10; //5
     let computeContainerHeight = (a, b) => {
         return a * 1.2 * (b.length ? b.length : 0);
@@ -96,11 +105,12 @@ export default function TemporalOverview({reasoningData, boundingBoxData,
 
     const xAxisY = chartHeight - 20;
 
-    let renderHistogramRow = (timedData, index) => {
+    let renderHistogramRow = (timedData, index, detectedItems) => {
         let transform = `translate(${0}, ${index * cellHeight * 1.2})`;
         return (
             <HistogramRow
                 key={`action-row-${index}`}
+                detectedItems={{"isVideoStart": state.played === 0, 'data': detectedItems}}
                 transform={transform} cellSize={cellSize}
                 yAxisLabelOffsetY={yAxisLabelOffsetY} yAxisLabelWidth={yAxisLabelWidth}
                 index={index} xScale={xScale}
@@ -109,7 +119,7 @@ export default function TemporalOverview({reasoningData, boundingBoxData,
         )
     }
 
-    let renderActions = (timedDataList) => {
+    let renderActions = (timedDataList, detectedItems) => {
         return (<g
             transform={`translate(0, 15)`} //120
         >
@@ -122,14 +132,14 @@ export default function TemporalOverview({reasoningData, boundingBoxData,
             <g>
                 {
                     timedDataList.map((timedData, i) => {
-                        return renderHistogramRow(timedData, i);
+                        return renderHistogramRow(timedData, i, detectedItems);
                     })
                 }
             </g>
 
         </g>)
     }
-    let renderObjects = (timedDataList) => {
+    let renderObjects = (timedDataList, detectedItems) => {
         return (<g
             transform={`translate(0, ${marginTop + actionContainerHeight})`} // 120
         >
@@ -142,7 +152,7 @@ export default function TemporalOverview({reasoningData, boundingBoxData,
             <g>
                 {
                     timedDataList.map((timedData, i) => {
-                        return renderHistogramRow(timedData, i);
+                        return renderHistogramRow(timedData, i, detectedItems);
                     })
                 }
             </g>
@@ -160,9 +170,9 @@ export default function TemporalOverview({reasoningData, boundingBoxData,
                     transform={`translate(${xMargin}, ${yMargin})`}
                 >
                     {/* Actions Temporal Overview */}
-                    {(clipActionStatus || egovlpActionStatus) && renderActions(individualActionDataList)}
+                    {(clipActionStatus || egovlpActionStatus) && renderActions(individualActionDataList, detectedActions)}
                     {/* Objects Temporal Overview */}
-                    {boundingBoxStatus && renderObjects(individualBoundingBoxList)}
+                    {boundingBoxStatus && renderObjects(individualBoundingBoxList, detectedObjects)}
                     
                     {/* X-axis labels */}
                     <g

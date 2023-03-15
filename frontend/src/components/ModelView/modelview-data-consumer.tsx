@@ -126,6 +126,7 @@ export default function ModelViewDataConsumer({recordingName, playedTime, annota
     // const {
     //     reasoningFrameData, egovlpActionFrameData, memoryFrameData, boundingBoxFrameData
     // } = useStreamFrameData();
+
     const {reasoningFrameData, egovlpActionFrameData, clipActionFrameData, boundingBoxFrameData,
         memoryFrameData, eyeFrameData, currentTime} = useFrameData(
         annotationData.meta.mode, recordingCurrentTime, recordingData, reasoningData,
@@ -191,7 +192,8 @@ export default function ModelViewDataConsumer({recordingName, playedTime, annota
             reasoningData={reasoningData}
             reasoningFrameData={reasoningFrameData}
             boundingBoxData={boundingBoxData}
-            boundingBoxFrameData={syncWithVideoTime(currentTime, state, annotationData.meta.entryTime, filterObjectWithRecipe(boundingBoxFrameData, generateRecipeObjectIndex(recipeData)))}
+            boundingBoxFrameData={boundingBoxFrameData}
+            // boundingBoxFrameData={syncWithVideoTime(currentTime, state, annotationData.meta.entryTime, filterObjectWithRecipe(boundingBoxFrameData, generateRecipeObjectIndex(recipeData)))}
             egovlpActionData={egovlpActionData}
             egovlpActionFrameData={egovlpActionFrameData}
             clipActionData={clipActionData}
