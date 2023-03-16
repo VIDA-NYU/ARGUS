@@ -1,6 +1,6 @@
 import {styled} from "@mui/material";
 import {useEffect, useRef} from "react";
-import d3, {scaleLinear, scaleBand, axisBottom, select, timeFormat, timeMinute, tickFormat} from "d3";
+import d3, {scaleLinear, scaleBand, axisBottom, select, timeFormat, timeMinute, tickFormat, range} from "d3";
 import {extractIndividualActionData, extractIndividualBoundingBoxData, preprocessTimestampData} from "./preprocess";
 import {schemeGnBu, interpolateTurbo, interpolateBuPu} from "d3-scale-chromatic";
 import {Tooltip} from "react-svg-tooltip"
@@ -8,6 +8,8 @@ import Card from "@mui/material/Card";
 import HistogramRow from "./histogram-row";
 import {generateHumanAnnotationTemporalData} from "../annotation/utils";
 import { preprocessFrameBoundingBoxData, syncWithVideoTime } from "../video/utils/wrapper";
+import Legend from "./legend";
+// import * from "color-legend-element";
 
 const Container = styled(Card)({})
 
@@ -31,7 +33,7 @@ function generatePlayedTimes(cellNumber) {
 }
 
 // chart margins
-const yMargin = 2; //20
+const yMargin = 32; //20
 const xMargin = 10;  //50
 const marginTop = 40;
 
@@ -193,6 +195,8 @@ export default function TemporalOverview({currentTime, boundingBoxFrameData, rea
                     >
                         Time (mm:ss)
                     </text>
+                    <Legend title={"Confidence (%)"} rangeFromTo={[0,100]} chartWidth={chartWidth} cellSize={cellSize} yAxisLabelOffsetY={yAxisLabelOffsetY} yAxisLabelWidth={yAxisLabelWidth} />
+
                     {/* Tracking time: Draw a vertical line that intersect both actions and objects charts */}
                     <g transform={`translate(${yAxisLabelWidth + xScale(state.played)}, ${0})`}>
                         <rect
