@@ -1,6 +1,6 @@
 import {styled} from "@mui/material";
 import {useEffect, useRef} from "react";
-import {scaleLinear, scaleBand, axisBottom, select} from "d3";
+import d3, {scaleLinear, scaleBand, axisBottom, select, timeFormat, timeMinute, tickFormat} from "d3";
 import {extractIndividualActionData, extractIndividualBoundingBoxData, preprocessTimestampData} from "./preprocess";
 import {schemeGnBu, interpolateTurbo, interpolateBuPu} from "d3-scale-chromatic";
 import {Tooltip} from "react-svg-tooltip"
@@ -54,14 +54,20 @@ export default function TemporalOverview({currentTime, boundingBoxFrameData, rea
 
     useEffect(() => {
         if (xAxisRef.current) {
-            let xAxis = axisBottom(xScale);
+            let xAxis = axisBottom(xScaleTimeFormat)
+            .tickFormat((d:number) => timeFormat('%-M:%-S')(new Date(d * 1000) ));
             select(xAxisRef.current).call(xAxis)
         }
-    }, []);
+    }, [state.totalDuration]);
 
     let xScale = scaleLinear()
         .range([0, chartWidth])
         .domain([0, 1]);
+
+    let xScaleTimeFormat = scaleLinear()
+        .range([0, chartWidth])
+        .domain([0, Math.floor(state.totalDuration)]);
+
     // if(!reasoningData){
     //     return (<div></div>)
     // }
@@ -179,6 +185,14 @@ export default function TemporalOverview({currentTime, boundingBoxFrameData, rea
                         transform={`translate(${yAxisLabelWidth}, ${xAxisY})`}
                         ref={xAxisRef}>
                     </g>
+                    <text
+                        transform={`translate(${chartWidth - 30}, ${xAxisY - 18})`}
+                        fontSize={"x-small"}
+                        x={yAxisLabelWidth/2}
+                        y={15}
+                    >
+                        Time (mm:ss)
+                    </text>
                     {/* Tracking time: Draw a vertical line that intersect both actions and objects charts */}
                     <g transform={`translate(${yAxisLabelWidth + xScale(state.played)}, ${0})`}>
                         <rect
