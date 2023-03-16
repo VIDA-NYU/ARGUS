@@ -14,7 +14,7 @@ import {
   useGetRecording, 
   getVoxelizedPointCloudData,
   // useDeleteRecording, 
-  getPointCloudData, 
+  getHandData,
   getEyeData, 
   // getIMUAccelData, 
   // getIMUGyroData, 
@@ -52,15 +52,16 @@ const HistoricalDataView = () => {
     const mainCameraPath: string = getVideoPath( newSelection, 'main' );
     const pointCloudJSONFile = await getVoxelizedPointCloudData( newSelection );
     const eyeGazeJSONFile = await getEyeData( newSelection );
+    const handDataJSONFile = await getHandData( newSelection );
+
     // const perceptionJSONFile = await getPerceptionData( newSelection );   
 
     // // initializing timestamps
     TimestampManager.initialize_main_stream( eyeGazeJSONFile.map( (timestamp: GazePointCloudRaw) => parseInt(timestamp.timestamp.split('-')[0]) ) );
     // TimestampManager.index_stream_timestamp( perceptionJSONFile.map( (timestamp: any) => parseInt(timestamp.timestamp.split('-')[0]) ) );
     
-
     // // setting session info
-    setSessionInfo({recordingName:newSelection, mainCameraPath, pointCloudJSONFile, eyeGazeJSONFile});
+    setSessionInfo({recordingName:newSelection, mainCameraPath, pointCloudJSONFile, eyeGazeJSONFile, handDataJSONFile});
 
     // // setting spinner flag
     setLoadingData(false);

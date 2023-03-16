@@ -71,15 +71,23 @@ export class GazeHeatmap {
             const zIndex: number = Math.floor( (point[2] - this.worldVoxelGrid.zExtent[0])/this.worldVoxelGrid.get_cell_size() );
             
             // adding point to voxel grid
-            const currentVoxelCell: VoxelCell = this.worldVoxelGrid.voxelGrid[xIndex][yIndex][zIndex];
-            if( !('gazePoint' in currentVoxelCell.counters) ){
-                currentVoxelCell.counters['gazePoint'] = 0;
+            // const currentVoxelCell: VoxelCell = this.worldVoxelGrid.voxelGrid[xIndex][yIndex][zIndex];
+            const currentVoxelCell: VoxelCell = this.worldVoxelGrid.get_voxel_cell(xIndex, yIndex, zIndex );
+
+            if(currentVoxelCell){
+                if( !('gazePoint' in currentVoxelCell.counters) ){
+                    currentVoxelCell.counters['gazePoint'] = 0;
+                }
+                currentVoxelCell.counters['gazePoint']++;
+            } else {
+                console.log('Did not find...')
             }
-            currentVoxelCell.counters['gazePoint']++;
+            
         });
 
 
         const [cubes, counts] = this.worldVoxelGrid.get_voxel_cubes('gazePoint');
+        // console.log(cubes);
                 
         this.voxelCubes = cubes;
         this.counts = counts;

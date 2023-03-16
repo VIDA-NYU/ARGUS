@@ -1,6 +1,5 @@
 import { Dataset } from "../model/Dataset";
 import { Scene } from "../model/Scene";
-import { RenderParameters, WorldPointCloudRaw } from "../types/types";
 
 export class SceneViewerController {
 
@@ -9,6 +8,7 @@ export class SceneViewerController {
     public dataset!: Dataset;
     
     constructor(){}
+
 
     public initialize_controller( containerRef: HTMLElement, tooltipContainerRef: HTMLElement ): void {
 

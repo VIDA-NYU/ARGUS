@@ -13,7 +13,7 @@ const PointCloudViewer = ( {sessionInfo} : any ) => {
   const [sceneData, setSceneData] = React.useState({});
 
   useEffect(() => {
-    setSceneData({videoData: sessionInfo.mainCameraPath, pointCloudData: {'world': sessionInfo.pointCloudJSONFile, 'gaze': sessionInfo.eyeGazeJSONFile}} );
+    setSceneData({videoData: sessionInfo.mainCameraPath, pointCloudData: {'world': sessionInfo.pointCloudJSONFile, 'gaze': sessionInfo.eyeGazeJSONFile, 'hand': sessionInfo.handDataJSONFile}} );
   }, [sessionInfo])
 
   return (

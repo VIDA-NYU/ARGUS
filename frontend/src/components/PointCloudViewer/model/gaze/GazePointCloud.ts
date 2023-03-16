@@ -31,10 +31,12 @@ export class GazePointCloud {
         return [positions.flat(), normals, timestamps ];
     }
 
-    public generate_gaze_world_projection( scene: Scene ): void{
+    public generate_gaze_world_projection( scene: Scene ): GazeProjection {
 
         this.gazeWorldProjection = new GazeProjection( this.points, this.normals, this.timestamps );
         this.gazeWorldProjection.generate_gaze_projection( scene );
+
+        return this.gazeWorldProjection;
     
     }
 
@@ -54,7 +56,7 @@ export class GazePointCloud {
         pointgeometry.computeBoundingSphere();
 
         // defining material
-        const pointmaterial: THREE.PointsMaterial = new THREE.PointsMaterial( { size: 0.015, color: 'red' } );
+        const pointmaterial: THREE.PointsMaterial = new THREE.PointsMaterial( { size: 0.015, color: '#377eb8' } );
         const points = new THREE.Points( pointgeometry, pointmaterial );        
         points.userData = { timestamps: this.timestamps, normals: this.normals };
 
@@ -64,6 +66,18 @@ export class GazePointCloud {
 
         // returning points
         return points;
+
+    }
+
+    public get_object_by_index( index: number ): { point: number[], normal: number[], timestamp: number} {
+
+        const indexedObject: { point: number[], normal: number[], timestamp: number} = {
+            point: this.points[index],
+            normal: this.normals[index], 
+            timestamp: this.timestamps[index]
+        } 
+
+        return indexedObject;
 
     }
 

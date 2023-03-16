@@ -10,6 +10,7 @@ import * as d3 from 'd3';
 
 import { WorldPointCloud } from '../model/WorldPointCloud';
 import { GazePointCloud } from '../model/gaze/GazePointCloud';
+import { HandPointCloud } from '../model/hand/HandPointCloud';
 
 export class DataUtils {
 
@@ -20,6 +21,13 @@ export class DataUtils {
         return worldPointCloud;
 
     }   
+
+
+    public static parse_hand_point_cloud_data( dataset: any ): void {
+
+        console.log(dataset);
+
+    }
 
 
     public static parse_gaze_point_cloud_data( dataset: GazePointCloudRaw[] ): GazePointCloud {

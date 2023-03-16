@@ -99,6 +99,19 @@ const ParameterBox = ( props ) => {
                         <Checkbox id='gazeheatmap' onChange={parameterChangeHandler} checked={selectedParameters.gazeheatmap}/>
                         <h4>Gaze Heatmap</h4>
                     </Box>
+
+                    <Box sx={{ display: 'flex', flex: 1, alignItems: 'center' }}>
+
+                        <Box sx={{ display: 'flex', width: '100px', alignItems: 'center', justifyContent: 'center' }}>
+                            <h4>opacity</h4>
+                        </Box>
+                        <Box sx={{ display: 'flex', flex: 1, alignItems: 'center' }}>
+                            <Slider name='gazeheatmap:opacity' onChange={styleChangeHandler} min={0} max={1} step={0.1}/>
+                        </Box>
+
+                    </Box>
+
+
                 </Box>
 
                 

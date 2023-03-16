@@ -4,6 +4,13 @@ export interface SceneData {
 
 }
 
+export interface MousePosition {
+
+    top: number,
+    left: number
+
+}
+
 
 export interface VoxelCube {
 

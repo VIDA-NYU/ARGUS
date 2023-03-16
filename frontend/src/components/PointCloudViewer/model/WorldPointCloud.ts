@@ -1,6 +1,7 @@
 // third-party
 import * as THREE from 'three';
 import { VoxelCube } from '../types/types';
+import { Scene } from './Scene';
 
 // model
 import { VoxelCell } from './voxel/VoxelCell';

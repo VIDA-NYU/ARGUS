@@ -4,7 +4,7 @@ import { Scene } from "../Scene";
 // third-party
 import * as THREE from 'three';
 
-export class GazeProjection {
+export class GazeProjection  {
 
     public projectedPoints: number[][] = [];
 
@@ -45,8 +45,6 @@ export class GazeProjection {
             }else {
                 projectedPoints.push(worldIntersect.toArray());
             }
-            
-            
 
         }
 
@@ -55,8 +53,6 @@ export class GazeProjection {
 
         // adding to scene
         this.add_to_scene( scene.scene );
-
-
 
     }
 
