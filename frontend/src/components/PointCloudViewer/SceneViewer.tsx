@@ -5,9 +5,12 @@ import IMUViewer from '../IMUViewer/IMUViewer';
 
 // controller
 import { SceneViewerController } from './controllers/SceneViewer.controller';
+import { GazePointCloud } from './model/gaze/GazePointCloud';
+import { GazeProjection } from './model/gaze/GazeProjection';
+import { WorldVoxelGrid } from './model/voxel/WorldVoxelGrid';
+import { WorldPointCloud } from './model/WorldPointCloud';
 import ParameterBox from './ParameterBox';
 import { RenderParameters, RenderStyle } from './types/types';
-import { DataGenUtils } from './utils/DataGenUtils';
 
 const SceneViewer = ( {sceneData} : any ) => {
 
@@ -21,14 +24,14 @@ const SceneViewer = ( {sceneData} : any ) => {
 
     const pointCloudParameterChangeHandler = ( parameters: RenderParameters ) => {
 
-        sceneViewerController.scene.sceneConfiguration.set_render_visibility( parameters );
+        // sceneViewerController.scene.sceneConfiguration.set_render_visibility( parameters );
         
     };
 
     const pointCloudStyleChangeHandler = ( renderStyle: RenderStyle ) => {
 
-        sceneViewerController.scene.sceneConfiguration.set_render_style( renderStyle )
-
+        // sceneViewerController.scene.sceneConfiguration.set_render_style( renderStyle )
+    
     }
 
     useEffect(() => {
@@ -49,21 +52,47 @@ const SceneViewer = ( {sceneData} : any ) => {
 
             // initializing world point cloud data
             sceneViewerController.dataset.initialize_world_pointcloud_dataset( sceneData.pointCloudData['world'] );
-            const [worldBufferPositions, worldBufferColors]: [number[], number[]] = sceneViewerController.dataset.worldPointCloud.get_buffer_positions();
-            sceneViewerController.scene.add_point_cloud( 'worldpointcloud', worldBufferPositions, worldBufferColors);
+            const worldPointCloud: WorldPointCloud = sceneViewerController.dataset.worldPointCloud;
             
-        }
 
+            // adding layer to scene and saving ref
+            worldPointCloud.add_to_scene( sceneViewerController.scene.scene );
+            sceneViewerController.scene.save_layer( 'worldpointcloud', worldPointCloud );
+
+        }
+        
         if( 'pointCloudData' in sceneData && 'gaze' in sceneData.pointCloudData ){
 
             sceneViewerController.dataset.initialize_gaze_pointcloud_dataset( sceneData.pointCloudData['gaze'] );
-            const [gazeBufferPositions, gazeBufferNormals, gazeTimestamps]: [number[], number[][], number[]] = sceneViewerController.dataset.gazePointCloud.get_buffer_positions();
-            sceneViewerController.scene.add_point_cloud('gazepointcloud', gazeBufferPositions, [], gazeBufferNormals, gazeTimestamps);
-
-            // generating gaze projection on the point cloud
-            const gazeProjection: number[][] = DataGenUtils.generate_gaze_projection( sceneViewerController.scene, sceneViewerController.dataset.gazePointCloud );
-            sceneViewerController.scene.add_point_cloud( 'projectedgazepointcloud', gazeProjection.flat(), [], [], gazeTimestamps);
+            const gazePointCloud: GazePointCloud = sceneViewerController.dataset.gazePointCloud;
             
+            // adding layer to scene and saving ref
+            gazePointCloud.add_to_scene( sceneViewerController.scene.scene );
+            sceneViewerController.scene.save_layer( 'gazepointcloud', gazePointCloud );
+
+            // generating gaze points
+            const gazeProjection: GazeProjection = gazePointCloud.generate_gaze_world_projection( sceneViewerController.scene );
+            sceneViewerController.scene.save_layer('projectedgazepointcloud',  gazeProjection );
+
+            
+
+            // calculating gaze heatmap
+            // const worldVoxelGrid: WorldVoxelGrid = sceneViewerController.dataset.worldPointCloud.voxelGrid;
+            // gazePointCloud.generate_gaze_heatmap( worldVoxelGrid, sceneViewerController.scene.scene );
+
+            // const [gazeBufferPositions, gazeBufferNormals, gazeTimestamps]: [number[], number[][], number[]] = sceneViewerController.dataset.gazePointCloud.get_buffer_positions();
+            // sceneViewerController.scene.add_point_cloud('gazepointcloud', gazeBufferPositions, [], gazeBufferNormals, gazeTimestamps);
+
+            // // generating gaze projection on the point cloud
+            // const gazeProjection: number[][] = DataGenUtils.generate_gaze_projection( sceneViewerController.scene, sceneViewerController.dataset.gazePointCloud );
+            // sceneViewerController.scene.add_point_cloud( 'projectedgazepointcloud', gazeProjection.flat(), [], [], gazeTimestamps);
+            
+        }
+
+        if( 'pointCloudData' in sceneData && 'hand' in sceneData.pointCloudData ){
+
+            sceneViewerController.dataset.initialize_hand_pointcloud_dataset( sceneData.pointCloudData['hand'] );
+
         }
 
         if( 'videoData' in sceneData ){

@@ -14,7 +14,7 @@ import {
   useGetRecording, 
   getVoxelizedPointCloudData,
   // useDeleteRecording, 
-  getPointCloudData, 
+  getHandData,
   getEyeData, 
   getIMUAccelData, 
   getIMUGyroData, 
@@ -58,20 +58,17 @@ const HistoricalDataView = () => {
     const IMUMagFile = await getIMUMagData( newSelection);
     const pointCloudJSONFile = await getVoxelizedPointCloudData( newSelection );
     const eyeGazeJSONFile = await getEyeData( newSelection );
-    console.log(eyeGazeJSONFile);
+    const handDataJSONFile = await getHandData( newSelection );
+
     // const perceptionJSONFile = await getPerceptionData( newSelection );   
 
     // // initializing timestamps
     TimestampManager.initialize_main_stream( eyeGazeJSONFile.map( (timestamp: GazePointCloudRaw) => parseInt(timestamp.timestamp.split('-')[0]) ) );
     // TimestampManager.index_stream_timestamp( perceptionJSONFile.map( (timestamp: any) => parseInt(timestamp.timestamp.split('-')[0]) ) );
     
-
     // // setting session info
-    setSessionInfo({recordingName:newSelection, mainCameraPath, pointCloudJSONFile, eyeGazeJSONFile, IMUAccelFile, IMUGyroFile, IMUMagFile});
-    console.log(typeof sessionInfo);
-    console.log(sessionInfo);
-    console.log(sessionInfo.eyeGazeJSONFile);
-    console.log(sessionInfo.IMUAccelFile);
+    setSessionInfo({recordingName:newSelection, mainCameraPath, pointCloudJSONFile, eyeGazeJSONFile, handDataJSONFile, IMUAccelFile, IMUGyroFile, IMUMagFile});
+
     // // setting spinner flag
     setLoadingData(false);
 
@@ -119,7 +116,7 @@ const HistoricalDataView = () => {
           <Divider orientation='vertical'/>
 
           <Box sx={{ width: '500px', display: 'flex' }}>
-            {/* { selectedRecordingName && <ModelView recordingName={selectedRecordingName} ></ModelView> } */}
+            { selectedRecordingName && <ModelView sessionInfo={sessionInfo} recordingName={selectedRecordingName} ></ModelView> }
           </Box>
 
         </Box>

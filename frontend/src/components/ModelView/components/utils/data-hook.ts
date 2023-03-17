@@ -46,8 +46,8 @@ function useRecordingFrameData(currentTime, recordingData, reasoningData, memory
     } = useVideoTime(currentTime, clipActionData, recordingData);
 
     const {
-        frameIndex: egovlpActionFrameData,
-        frameData: actionFrameData
+        frameIndex: egovlpActionFrameIndex,
+        frameData: egovlpActionFrameData
     } = useVideoTime(currentTime, egovlpActionData, recordingData)
 
     const {
@@ -136,26 +136,26 @@ function useFrameData(mode: "online" | "offline" | "undefined", currentTime, rec
         boundingBoxData, egovlpActionData, clipActionData, eyeData
     );
 
-    const {
-        reasoningFrameData: streamReasoningFrameDatam,
-        egovlpActionFrameData: streamEgovlpActionFrameData,
-        memoryFrameData: streamMemoryFrameData,
-        boundingBoxFrameData: streamBoundingBoxFrameData,
-        clipActionFrameData: streamClipActionFrameData,
-        eyeFrameData: streamEyeFrameData,
-        currentTime: streamCurrentTime
-    } = useStreamFrameData();
-    if(mode === "online"){
-        return {
-            reasoningFrameData: streamReasoningFrameDatam,
-            egovlpActionFrameData: streamEgovlpActionFrameData,
-            memoryFrameData: streamMemoryFrameData,
-            boundingBoxFrameData: streamBoundingBoxFrameData,
-            clipActionFrameData: streamClipActionFrameData,
-            eyeFrameData: streamEyeFrameData,
-            currentTime: streamCurrentTime
-        }
-    }else{
+    // const {
+    //     reasoningFrameData: streamReasoningFrameDatam,
+    //     egovlpActionFrameData: streamEgovlpActionFrameData,
+    //     memoryFrameData: streamMemoryFrameData,
+    //     boundingBoxFrameData: streamBoundingBoxFrameData,
+    //     clipActionFrameData: streamClipActionFrameData,
+    //     eyeFrameData: streamEyeFrameData,
+    //     currentTime: streamCurrentTime
+    // } = useStreamFrameData();
+    // if(mode === "online"){
+    //     return {
+    //         reasoningFrameData: streamReasoningFrameDatam,
+    //         egovlpActionFrameData: streamEgovlpActionFrameData,
+    //         memoryFrameData: streamMemoryFrameData,
+    //         boundingBoxFrameData: streamBoundingBoxFrameData,
+    //         clipActionFrameData: streamClipActionFrameData,
+    //         eyeFrameData: streamEyeFrameData,
+    //         currentTime: streamCurrentTime
+    //     }
+    // }else{
         return {
             reasoningFrameData: recordingReasoningFrameData,
             egovlpActionFrameData: recordingEgovlpActionFrameData,
@@ -165,7 +165,7 @@ function useFrameData(mode: "online" | "offline" | "undefined", currentTime, rec
             boundingBoxFrameData: recordingBoundingBoxFrameData,
             currentTime: currentTime
         }
-    }
+    // }
 }
 
 export {useRecordingData, useRecordingFrameData, useStreamFrameData, useFrameData};

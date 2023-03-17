@@ -25,7 +25,16 @@ export class SceneConfiguration {
     public set_render_style( renderParameters: RenderStyle ): void {
 
         const currentObject: any = this.scene.getObjectByName(renderParameters.pointCloudName);
-        if( currentObject ) currentObject.material[renderParameters.attribute] = renderParameters.value;
+
+        if(currentObject.isGroup){
+
+            currentObject.children.forEach( ( object: THREE.Mesh ) => {
+                object.material[renderParameters.attribute] = renderParameters.value;
+            })
+
+        } else {
+            currentObject.material[renderParameters.attribute] = renderParameters.value;
+        }
 
     }
 

@@ -11,7 +11,8 @@ import {filterObjectWithRecipe, generateRecipeObjectIndex} from "./components/ob
 import {AnnotationData, AnnotationMeta} from "./components/annotation/types";
 import {buildNewAnnotationMeta, computeCurrentStep} from "./components/annotation/utils";
 import {syncWithVideoTime} from "./components/video/utils/wrapper";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { scaleLinear } from "d3";
 
 
 interface RecipeData {
@@ -30,11 +31,12 @@ interface RecipeData {
 interface ModelViewDataConsumerProps {
     recordingName: string,
     annotationData: AnnotationData,
+    playedTime: number,
     setAnnotationData: (newData: AnnotationData) => void
 }
 
-export default function ModelViewDataConsumer({recordingName, annotationData, setAnnotationData}: ModelViewDataConsumerProps) {
-    // console.log(annotationData);
+export default function ModelViewDataConsumer({recordingName, playedTime, annotationData, setAnnotationData}: ModelViewDataConsumerProps) {
+    const [seekingPlayedTime, setSeekingPlayedTime] = useState<boolean>(false);
 
     // Update annotationData if the selected recording changes. 
     const setAnnotationMeta = (newMeta: AnnotationMeta) => {
@@ -50,6 +52,27 @@ export default function ModelViewDataConsumer({recordingName, annotationData, se
         }));
     }, [recordingName]);
     // end Update annotationData
+
+
+    // Update model view component if the timestamp is updated through Point Cloud viewer by hovering the red dots (user head location) in the plot.
+    useEffect(() => {
+        if (playedTime && totalDuration !== "0:0") {
+            let duration = parseFloat(totalDuration);
+            let xScale = scaleLinear()
+                .range([0, 1]) // return
+                .domain([0, duration]);
+            const played_time = xScale(playedTime < 0 ? 0 : playedTime);
+            handleSeekChangePlayedTime(played_time);
+            setSeekingPlayedTime(true);
+        }
+    }, [playedTime]);
+    useEffect(() => {
+        if(seekingPlayedTime) {
+            setSeekingPlayedTime(false);
+            handleSeekMouseUpPlayedTime();
+        }
+    }, [seekingPlayedTime]);
+
 
     const {token, fetchAuth} = useToken();
 
@@ -74,9 +97,9 @@ export default function ModelViewDataConsumer({recordingName, annotationData, se
         toggleFullScreen, totalDurationValue, timeDisplayFormat,
         elapsedTime,
         handleDuration, handleProgress, handleRewind,
-        handleSeekMouseDown, handleSeekMouseUp, handleSeekChange,
+        handleSeekMouseDown, handleSeekMouseUp, handleSeekChange, handleSeekChangePlayedTime,
         handlePlayPause, handleDisplayFormat, handleFastForward,
-        handleSeekingFromVideoCard, handlePlaybackRate
+        handleSeekingFromVideoCard, handlePlaybackRate, handleSeekMouseUpPlayedTime
     } = useVideoControl(recordingData)
 
     const {
@@ -103,13 +126,14 @@ export default function ModelViewDataConsumer({recordingName, annotationData, se
     // const {
     //     reasoningFrameData, egovlpActionFrameData, memoryFrameData, boundingBoxFrameData
     // } = useStreamFrameData();
-    const {reasoningFrameData, egovlpActionFrameData, clipActionFrameData, boundingBoxFrameData, memoryFrameData, eyeFrameData, currentTime} = useFrameData(
-        annotationData.meta.mode, recordingCurrentTime, recordingData,
-        reasoningData, memoryData,
-        boundingBoxData, egovlpActionData, clipActionData, eyeData );
 
+    const {reasoningFrameData, egovlpActionFrameData, clipActionFrameData, boundingBoxFrameData,
+        memoryFrameData, eyeFrameData, currentTime} = useFrameData(
+        annotationData.meta.mode, recordingCurrentTime, recordingData, reasoningData,
+        memoryData, boundingBoxData, egovlpActionData, clipActionData, eyeData );
 
-    const videoPlayer = (<ReplayPlayer
+    const videoPlayer =
+    (<ReplayPlayer
         type={dataType.VIDEO}
         data={recordingData}
         title={"Cameras"}
@@ -153,6 +177,7 @@ export default function ModelViewDataConsumer({recordingName, annotationData, se
         <div/>
     )
     const currentStep = computeCurrentStep(annotationData, 0, currentTime);
+
     return (
         <ModelViewCompContainer
             state={state}
@@ -167,7 +192,8 @@ export default function ModelViewDataConsumer({recordingName, annotationData, se
             reasoningData={reasoningData}
             reasoningFrameData={reasoningFrameData}
             boundingBoxData={boundingBoxData}
-            boundingBoxFrameData={syncWithVideoTime(currentTime, state, annotationData.meta.entryTime, filterObjectWithRecipe(boundingBoxFrameData, generateRecipeObjectIndex(recipeData)))}
+            boundingBoxFrameData={boundingBoxFrameData}
+            // boundingBoxFrameData={syncWithVideoTime(currentTime, state, annotationData.meta.entryTime, filterObjectWithRecipe(boundingBoxFrameData, generateRecipeObjectIndex(recipeData)))}
             egovlpActionData={egovlpActionData}
             egovlpActionFrameData={egovlpActionFrameData}
             clipActionData={clipActionData}

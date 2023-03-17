@@ -27,6 +27,8 @@ export class Tooltip{
         }
     }
 
+    
+
     public add_video_tag( videoPath: string ): void{
 
         // Create video element

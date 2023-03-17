@@ -4,6 +4,13 @@ export interface SceneData {
 
 }
 
+export interface MousePosition {
+
+    top: number,
+    left: number
+
+}
+
 
 export interface VoxelCube {
 
@@ -11,7 +18,6 @@ export interface VoxelCube {
     width: number,
     height: number,
     depth: number
-
 }
 
 
@@ -19,7 +25,8 @@ export interface RenderParameters {
 
     gazepointcloud: boolean,
     projectedgazepointcloud: boolean,
-    worldpointcloud: boolean
+    worldpointcloud: boolean,
+    gazeheatmap: boolean
 
 }
 
@@ -35,18 +42,6 @@ export interface RenderStyle {
 
 // TODO: Remove it once we define the final point cloud output from the server
 // The server still outputs the raw point clouds. However, we will change it to output downsampled point clouds (voxelized)
-
-
-// export interface WorldPointCloudRaw {
-
-//     // primitive attributes
-//     time: string;
-//     timestamp: string;
-//     color: [number,number,number][];
-//     xyz_world: [number, number, number][];
-
-// }
-
 
 export interface WorldPointCloudRaw {
 

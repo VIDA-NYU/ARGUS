@@ -67,9 +67,15 @@ export default function ModelViewCompContainer({
         if(annotationData.meta.mode === "offline" && recordingData && boundingBoxData){
 
             return (<TemporalOverview
+                currentTime={currentTime}
+                boundingBoxFrameData={boundingBoxFrameData}
+                reasoningFrameData={reasoningFrameData}
                 annotationData={annotationData}
                 state={state}
                 clipActionData={clipActionData}
+                egovlpActionData={egovlpActionData}
+                clipActionFrameData={clipActionFrameData}
+                egovlpActionFrameData={egovlpActionFrameData}
                 reasoningData={reasoningData}
                 boundingBoxData={boundingBoxData}
                 recordingMeta={recordingData}
@@ -140,17 +146,12 @@ export default function ModelViewCompContainer({
           `
                         },
                     }}>
-                    <Box sx={{ gridArea: 'H' }}>
-                        <Box sx={{ '& > button': { mt: 2, mb: 2, mr: 2 } }}>
-                            {recipePicker}
-                        </Box>
-                    </Box>
                     {/*{recordingData && videoPlayer }*/}
                     <AnnotationContext.Consumer>
                         {({annotationData}) => (
                             <Box sx={{gridArea: 'M'}}>
                                 {annotationData.meta.mode === "offline" && recordingData && videoPlayer}
-                                { annotationData.meta.mode === "online" && <ImageView streamId='main' boxStreamId='detic:image' confidence={annotationData.perceptronParameters.objectConfidenceThreshold} debugMode={false}/>}
+                                {/* { annotationData.meta.mode === "online" && <ImageView streamId='main' boxStreamId='detic:image' confidence={annotationData.perceptronParameters.objectConfidenceThreshold} debugMode={false}/>} */}
                             </Box>
                         )}
 

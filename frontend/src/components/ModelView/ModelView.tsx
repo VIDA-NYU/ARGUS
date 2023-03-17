@@ -1,14 +1,14 @@
 // react
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // material
-import { CircularProgress } from '@mui/material';
 import Box from '@mui/material/Box';
-import { TimestampManager } from '../PointCloudViewerBak/controller/TimestampManager';
+// import { TimestampManager } from '../PointCloudViewerBak/controller/TimestampManager';
 import { EventsManager } from '../../tabs/HistoricalDataView/services/EventsManager';
 
 import {AnnotationContext, AnnotationProvider, useAnnotationContext} from "./components/annotation/provider";
 import ModelViewDataConsumer from "./modelview-data-consumer";
+import TimestampManager from '../../tabs/HistoricalDataView/services/TimestampManager';
 
 const ModelView = ({...props}) => {
 
@@ -27,17 +27,20 @@ const ModelView = ({...props}) => {
 
   return (
     <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-      {/* <h1>{currentTimestamp}</h1> */}
+      {/* <h1>{currentTimestamp} ---</h1> */}
       {/* {props.} */}
       <AnnotationProvider>
             <AnnotationContext.Consumer>
-                {({annotationData, setAnnotationData}) => (
-                    <ModelViewDataConsumer
+                {({annotationData, setAnnotationData}) =>
+                  {
+                    return <ModelViewDataConsumer
                         recordingName={props.recordingName}
+                        playedTime = {currentTimestamp ? TimestampManager.get_elapsed_time(currentTimestamp) : 0}
                         annotationData={annotationData}
                         setAnnotationData={setAnnotationData}
-                    />
-                )}
+                    />;
+                  }
+                }
             </AnnotationContext.Consumer>
 
 
