@@ -366,21 +366,21 @@ export async function getIMUAccelData (recordingName) {
     const accelurl ="https://api.ptg.poly.edu/recordings/static/coffee-test-1/imuaccel.json";
     const url = API_URL +  RECORDINGS_STATIC_PATH + `${recordingName}/imuaccel.json`;
     console.log(url);
-    const response = await fetch(accelurl).then((res) => res.json());
+    const response = await fetch(url).then((res) => res.json());
     return response;
 }
 
 export async function getIMUGyroData (recordingName) {
     const gyrourl ="https://api.ptg.poly.edu/recordings/static/coffee-test-1/imugyro.json";
     const url = API_URL +  RECORDINGS_STATIC_PATH + `${recordingName}/imugyro.json`;
-    const response = await fetch(gyrourl).then((res) => res.json());
+    const response = await fetch(url).then((res) => res.json());
     return response;
 }
 
 export async function getIMUMagData (recordingName) {
     const magurl ="https://api.ptg.poly.edu/recordings/static/coffee-test-1/imumag.json";
     const url = API_URL +  RECORDINGS_STATIC_PATH + `${recordingName}/imumag.json`;
-    const response = await fetch(magurl).then((res) => res.json());
+    const response = await fetch(url).then((res) => res.json());
     return response;
 }
 
