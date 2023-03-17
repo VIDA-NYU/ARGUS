@@ -11,13 +11,13 @@ export interface MousePosition {
 
 }
 
-
 export interface VoxelCube {
 
     center: number[],
     width: number,
     height: number,
     depth: number
+    
 }
 
 
@@ -36,6 +36,13 @@ export interface RenderStyle {
     attribute: string,
     value: number | string
     
+}
+
+export interface CameraParams {
+
+    position: number[],
+    near: number,
+    far: number
 }
 
 

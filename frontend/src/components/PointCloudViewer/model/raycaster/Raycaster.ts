@@ -5,76 +5,76 @@ import { MousePosition } from '../../types/types';
 export class Raycaster {
 
     private rayCaster!: THREE.Raycaster;
-    private worldRaycaster!: THREE.Raycaster;
+    // private worldRaycaster!: THREE.Raycaster;
 
     // Mouse pointer
     public pointer: THREE.Vector2 = new THREE.Vector2();
     public pointerEvent!: MouseEvent;
 
-    // ray intersection highlight
-    public gazeIntersectSphere!: THREE.Mesh;
-    public worldIntersectSphere!: THREE.Mesh;
-    public gazeLine!: THREE.Line;
+    // // ray intersection highlight
+    // public gazeIntersectSphere!: THREE.Mesh;
+    // public worldIntersectSphere!: THREE.Mesh;
+    // public gazeLine!: THREE.Line;
 
-    public projectedGazeIntersectSphere!: THREE.Mesh;
-    public projectedGazeOriginSphere!: THREE.Mesh;
-    public projectedGazeLine!: THREE.Line;
+    // public projectedGazeIntersectSphere!: THREE.Mesh;
+    // public projectedGazeOriginSphere!: THREE.Mesh;
+    // public projectedGazeLine!: THREE.Line;
 
     constructor( public scene: Scene ){
 
         // initializing ray caster
         this.rayCaster = new THREE.Raycaster();
-        this.rayCaster.params.Points.threshold = 0.005;
+        this.rayCaster.params.Points.threshold = 0.01;
 
-        // initializing world ray caster
-        this.worldRaycaster = new THREE.Raycaster();
-        this.worldRaycaster.params.Points.threshold = 0.01;
+        // // initializing world ray caster
+        // this.worldRaycaster = new THREE.Raycaster();
+        // this.worldRaycaster.params.Points.threshold = 0.01;
 
-        // creating highlight sphere
-        const sphereGeometry = new THREE.SphereGeometry( 0.025, 15, 15 );
-        const sphereMaterial = new THREE.MeshBasicMaterial( { color: 'blue' } );
-        this.gazeIntersectSphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
-        this.worldIntersectSphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
+        // // creating highlight sphere
+        // const sphereGeometry = new THREE.SphereGeometry( 0.025, 15, 15 );
+        // const sphereMaterial = new THREE.MeshBasicMaterial( { color: 'blue' } );
+        // this.gazeIntersectSphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
+        // this.worldIntersectSphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
 
-        // creating gaze line        
-        const lineMaterial = new THREE.LineBasicMaterial({ color: 0x0000ff, linewidth: 5 });
-        const lineGeometry = new THREE.BufferGeometry().setFromPoints( [new THREE.Vector3( 0,0,0 ), new THREE.Vector3( 0,0,0 )] );
-        this.gazeLine = new THREE.Line( lineGeometry, lineMaterial )
+        // // creating gaze line        
+        // const lineMaterial = new THREE.LineBasicMaterial({ color: 0x0000ff, linewidth: 5 });
+        // const lineGeometry = new THREE.BufferGeometry().setFromPoints( [new THREE.Vector3( 0,0,0 ), new THREE.Vector3( 0,0,0 )] );
+        // this.gazeLine = new THREE.Line( lineGeometry, lineMaterial )
         
 
-        // adding highlight to scene
-        this.scene.add( this.gazeIntersectSphere );
-        this.scene.add(this.worldIntersectSphere);
-        this.scene.add( this.gazeLine ); 
+        // // adding highlight to scene
+        // this.scene.add( this.gazeIntersectSphere );
+        // this.scene.add(this.worldIntersectSphere);
+        // this.scene.add( this.gazeLine ); 
 
     }
 
-    public get_intersected_world_point( origin: Vector3, direction: Vector3, line: boolean = false ): THREE.Vector3 {
+    // public get_intersected_world_point( origin: Vector3, direction: Vector3, line: boolean = false ): THREE.Vector3 {
 
-        this.worldRaycaster.set( origin, direction.normalize() );
+    //     this.worldRaycaster.set( origin, direction.normalize() );
 
-        const worldPoints = this.scene.getObjectByName('worldpointcloud');
-        const intersects = worldPoints ? this.worldRaycaster.intersectObjects( [worldPoints], false ): [];
+    //     const worldPoints = this.scene.getObjectByName('worldpointcloud');
+    //     const intersects = worldPoints ? this.worldRaycaster.intersectObjects( [worldPoints], false ): [];
 
-        if( intersects && intersects.length > 0){
+    //     if( intersects && intersects.length > 0){
 
-            // plotting highlight sphere
-            this.worldIntersectSphere.position.copy(intersects[0].point);
-            this.worldIntersectSphere.scale.set(1,1,1);
+    //         // plotting highlight sphere
+    //         this.worldIntersectSphere.position.copy(intersects[0].point);
+    //         this.worldIntersectSphere.scale.set(1,1,1);
 
-            if( line ){
-                this.gazeLine.geometry = new THREE.BufferGeometry().setFromPoints( [origin, intersects[0].point] );
-            }
+    //         if( line ){
+    //             this.gazeLine.geometry = new THREE.BufferGeometry().setFromPoints( [origin, intersects[0].point] );
+    //         }
             
-            return intersects[0].point;
+    //         return intersects[0].point;
 
-        }
+    //     }
 
-        return new THREE.Vector3(0,0,0);
+    //     return new THREE.Vector3(0,0,0);
 
-    }
+    // }
 
-    public get_mouse_intersected_point( camera: THREE.PerspectiveCamera, activeLayers: string[], layers: { [layerName: string]: any }  ):  { mousePosition: MousePosition, layerName: string, intersect: any[] } {
+    public get_mouse_intersected_point( camera: THREE.PerspectiveCamera, activeLayers: string[] ):  { mousePosition: MousePosition, layerName: string, intersect: any[] } {
 
         // update the picking ray with the camera and pointer position
         this.rayCaster.setFromCamera( this.pointer, camera );
@@ -85,12 +85,13 @@ export class Raycaster {
             const sceneObject = this.scene.getObjectByName(layerName);
 
             if( !sceneObject || !sceneObject.visible ) continue;
+            
 
             const intersects = sceneObject ? this.rayCaster.intersectObjects( [sceneObject], false ) : [];
-            if( intersects.length > 0 ){
+            if( intersects.length > 0 && this.pointerEvent ){
 
                 // highlighting selection
-                this.highlight_handler( layerName, intersects, layers[layerName] );
+                // this.highlight_handler( layerName, intersects, layers[layerName] );
 
                 return {
                     mousePosition: {top: this.pointerEvent.offsetY, left: this.pointerEvent.offsetX},
@@ -101,10 +102,10 @@ export class Raycaster {
         };
 
         // setting visibility
-        this.clear_highlight();
+        // this.clear_highlight();
 
         // returning positions
-        return {mousePosition: {top: 0, left: 0}, layerName: 'none', intersect: []};
+        return {mousePosition: {top: 0, left: 0}, layerName: null, intersect: []};
 
         // If nothing selected....clearing highlight
         // return {
@@ -172,66 +173,66 @@ export class Raycaster {
         
     }
 
-    public highlight_handler( layerName: string, intersects: any, layer: any ): void {
+    // public highlight_handler( layerName: string, intersects: any, layer: any ): void {
 
-        if( layerName === 'gazepointcloud' ){
+    //     if( layerName === 'gazepointcloud' ){
 
-            // setting visibility
-            this.gazeIntersectSphere.visible = true;
-            this.worldIntersectSphere.visible = true;
-            this.gazeLine.visible = true;
+    //         // setting visibility
+    //         this.gazeIntersectSphere.visible = true;
+    //         this.worldIntersectSphere.visible = true;
+    //         this.gazeLine.visible = true;
 
-            // plotting highlight sphere
-            this.gazeIntersectSphere.position.copy(intersects[0].point);
-            this.gazeIntersectSphere.scale.set(1,1,1);
+    //         // plotting highlight sphere
+    //         this.gazeIntersectSphere.position.copy(intersects[0].point);
+    //         this.gazeIntersectSphere.scale.set(1,1,1);
 
-            // console.log('Layer test: ', layer);
+    //         // console.log('Layer test: ', layer);
 
-            // plotting normal line
-            // TODO: Trace raycaster from this line
-            const objectIndex: number = intersects[0].index;
-            const objectInfo: { point: number[], normal: number[], timestamp: number } = layer.get_object_by_index(objectIndex);
+    //         // plotting normal line
+    //         // TODO: Trace raycaster from this line
+    //         const objectIndex: number = intersects[0].index;
+    //         const objectInfo: { point: number[], normal: number[], timestamp: number } = layer.get_object_by_index(objectIndex);
 
-            // const 
-            const origin: THREE.Vector3 = intersects[0].point;
+    //         // const 
+    //         const origin: THREE.Vector3 = intersects[0].point;
 
-            // const rawGazeDirection: number[] = intersects[0].object.userData['normals'][intersects[0].index];
-            // const direction: THREE.Vector3 = new THREE.Vector3(rawGazeDirection[0], rawGazeDirection[1], rawGazeDirection[2] );   
+    //         // const rawGazeDirection: number[] = intersects[0].object.userData['normals'][intersects[0].index];
+    //         // const direction: THREE.Vector3 = new THREE.Vector3(rawGazeDirection[0], rawGazeDirection[1], rawGazeDirection[2] );   
 
-            // setting current gaze direction line
-            // const origin: THREE.Vector3 = intersects[0].point;
+    //         // setting current gaze direction line
+    //         // const origin: THREE.Vector3 = intersects[0].point;
             
-            // intersection with world
-            // this.get_intersected_world_point( origin, direction, true );
+    //         // intersection with world
+    //         // this.get_intersected_world_point( origin, direction, true );
 
 
 
-        }
+    //     }
 
-        if( layerName === 'projectedgazepointcloud' ){
+    //     // if( layerName === 'projectedgazepointcloud' ){
 
-            // setting visibility
-            this.gazeIntersectSphere.visible = true;
-            this.worldIntersectSphere.visible = true;
-            this.gazeLine.visible = true;
+    //     //     // setting visibility
+    //     //     this.gazeIntersectSphere.visible = true;
+    //     //     this.worldIntersectSphere.visible = true;
+    //     //     this.gazeLine.visible = true;
 
-            // plotting highlight sphere
-            this.gazeIntersectSphere.position.copy(intersects[0].point);
-            this.gazeIntersectSphere.scale.set(1,1,1);
+    //     //     // plotting highlight sphere
+    //     //     this.gazeIntersectSphere.position.copy(intersects[0].point);
+    //     //     this.gazeIntersectSphere.scale.set(1,1,1);
 
-        }
+    //     // }
 
 
-    }
+    // }
 
-    public clear_highlight(): void {
+    // public clear_highlight(): void {
 
-        // setting visibility
-        this.gazeIntersectSphere.visible = false;
-        this.worldIntersectSphere.visible = false;
-        this.gazeLine.visible = false;
+    //     // setting visibility
+    //     this.gazeIntersectSphere.visible = false;
+    //     this.worldIntersectSphere.visible = false;
+    //     this.gazeLine.visible = false;
 
-    }
+    // }
 
     public on_pointer_move( event: MouseEvent, canvasContainer: HTMLElement ): void {
 
@@ -246,7 +247,7 @@ export class Raycaster {
     }
 
     public set_scene_events( canvasContainer: HTMLElement ): void {
-        canvasContainer.addEventListener('pointermove', (event) => {this.on_pointer_move( event, canvasContainer)})
+        canvasContainer.addEventListener('pointermove', (event) => { this.on_pointer_move( event, canvasContainer)} );
     }
     
 

@@ -1,11 +1,14 @@
 import * as THREE from 'three';
+import { Object3D } from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { EventsManager } from '../../../tabs/HistoricalDataView/services/EventsManager';
 import TimestampManager from '../../../tabs/HistoricalDataView/services/TimestampManager';
-import { MousePosition } from '../types/types';
+import { CameraParams, MousePosition } from '../types/types';
+import { Dataset } from './Dataset';
 
 import { Raycaster } from './raycaster/Raycaster';
-import { SceneConfiguration } from './SceneConfiguration';
+import { SceneHighlight } from './SceneHighlight';
+import { SceneManager } from './SceneManager';
 import { Tooltip } from './Tooltip';
 
 export class Scene {
@@ -22,24 +25,27 @@ export class Scene {
     public orbitControls!: OrbitControls;
     public rayCaster!: Raycaster;
     public tooltip!: Tooltip;
-    public sceneConfiguration!: SceneConfiguration;
-
-    public layers: { [layerName: string]: any } = {};
-    public interactiveLayers: string[] = ['projectedgazepointcloud', 'gazepointcloud'];
+    public sceneHighlight!: SceneHighlight; 
+    
+    public dataset!: Dataset;
+    public sceneManager!: SceneManager;
 
     // TODO: remove it from here
     public lastSelectedTimestamp: number = 0;
 
     constructor(){}
 
-    public init( containerRef: HTMLElement, tooltipContainerRef: HTMLElement, cameraPosition: number[], near: number = 0.1, far: number = 10  ): void {
+    public init( containerRef: HTMLElement, tooltipContainerRef: HTMLElement, cameraParams: CameraParams, dataset: Dataset  ): void {
 
         // saving container ref
         this.container = containerRef;
         const [containerWidth, containerHeight] = [this.container.offsetWidth, this.container.offsetHeight];
 
+        // saving dataset
+        this.dataset = dataset;
+
         // initializing camera
-        this.initialize_camera( containerWidth, containerHeight, cameraPosition );
+        this.initialize_camera( containerWidth, containerHeight, cameraParams.position );
 
         // initializing scene
         this.initialize_scene();
@@ -50,7 +56,10 @@ export class Scene {
         // initializing controls
         this.initialize_orbit_controls();
         this.initialize_raycaster();
-        this.initialize_scene_configuration();
+        this.initialize_scene_highlight();
+
+        // creating scene manager
+        this.initialize_scene_manager();
 
         // creating tooltip
         this.initialize_tooltip( tooltipContainerRef );
@@ -60,49 +69,36 @@ export class Scene {
     public render() {
 
         requestAnimationFrame( () => this.render() );
-        
+
         // orbit controls
         this.orbitControls.update();
 
         // picking
-        // const intersect: {mousePosition: {top: number, left: number}, intersectPosition: THREE.Vector3, timestamp: number, gaze: { origin: THREE.Vector3, direction: THREE.Vector3 } } = this.rayCaster.get_intersected_point( this.camera );
-        const intersect: { mousePosition: MousePosition, layerName: string, intersect: any[] } = this.rayCaster.get_mouse_intersected_point( this.camera, this.interactiveLayers, this.layers );
+        const intersection: { mousePosition: MousePosition, layerName: string, intersect: any[] } = this.rayCaster.get_mouse_intersected_point( this.camera, this.dataset.get_interactive_point_cloud_names() );
         
+        if( intersection.intersect.length > 0 ){
 
-        if( intersect.intersect.length > 0 ){
+            // highlighting selected point cloud
+            const timestamp: number = this.sceneHighlight.on_point_cloud_highlight( intersection.layerName, intersection.intersect );
 
-            this.tooltip.position_tooltip(intersect.mousePosition.top, intersect.mousePosition.left);
+            if( timestamp === -1 ) return;
 
-            const layer: any = this.layers[intersect.layerName]; 
-            const objectIndex: number = intersect.intersect[0].index;
-            
-            const layerTimestamp: number = layer.timestamps[objectIndex];
+            // updating tooltip
+            this.tooltip.position_tooltip(intersection.mousePosition.top, intersection.mousePosition.left);
+            this.tooltip.set_video_timestamp(TimestampManager.get_elapsed_time(timestamp));
 
-            // setting video timestamp
-            this.tooltip.set_video_timestamp(TimestampManager.get_elapsed_time(layerTimestamp));
-
-            // emitting events
-            if( layerTimestamp !== this.lastSelectedTimestamp ){
-                this.lastSelectedTimestamp = layerTimestamp;
-                EventsManager.emit('onTimestampSelected',  {timestamp : layerTimestamp} );
-            } 
-
+            // firing event
+            EventsManager.emit('onTimestampSelected',  {timestamp} );
 
         } else {
 
+            this.sceneHighlight.on_point_cloud_offlight();
             this.tooltip.position_tooltip(0,0);
         }
-
 
         // rendering
         this.renderer.render( this.scene, this.camera );
 
-    }
-
-    public save_layer( layerName: string, layerObject: any ): void {
-
-        this.layers[layerName] = layerObject;
-    
     }
 
     public clear_scene(): void {
@@ -111,6 +107,8 @@ export class Scene {
             this.scene.remove(this.scene.children[0]);
         }  
     }
+
+    // *********************** PRIVATE METHODS *********************** //
 
     private initialize_orbit_controls(): void {
 
@@ -160,13 +158,15 @@ export class Scene {
     }
 
     private initialize_tooltip( tooltipContainer: HTMLElement ): void {
+
         this.tooltip = new Tooltip( tooltipContainer )
+    
     }
 
-    private initialize_scene_configuration(): void {
+    private initialize_scene_manager(): void {
 
-        this.sceneConfiguration = new SceneConfiguration( this.scene );
-
+        this.sceneManager = new SceneManager( this.scene );
+    
     }
 
     private initialize_raycaster() {
@@ -174,5 +174,16 @@ export class Scene {
         this.rayCaster = new Raycaster( this.scene );
         this.rayCaster.set_scene_events( this.container );
         
+    }
+
+    private initialize_scene_highlight(): void {
+
+        this.sceneHighlight = new SceneHighlight( this.rayCaster, this.dataset );
+        const highlightObjects: Object3D[] = this.sceneHighlight.get_layer_highlights();
+
+        highlightObjects.forEach( (object: Object3D) => {
+            this.scene.add( object );
+        });
+
     }
 }
