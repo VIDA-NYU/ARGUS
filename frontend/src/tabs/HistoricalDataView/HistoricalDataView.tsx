@@ -16,8 +16,8 @@ import {
   // useDeleteRecording, 
   getPointCloudData, 
   getEyeData, 
-  // getIMUAccelData, 
-  // getIMUGyroData, 
+  getIMUAccelData, 
+  getIMUGyroData, 
   getIMUMagData,  
   getPerceptionData} from '../../api/rest';
 
@@ -46,12 +46,19 @@ const HistoricalDataView = () => {
 
   const handleChangeSelectRecording = async (newSelection) => {
 
+    console.log("Entered handleChangeSelectRecording");
+
     setSelectedRecordingName(newSelection);
     setLoadingData(true);
 
     const mainCameraPath: string = getVideoPath( newSelection, 'main' );
+    const IMUAccelFile = await getIMUAccelData( newSelection);
+    console.log(IMUAccelFile);
+    const IMUGyroFile = await getIMUGyroData( newSelection);
+    const IMUMagFile = await getIMUMagData( newSelection);
     const pointCloudJSONFile = await getVoxelizedPointCloudData( newSelection );
     const eyeGazeJSONFile = await getEyeData( newSelection );
+    console.log(eyeGazeJSONFile);
     // const perceptionJSONFile = await getPerceptionData( newSelection );   
 
     // // initializing timestamps
@@ -60,8 +67,11 @@ const HistoricalDataView = () => {
     
 
     // // setting session info
-    setSessionInfo({recordingName:newSelection, mainCameraPath, pointCloudJSONFile, eyeGazeJSONFile});
-
+    setSessionInfo({recordingName:newSelection, mainCameraPath, pointCloudJSONFile, eyeGazeJSONFile, IMUAccelFile, IMUGyroFile, IMUMagFile});
+    console.log(typeof sessionInfo);
+    console.log(sessionInfo);
+    console.log(sessionInfo.eyeGazeJSONFile);
+    console.log(sessionInfo.IMUAccelFile);
     // // setting spinner flag
     setLoadingData(false);
 
