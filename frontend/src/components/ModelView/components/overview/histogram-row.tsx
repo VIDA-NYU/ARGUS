@@ -18,7 +18,24 @@ interface HistogramRowProps {
 export default function HistogramRow({transform, detectedItems, cellSize, actionCellHeight,
                                       yAxisLabelOffsetY, yAxisLabelWidth,
                                       index, xScale, playedTimes, timedData}: HistogramRowProps){
-    const actionRef = useRef(null);                                  
+    const actionRef = useRef(null);
+    const tools_ingredients = {
+        'cutting board': 'board',
+        'butter knife': 'knife',
+        'paper towel': 'napkin',
+        'flour tortilla': 'tortilla',
+        'toothpicks': 'toothpicks',
+        'dental floss (string)': 'string',
+        '~12-inch strand of dental floss': 'string',
+        'plate': 'plate',
+        'Jar of peanut butter': 'nut butter',
+        'Jar of nut butter': 'nut butter',
+        'Jar of jelly / jam': 'jam',
+        'Jar of jelly': 'jam'
+    }
+    const splitLabel = timedData.label.split(/[ :]+/);
+    const shortLabel = splitLabel.length > 2 ?  splitLabel[0] + " " + splitLabel[1] : timedData.label;
+
     return (
         <g
             transform={transform}
@@ -29,7 +46,7 @@ export default function HistogramRow({transform, detectedItems, cellSize, action
                 x={0}
                 y={cellSize / 2 + yAxisLabelOffsetY}
                 fontSize = {"x-small"}
-            > {timedData.label.slice(0, 10)}...
+            > {Object.keys(tools_ingredients).includes(timedData.label) ? tools_ingredients[timedData.label] : shortLabel.replaceAll(',','').replaceAll('-','')}
             </text>
             <g
                 transform={`translate(${yAxisLabelWidth}, 0)`}

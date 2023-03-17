@@ -14,7 +14,7 @@ import Legend from "./legend";
 const Container = styled(Card)({})
 
 let xCellNumber = 420; //50
-const chartWidth = 420; //1440
+const chartWidth = 290; //1440
 const cellMargin = 1; // 5
 
 function computeCellSize(cellNumber, width) {
@@ -40,7 +40,7 @@ const marginTop = 40;
 
 const chartErrorNormalColor = "#e3e3e3";
 const chartErrorHighlightColor = "red";
-const yAxisLabelWidth = 60; //70 // label width
+const yAxisLabelWidth = 88; //70 // label width
 const yAxisLabelOffsetY = 6;
 
 export default function TemporalOverview({currentTime, boundingBoxFrameData, reasoningFrameData, reasoningData, boundingBoxData,
@@ -195,7 +195,7 @@ export default function TemporalOverview({currentTime, boundingBoxFrameData, rea
                     >
                         Time (mm:ss)
                     </text>
-                    <Legend title={"Confidence (%)"} rangeFromTo={[0,100]} chartWidth={chartWidth} cellSize={cellSize} yAxisLabelOffsetY={yAxisLabelOffsetY} yAxisLabelWidth={yAxisLabelWidth} />
+                    <Legend title={"Confidence (%)"} rangeFromTo={[0,100]} chartWidth={chartWidth} cellSize={cellSize} yAxisLabelOffsetY={yAxisLabelOffsetY} />
 
                     {/* Tracking time: Draw a vertical line that intersect both actions and objects charts */}
                     <g transform={`translate(${yAxisLabelWidth + xScale(state.played)}, ${0})`}>

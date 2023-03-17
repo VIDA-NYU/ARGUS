@@ -7,14 +7,15 @@ interface HistogramRowProps {
     chartWidth: number,
     cellSize: number,
     yAxisLabelOffsetY: number,
-    yAxisLabelWidth: number,
 }
 
-export default function Legend({title, rangeFromTo, chartWidth, cellSize, yAxisLabelOffsetY, yAxisLabelWidth}: HistogramRowProps){                                
+export default function Legend({title, rangeFromTo, chartWidth, cellSize, yAxisLabelOffsetY}: HistogramRowProps){
+
     const colorConfidence =  range(0, 1, 0.001);
+    const legendWidth = 40;
     return (            
         <g
-            transform={`translate(${chartWidth - 60}, ${-20})`}
+            transform={`translate(${chartWidth - legendWidth}, -20)`}
         >
             <text
                 x={55}
@@ -35,14 +36,14 @@ export default function Legend({title, rangeFromTo, chartWidth, cellSize, yAxisL
             > {rangeFromTo[1]}
             </text>
             <g
-                transform={`translate(${yAxisLabelWidth-4}, 0)`}
+                transform={`translate(55, 0)`}
             >
                 {
                     colorConfidence.map((i, j) => {
                         return (
                             <g
                                 key={`action-${j}-cell-${j}`}
-                                transform={`translate(${i*68}, 2)`}
+                                transform={`translate(${i*69}, 2)`}
                             >
                                 <rect
                                     x={0}
