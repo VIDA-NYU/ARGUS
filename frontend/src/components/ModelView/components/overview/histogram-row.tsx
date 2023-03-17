@@ -2,9 +2,13 @@ import {interpolateBuPu} from "d3-scale-chromatic";
 import {Tooltip} from "react-svg-tooltip";
 import {useRef} from "react";
 
+interface detectedItems {
+    label: string,
+    confidence: number
+}
 interface HistogramRowProps {
     transform: string,
-    detectedItems : {isVideoStart: boolean, data: string []},
+    detectedItems : {isVideoStart: boolean, data: detectedItems []},
     cellSize: number,
     actionCellHeight: number
     yAxisLabelOffsetY: number,
@@ -36,18 +40,29 @@ export default function HistogramRow({transform, detectedItems, cellSize, action
     const splitLabel = timedData.label.split(/[ :]+/);
     const shortLabel = splitLabel.length > 2 ?  splitLabel[0] + " " + splitLabel[1] : timedData.label;
 
+    const indexDetectedItem = detectedItems.data.findIndex(item => item.label === timedData.label);
+
     return (
         <g
             transform={transform}
-            fillOpacity={detectedItems.isVideoStart ? '1' : detectedItems.data.includes(timedData.label) ? "1" : '0.1'}
+            fillOpacity={detectedItems.isVideoStart ? '1' : detectedItems.data.map(a => a.label).includes(timedData.label) ? "1" : '0.1'}
         >
             <text
                 ref={actionRef}
                 x={0}
                 y={cellSize / 2 + yAxisLabelOffsetY}
                 fontSize = {"x-small"}
-            > {Object.keys(tools_ingredients).includes(timedData.label) ? tools_ingredients[timedData.label] : shortLabel.replaceAll(',','').replaceAll('-','')}
+            > {Object.keys(tools_ingredients).includes(timedData.label) ? tools_ingredients[timedData.label] : shortLabel.replace(/[-,]/g,'')}
             </text>
+            <rect
+                x={-2}
+                y={-2}
+                width={detectedItems.isVideoStart ? 0 : detectedItems.data.map(a => a.label).includes(timedData.label) ? detectedItems.data[indexDetectedItem].confidence*yAxisLabelWidth : 0}
+                height={actionCellHeight+2}
+                fill={'#F8DE7E'} //still thinking about the color we need to use here
+                fillOpacity={0.4}
+            >
+            </rect>
             <g
                 transform={`translate(${yAxisLabelWidth}, 0)`}
             >

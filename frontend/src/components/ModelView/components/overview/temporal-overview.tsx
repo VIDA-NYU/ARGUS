@@ -96,11 +96,11 @@ export default function TemporalOverview({currentTime, boundingBoxFrameData, rea
     const individualBoundingBoxList = boundingBoxStatus && extractIndividualBoundingBoxData(boundingBoxTimedData);
 
     // find detected actions and objects
-    const detectedObjects = boundingBoxFrameData && boundingBoxFrameData.data ? boundingBoxFrameData.data.filter(d => d.confidence > annotationData.perceptronParameters.objectConfidenceThreshold).map(d => d.label) : [];
+    const detectedObjects = boundingBoxFrameData && boundingBoxFrameData.data ? boundingBoxFrameData.data.filter(d => d.confidence > annotationData.perceptronParameters.objectConfidenceThreshold).map(d => ({'label': d.label, 'confidence': d.confidence}) ) : [];
     const detectedActions = clipActionStatus ?
-                            clipActionFrameData && Object.keys(clipActionFrameData).length > 0 ? Object.keys(clipActionFrameData).filter((key) => clipActionFrameData[key]> 0.1)  : []
+                            clipActionFrameData && Object.keys(clipActionFrameData).length > 0 ? Object.keys(clipActionFrameData).filter((key) => clipActionFrameData[key]> 0.1).map(d => ({'label': d, 'confidence': clipActionFrameData[d]}) )  : []
                             :
-                            egovlpActionFrameData && Object.keys(egovlpActionFrameData).length > 0 ? Object.keys(egovlpActionFrameData).filter((key) => egovlpActionFrameData[key]> 0.1) : [];
+                            egovlpActionFrameData && Object.keys(egovlpActionFrameData).length > 0 ? Object.keys(egovlpActionFrameData).filter((key) => egovlpActionFrameData[key]> 0.1).map(d => ({'label': d, 'confidence': egovlpActionFrameData[d]}) ) : [];
 
     const cellHeight = 10; //5
     let computeContainerHeight = (a, b) => {
