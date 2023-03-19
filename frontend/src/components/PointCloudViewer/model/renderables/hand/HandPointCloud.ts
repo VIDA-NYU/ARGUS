@@ -16,7 +16,7 @@ export class HandPointCloud extends PointCloud {
     constructor(public name: string, public points: number[][], public colors: number[][], public normals: number[][], public timestamps: number[] ){
 
         // initializing super class
-        super(name, points, colors, normals);
+        super(name, points, colors, normals, timestamps);
 
     }
 

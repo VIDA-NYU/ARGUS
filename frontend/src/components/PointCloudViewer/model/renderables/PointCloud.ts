@@ -14,7 +14,7 @@ export abstract class PointCloud {
     // Interactive flag
     public interactive: boolean = true;
 
-    constructor( public name: string, public points: number[][], public colors: number[][], public normals: number[][] ){
+    constructor( public name: string, public points: number[][], public colors: number[][], public normals: number[][], public timestamps: number[] ){
 
         // calculating extent
         this.extent = DataUtils.calculate_extents( points );

@@ -6,6 +6,9 @@ import { PointCloud } from "../model/renderables/PointCloud";
 import { WorldPointCloud } from "../model/renderables/world/WorldPointCloud";
 import { DataParser } from "../utils/DataParser";
 import { BASE_COLORS } from "../constants/Constants";
+import { Raycaster } from "../model/raycaster/Raycaster";
+import { GazeProjectionPointCloud } from "../model/renderables/gaze/GazeProjectionPointCloud";
+import * as THREE from 'three';
 
 export class DataLoader {
 
@@ -47,4 +50,37 @@ export class DataLoader {
         return pointClouds;
 
     } 
+
+
+    public static project_point_cloud( name, originPointCloud: PointCloud, targetPointCloud: PointCloud, raycaster: Raycaster ): PointCloud {
+
+        const points: number[][] = [];
+        const timestamps: number[] = [];
+        
+        // Using the normal vector is the direction vector. If none is provided, we can't calculate the projection.
+        if(originPointCloud.normals.length === 0) return new GazeProjectionPointCloud( name, [], [], [], []);
+
+        for(let i = 0; (i < originPointCloud.points.length) && (i < originPointCloud.normals.length); i++ ){
+            
+            const origin: THREE.Vector3 = new THREE.Vector3( originPointCloud.points[i][0], originPointCloud.points[i][1], originPointCloud.points[i][2]  );
+            const direction: THREE.Vector3 = new THREE.Vector3( originPointCloud.normals[i][0], originPointCloud.normals[i][1], originPointCloud.normals[i][2]  );
+
+            // normalizing direction
+            direction.normalize();
+
+            // const rayDirection: THREE.Vector3 = origin.clone().add( direction );
+            const intersections: THREE.Vector3[] = raycaster.calculate_point_cloud_intersection( origin, direction, targetPointCloud );
+            points.push(intersections[0].toArray());
+            timestamps.push(originPointCloud.timestamps[i]);
+            
+        }       
+
+        return new GazeProjectionPointCloud( name, points, [], [], timestamps );
+
+    }
+
+    
+
+
+
 }

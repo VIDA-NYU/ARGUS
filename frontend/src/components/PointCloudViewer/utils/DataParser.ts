@@ -41,7 +41,6 @@ export class DataParser {
 
     }
 
-
     public static parse_gaze_point_cloud_data( dataset: GazePointCloudRaw[] ): GazeOriginPointCloud {
 
         const points: number[][] = [];

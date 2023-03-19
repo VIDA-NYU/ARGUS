@@ -9,6 +9,10 @@ import { PointCloud } from "./renderables/PointCloud";
 import { VoxelCloud } from "./renderables/VoxelCloud";
 import { DataUtils } from "../utils/DataUtils";
 import { VoxelCell } from "./voxel/VoxelCell";
+import { GazeProjectionPointCloud } from "./renderables/gaze/GazeProjectionPointCloud";
+import { Raycaster } from "./raycaster/Raycaster";
+
+import * as THREE from 'three';
 
 export class Dataset {
 
@@ -33,6 +37,9 @@ export class Dataset {
         this.worldVoxelGrid = this.create_world_voxel_grid();
         this.voxelClouds = this.create_voxel_clouds();
         this.videos = this.store_videos( rawData );
+
+        // create derived point clouds
+        
 
     }  
 
@@ -70,6 +77,13 @@ export class Dataset {
 
     public store_videos( rawData: any ): { [videoName: string]: string } {
         return { 'mainCamera': rawData.videoData };
+    }
+
+    public create_projection( name: string, originPointCloud: PointCloud, targetPointCloud: PointCloud, raycaster: Raycaster ): void {
+
+        const pointCloud: PointCloud = DataLoader.project_point_cloud( name, originPointCloud, targetPointCloud, raycaster );
+        this.pointClouds[name] = pointCloud;
+
     }
 
     public create_world_voxel_grid(): WorldVoxelGrid {

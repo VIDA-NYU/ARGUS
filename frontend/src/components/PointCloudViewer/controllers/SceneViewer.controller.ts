@@ -26,10 +26,12 @@ export class SceneViewerController {
 
         // adding point clouds
         pointClouds.forEach( (pointCloud: PointCloud) => {
-            
-            const pointCloudObject: THREE.Points = this.scene.sceneManager.add_point_cloud( pointCloud );
-            pointCloud.threeObject = pointCloudObject;
 
+            if (!(this.scene.scene.getObjectByName(pointCloud.name))){
+                const pointCloudObject: THREE.Points = this.scene.sceneManager.add_point_cloud( pointCloud );
+                pointCloud.threeObject = pointCloudObject;
+            }
+            
         });
 
     }
@@ -75,6 +77,12 @@ export class SceneViewerController {
             return;
 
         }
+
+    }
+
+    public create_projections( ): void {
+
+        this.dataset.create_projection( 'gazeprojection-pointcloud', this.dataset.pointClouds['gazeorigin-pointcloud'], this.dataset.pointClouds['world-pointcloud'], this.scene.rayCaster );
 
     }
 

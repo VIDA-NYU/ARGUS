@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { Scene, Vector3 } from 'three';
 import { MousePosition } from '../../types/types';
+import { PointCloud } from '../renderables/PointCloud';
 
 export class Raycaster {
 
@@ -49,6 +50,24 @@ export class Raycaster {
 
     }
 
+    public calculate_point_cloud_intersection(origin: THREE.Vector3, direction: THREE.Vector3, pointCloud: PointCloud ): THREE.Vector3[] {
+
+        this.rayCaster.params.Points.threshold = 0.01;
+        this.rayCaster.set( origin, direction );
+
+        let intersections: any [] = []
+        do{
+            // intersections = this.rayCaster.intersectObjects( [ pointCloud.threeObject ], false );
+            intersections = this.rayCaster.intersectObject(this.scene.getObjectByName(pointCloud.name))
+            // intersections = this.rayCaster.intersectObject( pointCloud.threeObject, false );
+
+            this.rayCaster.params.Points.threshold += 0.005;
+        } while( intersections.length === 0 )  
+
+        return intersections.map( intersection => intersection.point );
+
+    }
+
     // public get_intersected_world_point( origin: Vector3, direction: Vector3, line: boolean = false ): THREE.Vector3 {
 
     //     this.worldRaycaster.set( origin, direction.normalize() );
@@ -85,13 +104,9 @@ export class Raycaster {
             const sceneObject = this.scene.getObjectByName(layerName);
 
             if( !sceneObject || !sceneObject.visible ) continue;
-            
 
             const intersects = sceneObject ? this.rayCaster.intersectObjects( [sceneObject], false ) : [];
             if( intersects.length > 0 && this.pointerEvent ){
-
-                // highlighting selection
-                // this.highlight_handler( layerName, intersects, layers[layerName] );
 
                 return {
                     mousePosition: {top: this.pointerEvent.offsetY, left: this.pointerEvent.offsetX},
@@ -101,20 +116,8 @@ export class Raycaster {
             }                    
         };
 
-        // setting visibility
-        // this.clear_highlight();
-
         // returning positions
         return {mousePosition: {top: 0, left: 0}, layerName: null, intersect: []};
-
-        // If nothing selected....clearing highlight
-        // return {
-        //     mousePosition: {top: this.pointerEvent.offsetY, left: this.pointerEvent.offsetX},
-        //     layerName: null,
-        //     intersect: null
-        // }
-
-        
 
         // checking visible layers
 

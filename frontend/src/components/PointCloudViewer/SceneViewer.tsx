@@ -12,7 +12,6 @@ const SceneViewer = ( {sceneData} : any ) => {
     // DOM Refs
     const containerRef = useRef(null);
     const tooltipContainerRef = useRef(null);
-    console.log(sceneData);
 
     const sceneViewerController = useMemo( () => new SceneViewerController(), []);
 
@@ -27,7 +26,6 @@ const SceneViewer = ( {sceneData} : any ) => {
     useEffect(() => {
 
         if( 'pointCloudData' in sceneData ){
-            console.log(sceneData)
         
             // clearing scene
             sceneViewerController.scene?.clear_scene();
@@ -40,6 +38,10 @@ const SceneViewer = ( {sceneData} : any ) => {
             // adding clouds to scene
             sceneViewerController.add_point_clouds_to_scene();
             sceneViewerController.add_voxel_clouds_to_scene();
+
+            // creating derived data
+            sceneViewerController.create_projections();
+            sceneViewerController.add_point_clouds_to_scene();
 
             // render
             sceneViewerController.scene.render();
@@ -135,7 +137,7 @@ const SceneViewer = ( {sceneData} : any ) => {
                 position: 'absolute',
                 display: 'flex',
                 backgroundColor: 'white'}}>
-                    <IMUViewer
+                    {/* <IMUViewer
                        //type={dataType.JSON} 
                         title={"IMU Data"}
                         data={[sceneData.IMUAccelData, sceneData.IMUGyroData, sceneData.IMUMagData]}
@@ -143,7 +145,7 @@ const SceneViewer = ( {sceneData} : any ) => {
                         //state={state} 
                         //recordingMetaData={recordingData}
                         >
-                    </IMUViewer>
+                    </IMUViewer> */}
             </div>
 
             <div style={{ 

@@ -75,14 +75,14 @@ export class Scene {
 
         // picking
         const intersection: { mousePosition: MousePosition, layerName: string, intersect: any[] } = this.rayCaster.get_mouse_intersected_point( this.camera, this.dataset.get_interactive_point_cloud_names() );
-        
+
         if( intersection.intersect.length > 0 ){
 
             // highlighting selected point cloud
             const timestamp: number = this.sceneHighlight.on_point_cloud_highlight( intersection.layerName, intersection.intersect );
 
             if( timestamp === -1 ) return;
-
+            
             // updating tooltip
             this.tooltip.position_tooltip(intersection.mousePosition.top, intersection.mousePosition.left);
             this.tooltip.set_video_timestamp(TimestampManager.get_elapsed_time(timestamp));

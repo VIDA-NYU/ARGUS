@@ -30,7 +30,7 @@ export class SceneManager {
         // adding to scene
         pointCloudObject.name = pointCloud.name;
         this.scene.add( pointCloudObject );
-
+        
         return pointCloudObject;
     
     }
