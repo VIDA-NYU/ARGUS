@@ -56,7 +56,7 @@ export class Scene {
         // initializing controls
         this.initialize_orbit_controls();
         this.initialize_raycaster();
-        this.initialize_scene_highlight();
+        // this.initialize_scene_highlight();
 
         // creating scene manager
         this.initialize_scene_manager();
@@ -176,7 +176,7 @@ export class Scene {
         
     }
 
-    private initialize_scene_highlight(): void {
+    public initialize_scene_highlight(): void {
 
         this.sceneHighlight = new SceneHighlight( this.rayCaster, this.dataset );
         const highlightObjects: Object3D[] = this.sceneHighlight.get_layer_highlights();

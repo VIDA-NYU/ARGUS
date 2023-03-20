@@ -79,7 +79,34 @@ export class DataLoader {
 
     }
 
+    public static load_perception_data( rawPerception: any[] ): { [timestamp: number]: { [className: string]: number }} {
+
+        const indexedPerception: { [timestamp: number]: { [className: string]: number }} = {};
+
+        rawPerception.forEach( (row: any) => {
+
+            const timestamp: number = parseInt(row.timestamp.split('-')[0]); 
+
+            const rowIndex: { [className: string]: number } = {};
+            const rowData: any[] = row.data;
+            rowData.forEach( (labelInfo: any) => {
+
+                const labels: string[] = labelInfo.labels;
+                const confidences: number[] = labelInfo.confidences;
+
+                for(let i = 0; (i < labels.length) && (i < confidences.length); i++){
+                    rowIndex[labels[i]] = confidences[i];
+                }
+
+            });
+
+            indexedPerception[timestamp] = rowIndex;
+
+        });
     
+        return indexedPerception;
+
+    } 
 
 
 

@@ -36,8 +36,7 @@ export class HandPointCloud extends PointCloud {
         const pointIndex: number = intersects[0].index;
         const point: THREE.Vector3 = new THREE.Vector3( this.points[pointIndex][0], this.points[pointIndex][1], this.points[pointIndex][2] );
 
-        this.highlightObjects['gazeIntersectSphere'].position.copy(point);   
-        this.highlightObjects['gazeIntersectSphere'].scale.set(1,1,1);
+        this.highlightObjects['gazeIntersectSphere'].position.copy(point);
 
         return this.timestamps[pointIndex];
 

@@ -4,7 +4,7 @@ import { VoxelCell } from "./VoxelCell";
 
 export class WorldVoxelGrid {
 
-    private cellSize: number = 0.035;
+    private cellSize: number = 0.05;
 
     constructor( public xExtent: number[], public yExtent: number[], public zExtent: number[] ){} 
 
@@ -54,33 +54,4 @@ export class WorldVoxelGrid {
         return voxelCells;
     }
     
-
-    // public get_voxel_cell( xIndex: number, yIndex: number, zIndex: number ): VoxelCell {
-
-    //     const voxelIndex: string = `${xIndex}-${yIndex}-${zIndex}`;
-    //     return this.voxelMap[voxelIndex]
-
-    // }
-
-    // public get_cell_size(): number{
-    //     return this.cellSize;
-    // }
-
-    // public get_voxel_cubes( streamCounter: string ): [VoxelCube[], number[]] {
-
-    //     const cubes: VoxelCube[] = [];
-    //     const counters: number[] = [];
-
-    //     for (const [ key, value] of Object.entries(this.voxelMap)) {
-            
-    //         if( streamCounter in value.counters ){
-    //             const cellCube: VoxelCube = value.get_voxel_cube(); 
-    //             cubes.push( cellCube );
-    //             counters.push( value.counters[streamCounter]);
-    //         }
-
-    //     }
-
-    //     return [cubes, counters];
-    // }
 }

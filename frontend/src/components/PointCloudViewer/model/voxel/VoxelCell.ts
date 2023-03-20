@@ -1,4 +1,3 @@
-// import { VoxelCube } from "../../../types/DataTypes";
 import { VoxelCube  } from '../../types/types';
 
 export class VoxelCell {
@@ -35,39 +34,22 @@ export class VoxelCell {
     }
 
     public is_point_cloud_indexed( pointCloudName: string ): boolean {
+
         return ( pointCloudName in this.pointCloudIndices );
+    
     }
 
-    // public get_counter( streamCounter: string ): number {
+    public get_point_cloud_density( pointCloudName: string ): number {
 
-    //     if( streamCounter in this.counters ) return this.counters[streamCounter];
-    //     return -1;
-    // }
+        return this.pointCloudIndices[pointCloudName].size;
+    
+    }
 
-    // public get_buffer_positions( sampleSize: number = -1 ): [number[], number[]] {
+    public get_point_cloud_indices( pointCloudName: string ): number[]{
 
-    //     if(sampleSize === -1){
-    //         return [ this.points.flat(), this.colors.flat() ];
-    //     }
+        if( !(pointCloudName in this.pointCloudIndices) ) return [];
+        return Array.from(this.pointCloudIndices[pointCloudName]);
 
-    //     if(sampleSize > this.points.length){
-    //         return [this.points.flat(), this.colors.flat()];
-    //     } 
-        
-    //     const bufferPositions: number[] = [];
-    //     const bufferColors: number[] = [];
-    //     for(let i = 0; i < sampleSize; i++ ){
-
-    //         const randomIndex: number = Math.floor(Math.random() * this.points.length);
-
-    //         // adding x, y, z
-    //         bufferPositions.push( this.points[randomIndex][0], this.points[randomIndex][1], this.points[randomIndex][2] );
-    //         bufferColors.push( this.colors[randomIndex][0], this.colors[randomIndex][1], this.colors[randomIndex][2] );
-
-    //     }
-
-    //     return [bufferPositions, bufferColors];
-
-    // }
+    }
 
 }

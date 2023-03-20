@@ -13,6 +13,8 @@ import { GazeProjectionPointCloud } from "./renderables/gaze/GazeProjectionPoint
 import { Raycaster } from "./raycaster/Raycaster";
 
 import * as THREE from 'three';
+import { BASE_COLORS } from "../constants/Constants";
+import TimestampManager from "../../../tabs/HistoricalDataView/services/TimestampManager";
 
 export class Dataset {
 
@@ -23,6 +25,9 @@ export class Dataset {
     public pointClouds: { [datasetName: string]: PointCloud  } = {};
     public voxelClouds: { [datasetName: string]: VoxelCloud  } = {};
     public videos: { [videoName: string]: string } = {};
+
+    // model outputs
+    public perception: { [timestamp: number]: { [className: string]: number }  } = {};
     
     constructor( rawData: any ){
 
@@ -34,21 +39,22 @@ export class Dataset {
 
         // saving point clouds
         this.pointClouds = DataLoader.load_point_clouds( rawData );
-        this.worldVoxelGrid = this.create_world_voxel_grid();
-        this.voxelClouds = this.create_voxel_clouds();
-        this.videos = this.store_videos( rawData );
-
-        // create derived point clouds
         
+        // saving videos
+        this.videos = this.store_videos( rawData );   
+
+        // saving models data
+        this.perception = DataLoader.load_perception_data( rawData.modelData.perception);
 
     }  
 
-    public create_voxel_clouds(): { [ voxelCloudName: string ]: VoxelCloud } {
+    public create_density_voxel_clouds(): void {
 
         const pointCloudNames: string [] = [
             'gazeorigin-pointcloud', 
             'lefthands-pointcloud',
-            'righthands-pointcloud'
+            'righthands-pointcloud',
+            'gazeprojection-pointcloud'
         ]
 
         // getting available point clouds
@@ -65,14 +71,54 @@ export class Dataset {
             const voxelCloud: VoxelCloud = new VoxelCloud( `${pointCloud.name.split('-')[0]}-voxelcloud`, pointCloudVoxelCells );
 
             // coloring voxel cells
-            voxelCloud.color_voxel_cells( pointCloud.get_base_color() );
+            // voxelCloud.color_voxel_cells( pointCloud.get_base_color() );
+            voxelCloud.color_voxel_cells_by_density( pointCloud.name );
 
             voxelClouds[ `${pointCloud.name.split('-')[0]}-voxelcloud` ] = voxelCloud;
 
         });
         
-        return voxelClouds;
+        this.voxelClouds = voxelClouds;
 
+    }
+
+    public create_model_voxel_cloud( pointCloudNames: string[], modelType: string, className: string = 'paper towel' ): void {
+
+        // voxel grid
+        const worldVoxelGrid: WorldVoxelGrid = this.worldVoxelGrid;
+
+        const pointClouds: PointCloud[] = this.get_point_clouds( pointCloudNames );
+        pointClouds.forEach( ( pointCloud: PointCloud ) => {
+
+            const pointCloudVoxelCells: VoxelCell[] = worldVoxelGrid.get_point_cloud_voxel_cells( pointCloud.name );
+            const voxelCloud: VoxelCloud = new VoxelCloud( `${pointCloud.name.split('-')[0]}-${className}-voxelcloud`, pointCloudVoxelCells );
+
+            // getting timestamps
+            const cellIndices: number[][] = voxelCloud.get_cell_indices( pointCloud.name );
+
+            const voxelCloudConfidences: number[][] = [];
+            for(let i = 0; i < cellIndices.length; i++){
+
+                const cellConfidences: number[] = [];
+                for(let j = 0; j < cellIndices[i].length; j++){
+                    
+                    const currentIndex: number = cellIndices[i][j];
+                    const currentTimestamp: number = this.pointClouds[pointCloud.name].timestamps[currentIndex]
+                    const closestModelTimestamp: number = TimestampManager.get_closest_timestamp( modelType, currentTimestamp );
+                    
+                    let confidence: number = 0;
+                    if( className in this.perception[closestModelTimestamp] ){
+                        confidence = this.perception[closestModelTimestamp][className];
+                    }
+                    cellConfidences.push(confidence);
+                }
+                voxelCloudConfidences.push(cellConfidences);
+            }
+
+            voxelCloud.color_voxel_cells_by_model_confidence(voxelCloudConfidences);
+            this.voxelClouds[ `${pointCloud.name.split('-')[0]}-${className}-voxelcloud` ] = voxelCloud;
+        });    
+        
     }
 
     public store_videos( rawData: any ): { [videoName: string]: string } {
@@ -82,11 +128,12 @@ export class Dataset {
     public create_projection( name: string, originPointCloud: PointCloud, targetPointCloud: PointCloud, raycaster: Raycaster ): void {
 
         const pointCloud: PointCloud = DataLoader.project_point_cloud( name, originPointCloud, targetPointCloud, raycaster );
+        pointCloud.baseColor = BASE_COLORS[name];
         this.pointClouds[name] = pointCloud;
 
     }
 
-    public create_world_voxel_grid(): WorldVoxelGrid {
+    public create_world_voxel_grid(): void {
 
         // getting available point clouds
         const pointClouds: PointCloud[] = this.get_point_clouds();
@@ -115,12 +162,11 @@ export class Dataset {
 
         });
 
-
-        return worldVoxelGrid;
+        this.worldVoxelGrid = worldVoxelGrid;
 
 
     }
-    
+
     public get_point_clouds( names: string[] = [] ): PointCloud[] {
 
         if( names.length === 0 ) return Object.values( this.pointClouds );
@@ -146,5 +192,6 @@ export class Dataset {
 
     }     
 
+    
 
 }

@@ -12,8 +12,8 @@ import { RenderParameters, RenderStyle } from './types/types';
 
 const ParameterBox = ( props ) => {
 
-    const pointCloudNames: string[] = [ 'gazeorigin-pointcloud', 'lefthands-pointcloud', 'righthands-pointcloud', 'world-pointcloud' ];
-    const voxelCloudNames: string[] = [ 'gazeorigin-voxelcloud', 'lefthands-voxelcloud', 'righthands-voxelcloud' ];
+    const pointCloudNames: string[] = [ 'gazeorigin-pointcloud', 'lefthands-pointcloud', 'righthands-pointcloud', 'gazeprojection-pointcloud', 'world-pointcloud' ];
+    const voxelCloudNames: string[] = [ 'gazeorigin-voxelcloud', 'lefthands-voxelcloud', 'righthands-voxelcloud', 'gazeprojection-voxelcloud' ];
 
     const visibilityChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
         props.onVisibilityChange(event.target.id, event.target.checked)

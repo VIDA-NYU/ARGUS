@@ -1,6 +1,6 @@
 import {styled} from "@mui/material";
 import {useEffect, useRef} from "react";
-import {scaleLinear, scaleBand, axisBottom, select} from "d3";
+import d3, {scaleLinear, scaleBand, axisBottom, select, timeFormat, timeMinute, tickFormat, range} from "d3";
 import {extractIndividualActionData, extractIndividualBoundingBoxData, preprocessTimestampData} from "./preprocess";
 import {schemeGnBu, interpolateTurbo, interpolateBuPu} from "d3-scale-chromatic";
 import {Tooltip} from "react-svg-tooltip"
@@ -8,11 +8,13 @@ import Card from "@mui/material/Card";
 import HistogramRow from "./histogram-row";
 import {generateHumanAnnotationTemporalData} from "../annotation/utils";
 import { preprocessFrameBoundingBoxData, syncWithVideoTime } from "../video/utils/wrapper";
+import Legend from "./legend";
+// import * from "color-legend-element";
 
 const Container = styled(Card)({})
 
 let xCellNumber = 420; //50
-const chartWidth = 420; //1440
+const chartWidth = 305; //1440
 const cellMargin = 1; // 5
 
 function computeCellSize(cellNumber, width) {
@@ -31,14 +33,16 @@ function generatePlayedTimes(cellNumber) {
 }
 
 // chart margins
-const yMargin = 2; //20
+const yMargin = 32; //20
 const xMargin = 10;  //50
+const xMarginLeft = 15;  //50
+const xMarginRight = 95;  //50
 const marginTop = 40;
 
 
 const chartErrorNormalColor = "#e3e3e3";
 const chartErrorHighlightColor = "red";
-const yAxisLabelWidth = 60; //70 // label width
+const yAxisLabelWidth = 98; //70 // label width
 const yAxisLabelOffsetY = 6;
 
 export default function TemporalOverview({currentTime, boundingBoxFrameData, reasoningFrameData, reasoningData, boundingBoxData,
@@ -47,6 +51,9 @@ export default function TemporalOverview({currentTime, boundingBoxFrameData, rea
     const visRef = useRef(null);
     const xAxisRef = useRef(null);
 
+    const thresholdObjectDetection = annotationData.perceptronParameters.objectConfidenceThreshold;
+    const thresholdActionDetection = 0.1;
+
     // create as many bins as seconds (duration of the session/video in seconds)
     xCellNumber = Math.floor(recordingMeta.duration_secs);
 
@@ -54,14 +61,20 @@ export default function TemporalOverview({currentTime, boundingBoxFrameData, rea
 
     useEffect(() => {
         if (xAxisRef.current) {
-            let xAxis = axisBottom(xScale);
+            let xAxis = axisBottom(xScaleTimeFormat)
+            .tickFormat((d:number) => timeFormat('%-M:%-S')(new Date(d * 1000) ));
             select(xAxisRef.current).call(xAxis)
         }
-    }, []);
+    }, [state.totalDuration]);
 
     let xScale = scaleLinear()
         .range([0, chartWidth])
         .domain([0, 1]);
+
+    let xScaleTimeFormat = scaleLinear()
+        .range([0, chartWidth])
+        .domain([0, Math.floor(state.totalDuration)]);
+
     // if(!reasoningData){
     //     return (<div></div>)
     // }
@@ -88,11 +101,11 @@ export default function TemporalOverview({currentTime, boundingBoxFrameData, rea
     const individualBoundingBoxList = boundingBoxStatus && extractIndividualBoundingBoxData(boundingBoxTimedData);
 
     // find detected actions and objects
-    const detectedObjects = boundingBoxFrameData && boundingBoxFrameData.data ? boundingBoxFrameData.data.filter(d => d.confidence > annotationData.perceptronParameters.objectConfidenceThreshold).map(d => d.label) : [];
+    const detectedObjects = boundingBoxFrameData && boundingBoxFrameData.data ? boundingBoxFrameData.data.filter(d => d.confidence > thresholdObjectDetection).map(d => ({'label': d.label, 'confidence': d.confidence}) ) : [];
     const detectedActions = clipActionStatus ?
-                            clipActionFrameData && Object.keys(clipActionFrameData).length > 0 ? Object.keys(clipActionFrameData).filter((key) => clipActionFrameData[key]> 0.1)  : []
+                            clipActionFrameData && Object.keys(clipActionFrameData).length > 0 ? Object.keys(clipActionFrameData).filter((key) => clipActionFrameData[key]> thresholdActionDetection).map(d => ({'label': d, 'confidence': clipActionFrameData[d]}) )  : []
                             :
-                            egovlpActionFrameData && Object.keys(egovlpActionFrameData).length > 0 ? Object.keys(egovlpActionFrameData).filter((key) => egovlpActionFrameData[key]> 0.1) : [];
+                            egovlpActionFrameData && Object.keys(egovlpActionFrameData).length > 0 ? Object.keys(egovlpActionFrameData).filter((key) => egovlpActionFrameData[key]> thresholdActionDetection).map(d => ({'label': d, 'confidence': egovlpActionFrameData[d]}) ) : [];
 
     const cellHeight = 10; //5
     let computeContainerHeight = (a, b) => {
@@ -110,8 +123,8 @@ export default function TemporalOverview({currentTime, boundingBoxFrameData, rea
         return (
             <HistogramRow
                 key={`action-row-${index}`}
-                detectedItems={{"isVideoStart": state.played === 0, 'data': detectedItems}}
-                transform={transform} cellSize={cellSize}
+                detectedItems={detectedItems}
+                transform={transform} cellSize={cellSize} chartWidth={chartWidth}
                 yAxisLabelOffsetY={yAxisLabelOffsetY} yAxisLabelWidth={yAxisLabelWidth}
                 index={index} xScale={xScale}
                 actionCellHeight={cellHeight}
@@ -129,10 +142,40 @@ export default function TemporalOverview({currentTime, boundingBoxFrameData, rea
             >
                 Actions
             </text>
+            {/* <text
+                x={chartWidth + xMarginLeft + 94}
+                y={-4}
+                fontSize = {".25em"}
+                text-anchor="middle"
+                transform="translate(440,-450)  rotate(90)"
+            > Avg-Confidence
+            </text> */}
+            <text
+                x={chartWidth + xMarginLeft + 94}
+                y={-4}
+                fontSize = {".45em"}
+                textAnchor="middle"
+                dominantBaseline="central"
+                transform="rotate(-30, 175, -838)"
+            >
+                <tspan x="-12" dy=".6em">Average</tspan>
+                <tspan x="-8" dy="1.0em">Confidence</tspan>
+            </text>
+            <text
+                x={chartWidth + xMarginLeft + 94}
+                y={-4}
+                fontSize = {".45em"}
+                textAnchor="middle"
+                dominantBaseline="central"
+                transform="rotate(-30, 193, -880)"
+            >
+                <tspan x="-5" dy=".6em">Detection</tspan>
+                <tspan x="-4" dy="1.0em">Coverage</tspan>
+            </text>
             <g>
                 {
                     timedDataList.map((timedData, i) => {
-                        return renderHistogramRow(timedData, i, detectedItems);
+                        return renderHistogramRow(timedData, i, {"isVideoStart": state.played === 0, 'data': detectedItems, 'threshold': thresholdActionDetection});
                     })
                 }
             </g>
@@ -152,7 +195,7 @@ export default function TemporalOverview({currentTime, boundingBoxFrameData, rea
             <g>
                 {
                     timedDataList.map((timedData, i) => {
-                        return renderHistogramRow(timedData, i, detectedItems);
+                        return renderHistogramRow(timedData, i, {"isVideoStart": state.played === 0, 'data': detectedItems, 'threshold': thresholdObjectDetection});
                     })
                 }
             </g>
@@ -163,11 +206,11 @@ export default function TemporalOverview({currentTime, boundingBoxFrameData, rea
     return (
         <Container>
             <svg ref={visRef}
-                 width={chartWidth + xMargin * 2 + yAxisLabelWidth}
+                 width={chartWidth + xMarginLeft + xMarginRight + yAxisLabelWidth}
                  height={chartHeight + yMargin}
             >
                 <g
-                    transform={`translate(${xMargin}, ${yMargin})`}
+                    transform={`translate(${xMarginLeft}, ${yMargin})`}
                 >
                     {/* Actions Temporal Overview */}
                     {(clipActionStatus || egovlpActionStatus) && renderActions(individualActionDataList, detectedActions)}
@@ -179,14 +222,29 @@ export default function TemporalOverview({currentTime, boundingBoxFrameData, rea
                         transform={`translate(${yAxisLabelWidth}, ${xAxisY})`}
                         ref={xAxisRef}>
                     </g>
+                    <text
+                        transform={`translate(${chartWidth - 10}, ${xAxisY - 18})`}
+                        fontSize={"x-small"}
+                        x={yAxisLabelWidth/2}
+                        y={15}
+                    >
+                        Time (mm:ss)
+                    </text>
+                    <Legend type={'confidence'} legendXPos={65} legendWidth={69} title={"Confidence (%)"} rangeFromTo={[0,100]} chartWidth={chartWidth-80+60} cellSize={cellSize} yAxisLabelOffsetY={yAxisLabelOffsetY} />
+                    <Legend legendXPos={60} legendWidth={44} title={"Coverage"} rangeFromTo={[0,1]} chartWidth={chartWidth+60} cellSize={cellSize} yAxisLabelOffsetY={yAxisLabelOffsetY} />
+
+
                     {/* Tracking time: Draw a vertical line that intersect both actions and objects charts */}
                     <g transform={`translate(${yAxisLabelWidth + xScale(state.played)}, ${0})`}>
-                        <rect
-                            x={0}
-                            y={0}
-                            width={2}
-                            height={xAxisY}
-                        ></rect>
+                        <line
+                            x1={0}
+                            y1={0}
+                            x2={0}
+                            y2={xAxisY}
+                            stroke="grey"
+                            strokeWidth="0.7"
+                            strokeDasharray={"4 1"}
+                        ></line>
                     </g>
                 </g>
 
