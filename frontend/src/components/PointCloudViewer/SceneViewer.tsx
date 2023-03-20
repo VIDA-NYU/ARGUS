@@ -36,71 +36,23 @@ const SceneViewer = ( {sceneData} : any ) => {
             sceneViewerController.initialize_tooltip( sceneData.videoData );
 
             // adding clouds to scene
-            sceneViewerController.add_point_clouds_to_scene();
-            sceneViewerController.add_voxel_clouds_to_scene();
-
+            sceneViewerController.update_scene_point_clouds();
+            
             // creating derived data
             sceneViewerController.create_projections();
-            sceneViewerController.add_point_clouds_to_scene();
+            sceneViewerController.update_scene_point_clouds();
+
+            // creating world voxel grid
+            sceneViewerController.dataset.create_world_voxel_grid();
+
+            // updating voxel clouds
+            sceneViewerController.dataset.create_voxel_clouds();
+            sceneViewerController.update_scene_voxel_clouds();
 
             // render
             sceneViewerController.scene.render();
             
         }
-
-        // // initializing dataset
-        // if( 'pointCloudData' in sceneData && 'world' in sceneData.pointCloudData ){    
-
-        //     // initializing world point cloud data
-        //     sceneViewerController.dataset.initialize_world_pointcloud_dataset( sceneData.pointCloudData['world'] );
-        //     const worldPointCloud: WorldPointCloud = sceneViewerController.dataset.worldPointCloud;
-            
-
-        //     // adding layer to scene and saving ref
-        //     worldPointCloud.add_to_scene( sceneViewerController.scene.scene );
-        //     sceneViewerController.scene.save_layer( 'worldpointcloud', worldPointCloud );
-
-        // }
-        
-        // if( 'pointCloudData' in sceneData && 'gaze' in sceneData.pointCloudData ){
-
-        //     sceneViewerController.dataset.initialize_gaze_pointcloud_dataset( sceneData.pointCloudData['gaze'] );
-        //     const gazePointCloud: GazePointCloud = sceneViewerController.dataset.gazePointCloud;
-            
-        //     // adding layer to scene and saving ref
-        //     gazePointCloud.add_to_scene( sceneViewerController.scene.scene );
-        //     sceneViewerController.scene.save_layer( 'gazepointcloud', gazePointCloud );
-
-        //     // generating gaze points
-        //     const gazeProjection: GazeProjection = gazePointCloud.generate_gaze_world_projection( sceneViewerController.scene );
-        //     sceneViewerController.scene.save_layer('projectedgazepointcloud',  gazeProjection );
-
-            
-
-        //     // calculating gaze heatmap
-        //     // const worldVoxelGrid: WorldVoxelGrid = sceneViewerController.dataset.worldPointCloud.voxelGrid;
-        //     // gazePointCloud.generate_gaze_heatmap( worldVoxelGrid, sceneViewerController.scene.scene );
-
-        //     // const [gazeBufferPositions, gazeBufferNormals, gazeTimestamps]: [number[], number[][], number[]] = sceneViewerController.dataset.gazePointCloud.get_buffer_positions();
-        //     // sceneViewerController.scene.add_point_cloud('gazepointcloud', gazeBufferPositions, [], gazeBufferNormals, gazeTimestamps);
-
-        //     // // generating gaze projection on the point cloud
-        //     // const gazeProjection: number[][] = DataGenUtils.generate_gaze_projection( sceneViewerController.scene, sceneViewerController.dataset.gazePointCloud );
-        //     // sceneViewerController.scene.add_point_cloud( 'projectedgazepointcloud', gazeProjection.flat(), [], [], gazeTimestamps);
-            
-        // }
-
-        // if( 'pointCloudData' in sceneData && 'hand' in sceneData.pointCloudData ){
-
-        //     sceneViewerController.dataset.initialize_hand_pointcloud_dataset( sceneData.pointCloudData['hand'] );
-
-        // }
-
-        // if( 'videoData' in sceneData ){
-
-        //     sceneViewerController.initialize_tooltip( sceneData.videoData );
-
-        // }
 
     }, [sceneData])
 
@@ -129,7 +81,7 @@ const SceneViewer = ( {sceneData} : any ) => {
                 ref={tooltipContainerRef}>
             </div>
 
-            <div style={{ 
+            {/* <div style={{ 
                 top: 20,
                 left: 'calc(100% - 620px)',
                 width: '1000px',
@@ -137,7 +89,7 @@ const SceneViewer = ( {sceneData} : any ) => {
                 position: 'absolute',
                 display: 'flex',
                 backgroundColor: 'white'}}>
-                    {/* <IMUViewer
+                    <IMUViewer
                        //type={dataType.JSON} 
                         title={"IMU Data"}
                         data={[sceneData.IMUAccelData, sceneData.IMUGyroData, sceneData.IMUMagData]}
@@ -145,8 +97,8 @@ const SceneViewer = ( {sceneData} : any ) => {
                         //state={state} 
                         //recordingMetaData={recordingData}
                         >
-                    </IMUViewer> */}
-            </div>
+                    </IMUViewer>
+            </div> */}
 
             <div style={{ 
                 top: 20,

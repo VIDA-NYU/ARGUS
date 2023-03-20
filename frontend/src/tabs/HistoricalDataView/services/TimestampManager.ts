@@ -11,7 +11,9 @@ export default class TimestampManager {
     public static indexedTimestamps: { [streamName: string]: BinaryTree } = {}
 
     public static initialize_main_stream( timestamps: number[] ): void {
+
         TimestampManager.mainStreamExtent = d3.extent(timestamps);
+    
     }
 
     public static get_elapsed_time( timestamp: number ): number {

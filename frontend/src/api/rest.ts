@@ -41,7 +41,6 @@ export function useGetAllRecordingInfo(token, fetchAuth) {
         revalidateOnMount: false,
         revalidateOnReconnect: false
     });
-    // console.log(response)
     useEffect(() => {(response === undefined) && mutate(undefined, true)}, [])
     return {
         data: response?.data,
@@ -61,7 +60,7 @@ export function useGetAllRecordingInfoNotoken() {
         revalidateOnMount: false,
         revalidateOnReconnect: false
     });
-    // console.log(response)
+
     useEffect(() => {(response === undefined) && mutate(undefined, true)}, [])
     return {
         data: response?.data,
@@ -171,7 +170,7 @@ export function useStartRecording(token, fetchAuth, serverStatusStart) {
     const { data: response, error } = useSWR(uid, fetcher);
 
     if(serverStatusStart === RequestStatus.STARTED){
-        console.log("SEERVER start:", response);
+
         return {
             data: response && response.data,
             response,
@@ -334,7 +333,6 @@ export async function getPerceptionData(recordingName) {
 export async function getEyeData(recordingName) {
     // const url ="https://api.ptg.poly.edu/recordings/static/coffee-test-1/eye.json";
     const url = API_URL +  RECORDINGS_STATIC_PATH + `${recordingName}/eye.json`;
-    console.log(url);
     const response = await fetch(url).then((res) => res.json());
     return response;
 }
@@ -365,7 +363,6 @@ export async function getVoxelizedPointCloudData(recordingName) {
 export async function getIMUAccelData (recordingName) {
     const accelurl ="https://api.ptg.poly.edu/recordings/static/coffee-test-1/imuaccel.json";
     const url = API_URL +  RECORDINGS_STATIC_PATH + `${recordingName}/imuaccel.json`;
-    console.log(url);
     const response = await fetch(url).then((res) => res.json());
     return response;
 }

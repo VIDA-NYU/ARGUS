@@ -46,28 +46,24 @@ const HistoricalDataView = () => {
 
   const handleChangeSelectRecording = async (newSelection) => {
 
-    console.log("Entered handleChangeSelectRecording");
-
     setSelectedRecordingName(newSelection);
     setLoadingData(true);
 
     const mainCameraPath: string = getVideoPath( newSelection, 'main' );
-    const IMUAccelFile = await getIMUAccelData( newSelection);
-    console.log(IMUAccelFile);
-    const IMUGyroFile = await getIMUGyroData( newSelection);
-    const IMUMagFile = await getIMUMagData( newSelection);
+    // const IMUAccelFile = await getIMUAccelData( newSelection );
+    // const IMUGyroFile = await getIMUGyroData( newSelection );
+    // const IMUMagFile = await getIMUMagData( newSelection );
     const pointCloudJSONFile = await getVoxelizedPointCloudData( newSelection );
     const eyeGazeJSONFile = await getEyeData( newSelection );
     const handDataJSONFile = await getHandData( newSelection );
+    const perceptionJSONFile = await getPerceptionData( newSelection );   
 
-    // const perceptionJSONFile = await getPerceptionData( newSelection );   
-
-    // // initializing timestamps
+    // initializing timestamps
     TimestampManager.initialize_main_stream( eyeGazeJSONFile.map( (timestamp: GazePointCloudRaw) => parseInt(timestamp.timestamp.split('-')[0]) ) );
-    // TimestampManager.index_stream_timestamp( perceptionJSONFile.map( (timestamp: any) => parseInt(timestamp.timestamp.split('-')[0]) ) );
+    TimestampManager.index_stream_timestamp( 'perception', perceptionJSONFile.map( (timestamp: any) => parseInt(timestamp.timestamp.split('-')[0]) ) );
     
     // // setting session info
-    setSessionInfo({recordingName:newSelection, mainCameraPath, pointCloudJSONFile, eyeGazeJSONFile, handDataJSONFile, IMUAccelFile, IMUGyroFile, IMUMagFile});
+    setSessionInfo({recordingName:newSelection, mainCameraPath, pointCloudJSONFile, eyeGazeJSONFile, handDataJSONFile, perceptionJSONFile});
 
     // // setting spinner flag
     setLoadingData(false);

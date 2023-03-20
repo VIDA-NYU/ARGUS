@@ -13,6 +13,7 @@ import { GazeProjectionPointCloud } from "./renderables/gaze/GazeProjectionPoint
 import { Raycaster } from "./raycaster/Raycaster";
 
 import * as THREE from 'three';
+import { BASE_COLORS } from "../constants/Constants";
 
 export class Dataset {
 
@@ -23,6 +24,9 @@ export class Dataset {
     public pointClouds: { [datasetName: string]: PointCloud  } = {};
     public voxelClouds: { [datasetName: string]: VoxelCloud  } = {};
     public videos: { [videoName: string]: string } = {};
+
+    // model outputs
+    public perception: { [timestamp: number]: { [className: string]: number }  } = {};
     
     constructor( rawData: any ){
 
@@ -34,21 +38,22 @@ export class Dataset {
 
         // saving point clouds
         this.pointClouds = DataLoader.load_point_clouds( rawData );
-        this.worldVoxelGrid = this.create_world_voxel_grid();
-        this.voxelClouds = this.create_voxel_clouds();
-        this.videos = this.store_videos( rawData );
-
-        // create derived point clouds
         
+        // saving videos
+        this.videos = this.store_videos( rawData );   
+
+        // saving models data
+        this.perception = DataLoader.load_perception_data( rawData.modelData.perception);
 
     }  
 
-    public create_voxel_clouds(): { [ voxelCloudName: string ]: VoxelCloud } {
+    public create_voxel_clouds(): void {
 
         const pointCloudNames: string [] = [
             'gazeorigin-pointcloud', 
             'lefthands-pointcloud',
-            'righthands-pointcloud'
+            'righthands-pointcloud',
+            'gazeprojection-pointcloud'
         ]
 
         // getting available point clouds
@@ -65,13 +70,14 @@ export class Dataset {
             const voxelCloud: VoxelCloud = new VoxelCloud( `${pointCloud.name.split('-')[0]}-voxelcloud`, pointCloudVoxelCells );
 
             // coloring voxel cells
-            voxelCloud.color_voxel_cells( pointCloud.get_base_color() );
+            // voxelCloud.color_voxel_cells( pointCloud.get_base_color() );
+            voxelCloud.color_voxel_cells_by_density( pointCloud.name );
 
             voxelClouds[ `${pointCloud.name.split('-')[0]}-voxelcloud` ] = voxelCloud;
 
         });
         
-        return voxelClouds;
+        this.voxelClouds = voxelClouds;
 
     }
 
@@ -82,11 +88,12 @@ export class Dataset {
     public create_projection( name: string, originPointCloud: PointCloud, targetPointCloud: PointCloud, raycaster: Raycaster ): void {
 
         const pointCloud: PointCloud = DataLoader.project_point_cloud( name, originPointCloud, targetPointCloud, raycaster );
+        pointCloud.baseColor = BASE_COLORS[name];
         this.pointClouds[name] = pointCloud;
 
     }
 
-    public create_world_voxel_grid(): WorldVoxelGrid {
+    public create_world_voxel_grid(): void {
 
         // getting available point clouds
         const pointClouds: PointCloud[] = this.get_point_clouds();
@@ -115,8 +122,7 @@ export class Dataset {
 
         });
 
-
-        return worldVoxelGrid;
+        this.worldVoxelGrid = worldVoxelGrid;
 
 
     }

@@ -13,7 +13,13 @@ const PointCloudViewer = ( {sessionInfo} : any ) => {
   const [sceneData, setSceneData] = React.useState({});
 
   useEffect(() => {
-    setSceneData({videoData: sessionInfo.mainCameraPath, pointCloudData: {'world': sessionInfo.pointCloudJSONFile, 'gaze': sessionInfo.eyeGazeJSONFile, 'hand': sessionInfo.handDataJSONFile}, IMUAccelData: sessionInfo.IMUAccelFile, IMUGyroData: sessionInfo.IMUGyroFile, IMUMagData: sessionInfo.IMUMagFile} );
+    setSceneData({
+      videoData: sessionInfo.mainCameraPath, 
+      pointCloudData: {'world': sessionInfo.pointCloudJSONFile, 'gaze': sessionInfo.eyeGazeJSONFile, 'hand': sessionInfo.handDataJSONFile}, 
+      modelData: {'perception': sessionInfo.perceptionJSONFile }
+      });
+
+      // IMUAccelData: sessionInfo.IMUAccelFile, IMUGyroData: sessionInfo.IMUGyroFile, IMUMagData: sessionInfo.IMUMagFile
   }, [sessionInfo])
 
   return (
