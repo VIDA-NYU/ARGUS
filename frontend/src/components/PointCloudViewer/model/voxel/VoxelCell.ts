@@ -1,4 +1,3 @@
-// import { VoxelCube } from "../../../types/DataTypes";
 import { VoxelCube  } from '../../types/types';
 
 export class VoxelCell {
@@ -35,7 +34,15 @@ export class VoxelCell {
     }
 
     public is_point_cloud_indexed( pointCloudName: string ): boolean {
+
         return ( pointCloudName in this.pointCloudIndices );
+    
+    }
+
+    public get_point_cloud_density( pointCloudName: string ): number {
+
+        return this.pointCloudIndices[pointCloudName].size;
+    
     }
 
     // public get_counter( streamCounter: string ): number {

@@ -19,7 +19,7 @@ export class SceneViewerController {
         this.dataset = new Dataset( sceneData );
     }
 
-    public add_point_clouds_to_scene(): void {
+    public update_scene_point_clouds(): void {
 
         // getting available point clouds
         const pointClouds: PointCloud[] = this.dataset.get_point_clouds();
@@ -36,15 +36,17 @@ export class SceneViewerController {
 
     }
 
-    public add_voxel_clouds_to_scene(): void {
+    public update_scene_voxel_clouds(): void {
 
         // getting available voxel clouds
         const voxelClouds: VoxelCloud[] = this.dataset.get_voxel_clouds();
 
         voxelClouds.forEach( ( voxelCloud: VoxelCloud ) => {
 
-            const voxelCloudGroup: THREE.Group = this.scene.sceneManager.add_voxel_cloud( voxelCloud  );
-            voxelCloud.threeObject = voxelCloudGroup;
+            if(!(this.scene.scene.getObjectByName(voxelCloud.name))){
+                const voxelCloudGroup: THREE.Group = this.scene.sceneManager.add_voxel_cloud( voxelCloud  );
+                voxelCloud.threeObject = voxelCloudGroup;
+            }
 
         });
         
