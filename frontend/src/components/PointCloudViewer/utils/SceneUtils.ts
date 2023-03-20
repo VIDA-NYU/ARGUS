@@ -10,5 +10,5 @@ export class SceneUtils {
         return [x, y, z];
 
     }
-
 }
+

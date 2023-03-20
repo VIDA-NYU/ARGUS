@@ -1,6 +1,9 @@
 import { Dataset } from "../model/Dataset";
+import { PointCloud } from "../model/renderables/PointCloud";
 import { Scene } from "../model/Scene";
-import { RenderParameters, WorldPointCloudRaw } from "../types/types";
+import { CameraParams } from "../types/types";
+import * as THREE from 'three';
+import { VoxelCloud } from "../model/renderables/VoxelCloud";
 
 export class SceneViewerController {
 
@@ -10,37 +13,90 @@ export class SceneViewerController {
     
     constructor(){}
 
-    public initialize_controller( containerRef: HTMLElement, tooltipContainerRef: HTMLElement ): void {
-
-        // initializing dataset
-        const dataset: Dataset = this.initialize_dataset();
-        this.dataset = dataset;
-
-        // initializing scene
-        const scene: Scene = this.initialize_scene( containerRef, tooltipContainerRef );
-        this.scene = scene;
-
-        this.scene.render();
-
-    }
-
-    public initialize_dataset(): Dataset {
+    public initialize_dataset( sceneData: any ): void {
 
         // creating dataset
-        const dataset: Dataset = new Dataset();
+        this.dataset = new Dataset( sceneData );
+    }
 
-        // saving dataset ref
-        return dataset;
+    public add_point_clouds_to_scene(): void {
+
+        // getting available point clouds
+        const pointClouds: PointCloud[] = this.dataset.get_point_clouds();
+
+        // adding point clouds
+        pointClouds.forEach( (pointCloud: PointCloud) => {
+
+            if (!(this.scene.scene.getObjectByName(pointCloud.name))){
+                const pointCloudObject: THREE.Points = this.scene.sceneManager.add_point_cloud( pointCloud );
+                pointCloud.threeObject = pointCloudObject;
+            }
+            
+        });
 
     }
 
-    public initialize_scene( containerRef: HTMLElement, tooltipContainerRef: HTMLElement ): Scene {
+    public add_voxel_clouds_to_scene(): void {
+
+        // getting available voxel clouds
+        const voxelClouds: VoxelCloud[] = this.dataset.get_voxel_clouds();
+
+        voxelClouds.forEach( ( voxelCloud: VoxelCloud ) => {
+
+            const voxelCloudGroup: THREE.Group = this.scene.sceneManager.add_voxel_cloud( voxelCloud  );
+            voxelCloud.threeObject = voxelCloudGroup;
+
+        });
+        
+    }
+
+    public change_cloud_visibility( cloudName: string, visibility: boolean ): void {
+
+        if( cloudName in this.dataset.pointClouds ){
+
+            const pointCloud: PointCloud = this.dataset.pointClouds[cloudName];
+            pointCloud.threeObject.visible = visibility;
+            return
+        }
+
+        if( cloudName in this.dataset.voxelClouds ){
+
+            const voxelCloud: VoxelCloud = this.dataset.voxelClouds[cloudName];
+            voxelCloud.threeObject.visible = visibility;
+            return
+        }
+
+    } 
+
+    public change_cloud_style( cloudName: string, style: string, value: number ): void {
+
+        if( cloudName in this.dataset.pointClouds ){
+
+            const pointCloud: PointCloud = this.dataset.pointClouds[cloudName];
+            pointCloud.threeObject.material[style] = value;
+            return;
+
+        }
+
+    }
+
+    public create_projections( ): void {
+
+        this.dataset.create_projection( 'gazeprojection-pointcloud', this.dataset.pointClouds['gazeorigin-pointcloud'], this.dataset.pointClouds['world-pointcloud'], this.scene.rayCaster );
+
+    }
+
+    public initialize_scene( containerRef: HTMLElement, tooltipContainerRef: HTMLElement ): void {
+
+        const cameraParams: CameraParams = {
+            position: [0,0,10],
+            near: 0.1,
+            far: 10
+        }
 
         // creating scene
-        const scene: Scene = new Scene();
-        scene.init( containerRef, tooltipContainerRef, [0,0,10] );
-
-        return scene;
+        this.scene = new Scene();
+        this.scene.init( containerRef, tooltipContainerRef,  cameraParams, this.dataset );
 
     }
 

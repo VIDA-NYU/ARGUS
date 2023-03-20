@@ -1,10 +1,14 @@
 import * as THREE from 'three';
+import { Object3D } from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { EventsManager } from '../../../tabs/HistoricalDataView/services/EventsManager';
 import TimestampManager from '../../../tabs/HistoricalDataView/services/TimestampManager';
+import { CameraParams, MousePosition } from '../types/types';
+import { Dataset } from './Dataset';
 
-import { Raycaster } from './Raycaster';
-import { SceneConfiguration } from './SceneConfiguration';
+import { Raycaster } from './raycaster/Raycaster';
+import { SceneHighlight } from './SceneHighlight';
+import { SceneManager } from './SceneManager';
 import { Tooltip } from './Tooltip';
 
 export class Scene {
@@ -21,21 +25,27 @@ export class Scene {
     public orbitControls!: OrbitControls;
     public rayCaster!: Raycaster;
     public tooltip!: Tooltip;
-    public sceneConfiguration!: SceneConfiguration;
+    public sceneHighlight!: SceneHighlight; 
+    
+    public dataset!: Dataset;
+    public sceneManager!: SceneManager;
 
     // TODO: remove it from here
     public lastSelectedTimestamp: number = 0;
 
     constructor(){}
 
-    public init( containerRef: HTMLElement, tooltipContainerRef: HTMLElement, cameraPosition: number[], near: number = 0.1, far: number = 10  ): void {
+    public init( containerRef: HTMLElement, tooltipContainerRef: HTMLElement, cameraParams: CameraParams, dataset: Dataset  ): void {
 
         // saving container ref
         this.container = containerRef;
         const [containerWidth, containerHeight] = [this.container.offsetWidth, this.container.offsetHeight];
 
+        // saving dataset
+        this.dataset = dataset;
+
         // initializing camera
-        this.initialize_camera( containerWidth, containerHeight, cameraPosition );
+        this.initialize_camera( containerWidth, containerHeight, cameraParams.position );
 
         // initializing scene
         this.initialize_scene();
@@ -46,11 +56,48 @@ export class Scene {
         // initializing controls
         this.initialize_orbit_controls();
         this.initialize_raycaster();
-        this.initialize_scene_configuration();
+        this.initialize_scene_highlight();
+
+        // creating scene manager
+        this.initialize_scene_manager();
 
         // creating tooltip
         this.initialize_tooltip( tooltipContainerRef );
 
+    }
+
+    public render() {
+
+        requestAnimationFrame( () => this.render() );
+
+        // orbit controls
+        this.orbitControls.update();
+
+        // picking
+        const intersection: { mousePosition: MousePosition, layerName: string, intersect: any[] } = this.rayCaster.get_mouse_intersected_point( this.camera, this.dataset.get_interactive_point_cloud_names() );
+
+        if( intersection.intersect.length > 0 ){
+
+            // highlighting selected point cloud
+            const timestamp: number = this.sceneHighlight.on_point_cloud_highlight( intersection.layerName, intersection.intersect );
+
+            if( timestamp === -1 ) return;
+            
+            // updating tooltip
+            this.tooltip.position_tooltip(intersection.mousePosition.top, intersection.mousePosition.left);
+            this.tooltip.set_video_timestamp(TimestampManager.get_elapsed_time(timestamp));
+
+            // firing event
+            EventsManager.emit('onTimestampSelected',  {timestamp} );
+
+        } else {
+
+            this.sceneHighlight.on_point_cloud_offlight();
+            this.tooltip.position_tooltip(0,0);
+        }
+
+        // rendering
+        this.renderer.render( this.scene, this.camera );
 
     }
 
@@ -61,35 +108,7 @@ export class Scene {
         }  
     }
 
-    public render() {
-
-        requestAnimationFrame( () => this.render() );
-        
-        // orbit controls
-        this.orbitControls.update();
-
-        // picking
-        const intersect: {mousePosition: {top: number, left: number}, timestamp: number } = this.rayCaster.get_intersected_point( this.camera );
-        
-        // positioning tooltip
-        this.tooltip.position_tooltip(intersect.mousePosition.top, intersect.mousePosition.left);
-        if (intersect.mousePosition.top !== 0){ 
-
-            // setting video timestamp
-            this.tooltip.set_video_timestamp(TimestampManager.get_elapsed_time(intersect.timestamp));
-
-            // emitting events
-            if( intersect.timestamp !== this.lastSelectedTimestamp ){
-                this.lastSelectedTimestamp = intersect.timestamp;
-                EventsManager.emit('onTimestampSelected',  {timestamp : intersect.timestamp} );
-            } 
-        
-        } 
-
-        // rendering
-        this.renderer.render( this.scene, this.camera );
-
-    }
+    // *********************** PRIVATE METHODS *********************** //
 
     private initialize_orbit_controls(): void {
 
@@ -139,47 +158,32 @@ export class Scene {
     }
 
     private initialize_tooltip( tooltipContainer: HTMLElement ): void {
+
         this.tooltip = new Tooltip( tooltipContainer )
+    
     }
 
-    private initialize_scene_configuration(): void {
+    private initialize_scene_manager(): void {
 
-        this.sceneConfiguration = new SceneConfiguration( this.scene );
-
+        this.sceneManager = new SceneManager( this.scene );
+    
     }
-
-    // public add_point_cloud( name: string, positions: number[], colors: number[] = [], normals: number[][] = [], timestamps: number[] = []  ): THREE.Points {
-
-    //     // loading positions
-    //     const pointgeometry = new THREE.BufferGeometry();
-    //     pointgeometry.setAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
-
-    //     if(colors.length > 0) pointgeometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
-    //     // if(normals.length > 0) pointgeometry.setAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
-    //     // if(timestamps.length > 0) pointgeometry.setAttribute( 'timestamp', new THREE.Int32BufferAttribute( timestamps, 1 ) );
-
-    //     pointgeometry.computeBoundingSphere();
-
-    //     // defining material
-    //     let pointmaterial: THREE.PointsMaterial = new THREE.PointsMaterial( { size: 0.015, color: 'red' } );
-    //     if(colors.length > 0) pointmaterial = new THREE.PointsMaterial( { size: 0.015, vertexColors: true, opacity: 0.1 } );
-    //     const points = new THREE.Points( pointgeometry, pointmaterial );
-    //     points.userData = { timestamps, normals };
-
-
-    //     // adding to scene
-    //     points.name = name
-    //     this.scene.add( points );
-
-    //     // returning points
-    //     return points;
-
-    // }
 
     private initialize_raycaster() {
 
         this.rayCaster = new Raycaster( this.scene );
         this.rayCaster.set_scene_events( this.container );
         
+    }
+
+    private initialize_scene_highlight(): void {
+
+        this.sceneHighlight = new SceneHighlight( this.rayCaster, this.dataset );
+        const highlightObjects: Object3D[] = this.sceneHighlight.get_layer_highlights();
+
+        highlightObjects.forEach( (object: Object3D) => {
+            this.scene.add( object );
+        });
+
     }
 }

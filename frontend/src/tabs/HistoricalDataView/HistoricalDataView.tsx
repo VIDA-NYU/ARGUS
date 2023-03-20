@@ -14,10 +14,10 @@ import {
   useGetRecording, 
   getVoxelizedPointCloudData,
   // useDeleteRecording, 
-  getPointCloudData, 
+  getHandData,
   getEyeData, 
-  // getIMUAccelData, 
-  // getIMUGyroData, 
+  getIMUAccelData, 
+  getIMUGyroData, 
   getIMUMagData,  
   getPerceptionData} from '../../api/rest';
 
@@ -46,21 +46,28 @@ const HistoricalDataView = () => {
 
   const handleChangeSelectRecording = async (newSelection) => {
 
+    console.log("Entered handleChangeSelectRecording");
+
     setSelectedRecordingName(newSelection);
     setLoadingData(true);
 
     const mainCameraPath: string = getVideoPath( newSelection, 'main' );
+    const IMUAccelFile = await getIMUAccelData( newSelection);
+    console.log(IMUAccelFile);
+    const IMUGyroFile = await getIMUGyroData( newSelection);
+    const IMUMagFile = await getIMUMagData( newSelection);
     const pointCloudJSONFile = await getVoxelizedPointCloudData( newSelection );
     const eyeGazeJSONFile = await getEyeData( newSelection );
+    const handDataJSONFile = await getHandData( newSelection );
+
     // const perceptionJSONFile = await getPerceptionData( newSelection );   
 
     // // initializing timestamps
     TimestampManager.initialize_main_stream( eyeGazeJSONFile.map( (timestamp: GazePointCloudRaw) => parseInt(timestamp.timestamp.split('-')[0]) ) );
     // TimestampManager.index_stream_timestamp( perceptionJSONFile.map( (timestamp: any) => parseInt(timestamp.timestamp.split('-')[0]) ) );
     
-
     // // setting session info
-    setSessionInfo({recordingName:newSelection, mainCameraPath, pointCloudJSONFile, eyeGazeJSONFile});
+    setSessionInfo({recordingName:newSelection, mainCameraPath, pointCloudJSONFile, eyeGazeJSONFile, handDataJSONFile, IMUAccelFile, IMUGyroFile, IMUMagFile});
 
     // // setting spinner flag
     setLoadingData(false);
@@ -109,7 +116,7 @@ const HistoricalDataView = () => {
           <Divider orientation='vertical'/>
 
           <Box sx={{ width: '500px', display: 'flex' }}>
-            { selectedRecordingName && <ModelView sessionInfo={sessionInfo} recordingName={selectedRecordingName} ></ModelView> }
+            {/* { selectedRecordingName && <ModelView sessionInfo={sessionInfo} recordingName={selectedRecordingName} ></ModelView> } */}
           </Box>
 
         </Box>
