@@ -1,6 +1,7 @@
-import {interpolateBuPu} from "d3-scale-chromatic";
+import {interpolateBuPu, interpolateGreys} from "d3-scale-chromatic";
 import {Tooltip} from "react-svg-tooltip";
 import {useRef} from "react";
+import { scaleLinear } from "d3";
 
 interface detectedItems {
     label: string,
@@ -8,8 +9,9 @@ interface detectedItems {
 }
 interface HistogramRowProps {
     transform: string,
-    detectedItems : {isVideoStart: boolean, data: detectedItems []},
+    detectedItems : {isVideoStart: boolean, data: detectedItems [], threshold: number},
     cellSize: number,
+    chartWidth: number,
     actionCellHeight: number
     yAxisLabelOffsetY: number,
     yAxisLabelWidth: number,
@@ -19,7 +21,7 @@ interface HistogramRowProps {
     timedData: any
 }
 
-export default function HistogramRow({transform, detectedItems, cellSize, actionCellHeight,
+export default function HistogramRow({transform, detectedItems, cellSize, chartWidth, actionCellHeight,
                                       yAxisLabelOffsetY, yAxisLabelWidth,
                                       index, xScale, playedTimes, timedData}: HistogramRowProps){
     const actionRef = useRef(null);
@@ -42,6 +44,20 @@ export default function HistogramRow({transform, detectedItems, cellSize, action
 
     const indexDetectedItem = detectedItems.data.findIndex(item => item.label === timedData.label);
 
+    const avgGridWidth = 20;
+    let xScaleAVGConfidence = scaleLinear()
+        .range([0, avgGridWidth])
+        .domain([0, 1]);
+    let xScaleLebelsConfidence = scaleLinear()
+        .range([0, yAxisLabelWidth])
+        .domain([0, 1]);
+// console.log(detectedItems);
+    const filterOutZeros = timedData.data.filter(d => d > detectedItems.threshold);
+    const avgConfidence = filterOutZeros.length > 0 ? filterOutZeros.reduce((a, b) => a + b) / filterOutZeros.length : 0;
+
+    const appearAVG = filterOutZeros.length/timedData.data.length;
+
+    // console.log(filterOutZeros);
     return (
         <g
             transform={transform}
@@ -57,7 +73,7 @@ export default function HistogramRow({transform, detectedItems, cellSize, action
             <rect
                 x={-2}
                 y={-2}
-                width={detectedItems.isVideoStart ? 0 : detectedItems.data.map(a => a.label).includes(timedData.label) ? detectedItems.data[indexDetectedItem].confidence*yAxisLabelWidth : 0}
+                width={detectedItems.isVideoStart ? 0 : detectedItems.data.map(a => a.label).includes(timedData.label) ? xScaleLebelsConfidence(detectedItems.data[indexDetectedItem].confidence) : 0}
                 height={actionCellHeight+2}
                 fill={'#F8DE7E'} //still thinking about the color we need to use here
                 fillOpacity={0.4}
@@ -89,7 +105,57 @@ export default function HistogramRow({transform, detectedItems, cellSize, action
                         )
                     })
                 }
+                {/* AVG confidence */}
+                <g
+                    transform={`translate(${chartWidth+20}, 0)`}
+                >
+                    <rect
+                        x={0}
+                        y={-1}
+                        width={avgGridWidth}
+                        height={actionCellHeight+2}
+                        fill={'white'}
+                        fillOpacity={1}
+                        stroke="grey"
+                        strokeWidth="0.1"
+                    >
+                    </rect>
+                    <rect
+                        x={0.1}
+                        y={-1}
+                        width={detectedItems.isVideoStart ? xScaleAVGConfidence(avgConfidence) : detectedItems.data.map(a => a.label).includes(timedData.label) ? xScaleAVGConfidence(avgConfidence) : 0}
+                        height={actionCellHeight+1.9}
+                        fill={interpolateBuPu(avgConfidence)}
+                    >
+                    </rect>
+                </g>
             </g>
+            {/* Detection Coverage */}
+            <g
+                transform={`translate(${chartWidth+138.3}, 0)`}
+            >
+                <rect
+                    x={0}
+                    y={-1}
+                    width={avgGridWidth}
+                    height={actionCellHeight+2}
+                    fill={'white'}
+                    fillOpacity={1}
+                    stroke="grey"
+                    strokeWidth="0.1"
+                >
+                </rect>
+                <rect
+                    x={0.1}
+                    y={-1}
+                    width={detectedItems.isVideoStart ? xScaleAVGConfidence(appearAVG) : detectedItems.data.map(a => a.label).includes(timedData.label) ? xScaleAVGConfidence(appearAVG) : 0}
+                    height={actionCellHeight+2}
+                    fill={interpolateGreys(appearAVG)}
+                >
+                </rect>
+            </g>
+
+            {/* Additional */}
             <rect
                 x={0}
                 y={0}

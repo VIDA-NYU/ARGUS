@@ -1,4 +1,5 @@
-import {interpolateBuPu} from "d3-scale-chromatic";
+import {interpolateBuPu, interpolateGreys} from "d3-scale-chromatic";
+// import {interpolateGreys} from "d3-scale-chromatic";
 import { range } from "d3";
 
 interface HistogramRowProps {
@@ -7,15 +8,17 @@ interface HistogramRowProps {
     chartWidth: number,
     cellSize: number,
     yAxisLabelOffsetY: number,
+    type?: string,
+    legendXPos: number,
+    legendWidth: number
 }
 
-export default function Legend({title, rangeFromTo, chartWidth, cellSize, yAxisLabelOffsetY}: HistogramRowProps){
+export default function Legend({title, rangeFromTo, chartWidth, cellSize, yAxisLabelOffsetY, type='ramdon', legendXPos, legendWidth}: HistogramRowProps){
 
     const colorConfidence =  range(0, 1, 0.001);
-    const legendWidth = 40;
     return (            
         <g
-            transform={`translate(${chartWidth - legendWidth}, -20)`}
+            transform={`translate(${chartWidth - legendXPos}, -20)`}
         >
             <text
                 x={55}
@@ -30,7 +33,7 @@ export default function Legend({title, rangeFromTo, chartWidth, cellSize, yAxisL
             > {rangeFromTo[0]}
             </text>
             <text
-                x={108}
+                x={legendWidth + 55 - rangeFromTo[1].toString().length*5}
                 y={cellSize / 2 + yAxisLabelOffsetY + 8}
                 fontSize = {".6em"}
             > {rangeFromTo[1]}
@@ -43,14 +46,14 @@ export default function Legend({title, rangeFromTo, chartWidth, cellSize, yAxisL
                         return (
                             <g
                                 key={`action-${j}-cell-${j}`}
-                                transform={`translate(${i*69}, 2)`}
+                                transform={`translate(${i*legendWidth}, 2)`}
                             >
                                 <rect
                                     x={0}
                                     y={0}
                                     width={1}
                                     height={5}
-                                    fill={interpolateBuPu(i)}
+                                    fill={type === 'confidence' ? interpolateBuPu(i): interpolateGreys(i)}
                                 >
                                 </rect>
 
