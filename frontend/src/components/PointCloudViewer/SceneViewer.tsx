@@ -46,8 +46,15 @@ const SceneViewer = ( {sceneData} : any ) => {
             sceneViewerController.dataset.create_world_voxel_grid();
 
             // updating voxel clouds
-            sceneViewerController.dataset.create_voxel_clouds();
+            sceneViewerController.dataset.create_density_voxel_clouds();
+            sceneViewerController.dataset.create_model_voxel_cloud(['gazeprojection-pointcloud'], 'perception');
+            
             sceneViewerController.update_scene_voxel_clouds();
+
+
+
+            // intializing highlights
+            sceneViewerController.scene.initialize_scene_highlight();
 
             // render
             sceneViewerController.scene.render();

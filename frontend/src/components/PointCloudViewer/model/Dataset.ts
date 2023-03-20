@@ -14,6 +14,7 @@ import { Raycaster } from "./raycaster/Raycaster";
 
 import * as THREE from 'three';
 import { BASE_COLORS } from "../constants/Constants";
+import TimestampManager from "../../../tabs/HistoricalDataView/services/TimestampManager";
 
 export class Dataset {
 
@@ -47,7 +48,7 @@ export class Dataset {
 
     }  
 
-    public create_voxel_clouds(): void {
+    public create_density_voxel_clouds(): void {
 
         const pointCloudNames: string [] = [
             'gazeorigin-pointcloud', 
@@ -79,6 +80,45 @@ export class Dataset {
         
         this.voxelClouds = voxelClouds;
 
+    }
+
+    public create_model_voxel_cloud( pointCloudNames: string[], modelType: string, className: string = 'paper towel' ): void {
+
+        // voxel grid
+        const worldVoxelGrid: WorldVoxelGrid = this.worldVoxelGrid;
+
+        const pointClouds: PointCloud[] = this.get_point_clouds( pointCloudNames );
+        pointClouds.forEach( ( pointCloud: PointCloud ) => {
+
+            const pointCloudVoxelCells: VoxelCell[] = worldVoxelGrid.get_point_cloud_voxel_cells( pointCloud.name );
+            const voxelCloud: VoxelCloud = new VoxelCloud( `${pointCloud.name.split('-')[0]}-${className}-voxelcloud`, pointCloudVoxelCells );
+
+            // getting timestamps
+            const cellIndices: number[][] = voxelCloud.get_cell_indices( pointCloud.name );
+
+            const voxelCloudConfidences: number[][] = [];
+            for(let i = 0; i < cellIndices.length; i++){
+
+                const cellConfidences: number[] = [];
+                for(let j = 0; j < cellIndices[i].length; j++){
+                    
+                    const currentIndex: number = cellIndices[i][j];
+                    const currentTimestamp: number = this.pointClouds[pointCloud.name].timestamps[currentIndex]
+                    const closestModelTimestamp: number = TimestampManager.get_closest_timestamp( modelType, currentTimestamp );
+                    
+                    let confidence: number = 0;
+                    if( className in this.perception[closestModelTimestamp] ){
+                        confidence = this.perception[closestModelTimestamp][className];
+                    }
+                    cellConfidences.push(confidence);
+                }
+                voxelCloudConfidences.push(cellConfidences);
+            }
+
+            voxelCloud.color_voxel_cells_by_model_confidence(voxelCloudConfidences);
+            this.voxelClouds[ `${pointCloud.name.split('-')[0]}-${className}-voxelcloud` ] = voxelCloud;
+        });    
+        
     }
 
     public store_videos( rawData: any ): { [videoName: string]: string } {
@@ -126,7 +166,7 @@ export class Dataset {
 
 
     }
-    
+
     public get_point_clouds( names: string[] = [] ): PointCloud[] {
 
         if( names.length === 0 ) return Object.values( this.pointClouds );
@@ -152,5 +192,6 @@ export class Dataset {
 
     }     
 
+    
 
 }
