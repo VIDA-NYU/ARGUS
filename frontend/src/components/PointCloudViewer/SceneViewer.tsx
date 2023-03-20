@@ -137,7 +137,7 @@ const SceneViewer = ( {sceneData} : any ) => {
                 position: 'absolute',
                 display: 'flex',
                 backgroundColor: 'white'}}>
-                    {/* <IMUViewer
+                    {/*<IMUViewer
                        //type={dataType.JSON} 
                         title={"IMU Data"}
                         data={[sceneData.IMUAccelData, sceneData.IMUGyroData, sceneData.IMUMagData]}
@@ -145,7 +145,7 @@ const SceneViewer = ( {sceneData} : any ) => {
                         //state={state} 
                         //recordingMetaData={recordingData}
                         >
-                    </IMUViewer> */}
+            </IMUViewer>*/}
             </div>
 
             <div style={{ 
