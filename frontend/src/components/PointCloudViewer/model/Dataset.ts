@@ -91,7 +91,8 @@ export class Dataset {
         pointClouds.forEach( ( pointCloud: PointCloud ) => {
 
             const pointCloudVoxelCells: VoxelCell[] = worldVoxelGrid.get_point_cloud_voxel_cells( pointCloud.name );
-            const voxelCloud: VoxelCloud = new VoxelCloud( `${pointCloud.name.split('-')[0]}-${className}-voxelcloud`, pointCloudVoxelCells );
+            // const voxelCloud: VoxelCloud = new VoxelCloud( `${pointCloud.name.split('-')[0]}-${className}-voxelcloud`, pointCloudVoxelCells );
+            const voxelCloud: VoxelCloud = new VoxelCloud( `model-voxelcloud`, pointCloudVoxelCells );
 
             // getting timestamps
             const cellIndices: number[][] = voxelCloud.get_cell_indices( pointCloud.name );
@@ -116,8 +117,12 @@ export class Dataset {
             }
 
             voxelCloud.color_voxel_cells_by_model_confidence(voxelCloudConfidences);
-            this.voxelClouds[ `${pointCloud.name.split('-')[0]}-${className}-voxelcloud` ] = voxelCloud;
-        });    
+            // this.voxelClouds[ `${pointCloud.name.split('-')[0]}-${className}-voxelcloud` ] = voxelCloud;
+            this.voxelClouds[ `model-voxelcloud` ] = voxelCloud;
+       
+        });  
+
+        // this.voxelClouds[ `model-voxelcloud` ];
         
     }
 

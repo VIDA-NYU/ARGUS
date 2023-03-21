@@ -25,7 +25,9 @@ const ParameterBox = ( props ) => {
     const classNames: string[] = ['plate', 'flour tortilla','cutting board', 'paper towel'];
 
     const visibilityChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-        props.onVisibilityChange(event.target.id, event.target.checked)
+
+        props.onVisibilityChange(event.target.id, event.target.checked);
+    
     }
 
     const pointCloudStyleChangeHandler = (event: any) => {
@@ -49,6 +51,7 @@ const ParameterBox = ( props ) => {
     const handleClassSelection = (event: SelectChangeEvent) => {
 
         setSelectedClass(event.target.value);
+        props.onModelClassSelected(event.target.value);
     
     }
 

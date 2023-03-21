@@ -1,11 +1,9 @@
 // react
-import React, { useEffect, useMemo, useRef } from 'react';
-import IMUViewer from '../IMUViewer/IMUViewer';
+import { useEffect, useMemo, useRef } from 'react';
 
 // controller
 import { SceneViewerController } from './controllers/SceneViewer.controller';
 import ParameterBox from './ParameterBox';
-import { RenderParameters, RenderStyle } from './types/types';
 
 const SceneViewer = ( {sceneData} : any ) => {
 
@@ -14,6 +12,13 @@ const SceneViewer = ( {sceneData} : any ) => {
     const tooltipContainerRef = useRef(null);
 
     const sceneViewerController = useMemo( () => new SceneViewerController(), []);
+
+    const onModelClassSelected = ( className: string ) => {
+
+        sceneViewerController.dataset.create_model_voxel_cloud(['gazeprojection-pointcloud'], 'perception', className );
+        sceneViewerController.update_scene_voxel_clouds();
+        
+    }
 
     const onVisibilityChange = ( cloudName: string, visibility: boolean ) => {
         sceneViewerController.change_cloud_visibility( cloudName, visibility );
@@ -113,6 +118,7 @@ const SceneViewer = ( {sceneData} : any ) => {
                 position: 'absolute',
                 display: 'flex'}}>
                     <ParameterBox 
+                        onModelClassSelected={onModelClassSelected}
                         onVisibilityChange={onVisibilityChange}
                         onPointCloudStyleChange={onPointCloudStyleChange}>    
                     </ParameterBox>
