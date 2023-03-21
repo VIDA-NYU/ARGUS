@@ -16,6 +16,8 @@ export class SceneManager {
         // getting raw data
         const [points, colors, normals] = pointCloud.get_buffer_positions();
 
+        const sprite = new THREE.TextureLoader().load( '/sprites/disc.png' );
+
         // loading positions
         const pointgeometry = new THREE.BufferGeometry();
         if(points.length > 0) pointgeometry.setAttribute( 'position', new THREE.Float32BufferAttribute( points, 3 ) );
@@ -23,8 +25,7 @@ export class SceneManager {
         if(normals.length > 0) pointgeometry.setAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
         pointgeometry.computeBoundingBox();
 
-        // defining material
-        const pointmaterial = new THREE.PointsMaterial( { size: 0.015, vertexColors: true } );
+        const pointmaterial = new THREE.PointsMaterial( { size: 0.015, map: sprite, vertexColors: true,sizeAttenuation: true, alphaTest: 0.5, transparent: true } );
         const pointCloudObject = new THREE.Points( pointgeometry, pointmaterial );
 
         // adding to scene
@@ -44,13 +45,14 @@ export class SceneManager {
 
         const voxelCubes: VoxelCube[] = voxelCloud.get_voxel_cubes();
         const colors: number[][] = voxelCloud.get_voxel_colors();
+        const opacities: number[] = voxelCloud.get_voxel_opacities();
 
-        const geometry: THREE.BoxGeometry = new THREE.BoxGeometry( voxelCubes[0].width - 0.01, voxelCubes[0].height - 0.01, voxelCubes[0].depth - 0.01 );
+        const geometry: THREE.BoxGeometry = new THREE.BoxGeometry( voxelCubes[0].width, voxelCubes[0].height, voxelCubes[0].depth );
         
         voxelCubes.forEach( (cube: VoxelCube, index: number ) => {
             
             const color: THREE.Color = new THREE.Color( colors[index][0], colors[index][1], colors[index][2]  )
-            const material = new THREE.MeshBasicMaterial({ color: color, opacity: 0.9, transparent: true });
+            const material = new THREE.MeshBasicMaterial({ color: color, opacity: opacities[index], transparent: true });
             const object = new THREE.Mesh( geometry, material );
 
             // positioning cube

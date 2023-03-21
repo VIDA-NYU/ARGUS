@@ -18,7 +18,14 @@ export class SceneHighlight {
 
         let highlightObjects: Object3D[] = [];
         pointClouds.forEach( (pointCloud: PointCloud) => {
+            
+            // creating highlight objects
             pointCloud.initialize_highlights();
+            
+            // all objects start invisible
+            pointCloud.offlight();
+
+            // adding to list of all highlights
             const highlightObject: Object3D[] = pointCloud.get_highlight_objects();
             highlightObjects = highlightObjects.concat( highlightObject );
         });

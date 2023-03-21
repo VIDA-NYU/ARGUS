@@ -70,7 +70,7 @@ export class SceneViewerController {
 
     } 
 
-    public change_cloud_style( cloudName: string, style: string, value: number ): void {
+    public change_point_cloud_style( cloudName: string, style: string, value: number ): void {
 
         if( cloudName in this.dataset.pointClouds ){
 

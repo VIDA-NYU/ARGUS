@@ -9,8 +9,19 @@ export class DataParser {
 
     public static parse_world_point_cloud_data( dataset: WorldPointCloudRaw ): WorldPointCloud {
 
-        // creating world point cloud object
-        const worldPointCloud: WorldPointCloud = new WorldPointCloud('world-pointcloud', dataset.xyz_world, dataset.colors, []);
+        // TODO: Read this bounding box from constants
+        const xyz: number[][] = [];
+        const colors: number[][] = [];
+        dataset.xyz_world.forEach( (coord: number[],  index: number) => {
+            if(coord[1] <= -0.39 || coord[1] >= -0.018){
+                xyz.push(coord);
+                colors.push(dataset.colors[index]);
+            }
+        })
+
+        // // creating world point cloud object
+        // const worldPointCloud: WorldPointCloud = new WorldPointCloud('world-pointcloud', dataset.xyz_world, dataset.colors, []);
+        const worldPointCloud: WorldPointCloud = new WorldPointCloud('world-pointcloud', xyz, colors, []);
         return worldPointCloud;
 
     }   
