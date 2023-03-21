@@ -17,7 +17,7 @@ export default function MachineReasoningInitializer({reasoningData, recordingMet
             let newAnnotationData = initializeAnnotationDataWithMachineReasoning(annotationData, reasoningData, recordingMeta['first-entry']);
             setAnnotationData(newAnnotationData)
         }
-    }, [reasoningData, recordingMeta])
+    }, [recordingMeta]) // Removed reasoningData. It is not available in the current version
     return (
         <div></div>
     )

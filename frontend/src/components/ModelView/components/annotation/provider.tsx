@@ -1,5 +1,5 @@
 import {createContext, useState, useContext} from "react";
-import {createInitialAnnotationData, createInitialAnnotationDataSessionInfo} from "./utils";
+import {createInitialAnnotationData} from "./utils";
 import {AnnotationData, AnnotationProviderState} from "./types";
 
 export const AnnotationContext = createContext<AnnotationProviderState>(

@@ -95,10 +95,6 @@ export default function ModelViewCompContainer({
                             {annotationData.meta.mode === "offline" && <MachineReasoningInitializer
                             recordingMeta={recordingData} reasoningData={reasoningData}
                             annotationData={annotationData} setAnnotationData={setAnnotationData}/>}
-                            {annotationData.meta.mode === "online" && streamInfo && <OnlineStreamInitializer
-                                streamMeta={streamInfo}
-                                annotationData={annotationData} setAnnotationData={setAnnotationData}/>}
-
                         </div>
                     )
                 }

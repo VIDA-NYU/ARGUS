@@ -1,29 +1,13 @@
 import {AnnotationData, AnnotationMeta, AnnotationReasoningStep} from "./types";
 import {convertTimestampToVideoTime, extractTimestampValue} from "../utils/video-time";
 
+// Initialize process with an existing data
 export function createInitialAnnotationData(): AnnotationData{
     return {
         reasoningSteps: [],
         meta: {
             mode: "offline",
-            id: "ethan_mugcake_0",
-            recipeID: "pinwheels",
-            entryTime: 0,
-            initialized: false,
-        },
-        perceptronParameters: {
-            objectConfidenceThreshold: 0
-        }
-    }
-}
-
-export function createInitialAnnotationDataSessionInfo(sessionInfo): AnnotationData{
-    console.log(sessionInfo.recordingName);
-    return {
-        reasoningSteps: [],
-        meta: {
-            mode: "offline",
-            id: sessionInfo.recordingName, // "ethan_mugcake_0",
+            id: "pinwheels_9.14",
             recipeID: "pinwheels",
             entryTime: 0,
             initialized: false,
