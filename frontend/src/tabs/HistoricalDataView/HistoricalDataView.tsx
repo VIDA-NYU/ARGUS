@@ -30,6 +30,9 @@ import SessionView from '../../views/SessionView/SessionView';
 import TimestampManager from './services/TimestampManager';
 import { GazePointCloudRaw } from '../../components/PointCloudViewer/types/types';
 
+// styles
+import './HistoricalDataView.css'
+
 const HistoricalDataView = () => {
 
   // get the token and authenticated fetch function
@@ -61,8 +64,10 @@ const HistoricalDataView = () => {
     // initializing timestamps
     TimestampManager.initialize_main_stream( eyeGazeJSONFile.map( (timestamp: GazePointCloudRaw) => parseInt(timestamp.timestamp.split('-')[0]) ) );
     TimestampManager.index_stream_timestamp( 'perception', perceptionJSONFile.map( (timestamp: any) => parseInt(timestamp.timestamp.split('-')[0]) ) );
-    
-    // // setting session info
+
+    console.log( perceptionJSONFile );
+
+    // setting session info
     setSessionInfo({recordingName:newSelection, mainCameraPath, pointCloudJSONFile, eyeGazeJSONFile, handDataJSONFile, perceptionJSONFile});
 
     // // setting spinner flag

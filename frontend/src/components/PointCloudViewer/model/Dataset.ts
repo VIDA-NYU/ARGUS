@@ -82,7 +82,7 @@ export class Dataset {
 
     }
 
-    public create_model_voxel_cloud( pointCloudNames: string[], modelType: string, className: string = 'paper towel' ): void {
+    public create_model_voxel_cloud( pointCloudNames: string[], modelType: string, className: string = 'cutting board' ): void {
 
         // voxel grid
         const worldVoxelGrid: WorldVoxelGrid = this.worldVoxelGrid;

@@ -56,7 +56,6 @@ export class Scene {
         // initializing controls
         this.initialize_orbit_controls();
         this.initialize_raycaster();
-        // this.initialize_scene_highlight();
 
         // creating scene manager
         this.initialize_scene_manager();
@@ -122,6 +121,9 @@ export class Scene {
         const scene: THREE.Scene = new THREE.Scene();
         scene.background = new THREE.Color( 'white' );
         scene.fog = new THREE.Fog( 0x050505, 2000, 3500 );
+
+        // const axesHelper: THREE.AxesHelper = new THREE.AxesHelper( 5 );
+        // scene.add( axesHelper );
 
         // saving scene ref
         this.scene = scene;

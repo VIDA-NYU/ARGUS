@@ -4,7 +4,7 @@ import { VoxelCell } from "./VoxelCell";
 
 export class WorldVoxelGrid {
 
-    private cellSize: number = 0.05;
+    private cellSize: number = 0.025;
 
     constructor( public xExtent: number[], public yExtent: number[], public zExtent: number[] ){} 
 

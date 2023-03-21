@@ -19,8 +19,8 @@ const SceneViewer = ( {sceneData} : any ) => {
         sceneViewerController.change_cloud_visibility( cloudName, visibility );
     };
 
-    const onStyleChange = ( cloudName: string, attribute: string, value: number ) => {
-        sceneViewerController.change_cloud_style( cloudName, attribute, value );
+    const onPointCloudStyleChange = ( cloudName: string, attribute: string, value: number ) => {
+        sceneViewerController.change_point_cloud_style( cloudName, attribute, value );
     }
 
     useEffect(() => {
@@ -47,11 +47,9 @@ const SceneViewer = ( {sceneData} : any ) => {
 
             // updating voxel clouds
             sceneViewerController.dataset.create_density_voxel_clouds();
-            sceneViewerController.dataset.create_model_voxel_cloud(['gazeprojection-pointcloud'], 'perception');
+            // sceneViewerController.dataset.create_model_voxel_cloud(['gazeprojection-pointcloud'], 'perception');
             
             sceneViewerController.update_scene_voxel_clouds();
-
-
 
             // intializing highlights
             sceneViewerController.scene.initialize_scene_highlight();
@@ -108,7 +106,7 @@ const SceneViewer = ( {sceneData} : any ) => {
             </div> */}
 
             <div style={{ 
-                top: 20,
+                top: 'calc(100% - 400px)',
                 left: 20,
                 width: '400px',
                 height: '300px',
@@ -116,7 +114,7 @@ const SceneViewer = ( {sceneData} : any ) => {
                 display: 'flex'}}>
                     <ParameterBox 
                         onVisibilityChange={onVisibilityChange}
-                        onStyleChange={onStyleChange}>    
+                        onPointCloudStyleChange={onPointCloudStyleChange}>    
                     </ParameterBox>
             </div>    
 
