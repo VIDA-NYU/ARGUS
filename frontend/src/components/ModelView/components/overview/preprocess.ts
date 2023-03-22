@@ -8,6 +8,10 @@ function preprocessTimestampData (data, recordingMetaData, playedTimes, totalDur
     const rawFirstEntryTimestamp: string = recordingMetaData['first-entry'].split('-')[0]
     const rawLastEntryTimestamp: string = recordingMetaData["last-entry"].split('-')[0]
     const duration = totalDuration && parseInt(totalDuration) ? totalDuration * 1000: parseInt(rawLastEntryTimestamp) - parseInt(rawFirstEntryTimestamp)
+    console.log("duration");
+    console.log(duration);
+
+    
     for(let playedTime of playedTimes){
         let currentTime = playedTime * duration / 1000;
 
@@ -49,6 +53,21 @@ function extractAllObjectLabels(wholeBoundingBoxData){
 
 }
 
+function extractAllStepLabels(wholeBoundingBoxData){
+    const labels = []
+    for(let timedActionData of wholeBoundingBoxData){
+        let label = timedActionData["step_id"].toString();
+        // let timedLabels = Object.keys(timedActionData).filter(d => d != "timestamp");
+        // for(let label of timedLabels){
+            if(!labels.includes(label)){
+                labels.push(label);
+            }
+        // }
+    }
+    return labels;
+
+}
+
 function extractIndividualActionData(wholeActionData){
     let actionLabels = extractAllLabels(wholeActionData);
     let result = [];
@@ -74,4 +93,17 @@ function extractIndividualBoundingBoxData(wholeBoundingBoxData){
     return result
 }
 
-export {preprocessTimestampData, extractIndividualActionData, extractIndividualBoundingBoxData}
+function extractIndividualReasoningData(wholeReasoningData){
+    let reasoningLabels = extractAllStepLabels(wholeReasoningData);
+    let result = [];
+    for(let label of reasoningLabels){
+
+        result.push({
+            "label": label,
+            data: wholeReasoningData.map(d=>(d.step_id).toString() === label ? 1 : 0)
+        })
+    }
+    return result
+}
+
+export {preprocessTimestampData, extractIndividualActionData, extractIndividualBoundingBoxData, extractIndividualReasoningData, extractAllStepLabels}

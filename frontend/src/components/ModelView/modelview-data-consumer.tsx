@@ -132,6 +132,13 @@ export default function ModelViewDataConsumer({recordingName, playedTime, annota
         annotationData.meta.mode, recordingCurrentTime, recordingData, reasoningData,
         memoryData, boundingBoxData, egovlpActionData, clipActionData, eyeData );
 
+    console.log("reasoningData");
+    console.log(reasoningData);
+    console.log("-------reasoningFrameData");
+    console.log(reasoningFrameData);
+    console.log("clipActionData");
+    console.log(clipActionData);
+    
     const videoPlayer =
     (<ReplayPlayer
         type={dataType.VIDEO}

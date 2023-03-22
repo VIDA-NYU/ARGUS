@@ -1,7 +1,7 @@
 import {styled} from "@mui/material";
 import {useEffect, useRef} from "react";
 import d3, {scaleLinear, scaleBand, axisBottom, select, timeFormat, timeMinute, tickFormat, range} from "d3";
-import {extractIndividualActionData, extractIndividualBoundingBoxData, preprocessTimestampData} from "./preprocess";
+import {extractAllStepLabels, extractIndividualActionData, extractIndividualBoundingBoxData, extractIndividualReasoningData, preprocessTimestampData} from "./preprocess";
 import {schemeGnBu, interpolateTurbo, interpolateBuPu} from "d3-scale-chromatic";
 import {Tooltip} from "react-svg-tooltip"
 import Card from "@mui/material/Card";
@@ -100,6 +100,15 @@ export default function TemporalOverview({currentTime, boundingBoxFrameData, rea
     const boundingBoxTimedData = boundingBoxStatus && preprocessTimestampData(boundingBoxData, recordingMeta, playedTimes, state.totalDuration);
     const individualBoundingBoxList = boundingBoxStatus && extractIndividualBoundingBoxData(boundingBoxTimedData);
 
+    // reasoning outputs - steps
+    let reasoningStatus = reasoningData && reasoningData.length !== 0;
+    const reasoningTimedData = reasoningStatus && preprocessTimestampData(reasoningData, recordingMeta, playedTimes, state.totalDuration);
+    const individualReasoningList = reasoningStatus && extractIndividualReasoningData(reasoningTimedData);
+    const detectedSteps = extractAllStepLabels(reasoningTimedData);
+    console.log("detectedSteps");
+    console.log(detectedSteps);
+
+    
     // find detected actions and objects
     const detectedObjects = boundingBoxFrameData && boundingBoxFrameData.data ? boundingBoxFrameData.data.filter(d => d.confidence > thresholdObjectDetection).map(d => ({'label': d.label, 'confidence': d.confidence}) ) : [];
     const detectedActions = clipActionStatus ?
@@ -111,10 +120,15 @@ export default function TemporalOverview({currentTime, boundingBoxFrameData, rea
     let computeContainerHeight = (a, b) => {
         return a * 1.2 * (b.length ? b.length : 0);
      }
+     console.log(egovlpActionData);//   "1678292621486-0" 
+     console.log(reasoningTimedData);// "1678292404428-0" --- "1678292404983-0"
+     
     const actionContainerHeight = computeContainerHeight(cellHeight, individualActionDataList);
     const objectContainerHeight = computeContainerHeight(cellHeight, individualBoundingBoxList);
+    const stepContainerHeight = computeContainerHeight(cellHeight, individualReasoningList);
 
-    const chartHeight = marginTop + actionContainerHeight + objectContainerHeight + 40; // 120
+
+    const chartHeight = marginTop + actionContainerHeight + objectContainerHeight + stepContainerHeight + 60; // 120
 
     const xAxisY = chartHeight - 20;
 
@@ -202,9 +216,38 @@ export default function TemporalOverview({currentTime, boundingBoxFrameData, rea
 
         </g>)
     }
+    let renderSteps = (timedDataList, detectedItems) => {
+        console.log("-------------------timedDataList");
+        console.log(timedDataList);
+        
+        return (<g
+            transform={`translate(0, ${marginTop + actionContainerHeight+objectContainerHeight +20})`} // 120
+        >
+            <text
+                x={0}
+                y={-5}
+            >
+                Steps
+            </text>
+            <g>
+                {
+                    timedDataList.map((timedData, i) => {
+                        return renderHistogramRow(timedData, i, {"isVideoStart": state.played === 0, 'data': detectedItems, 'threshold': 0});
+                    })
+                }
+            </g>
 
+        </g>)
+    }
+
+    console.log("reasoningFrameData");
+    console.log(reasoningFrameData);
+    
     return (
         <Container>
+            {reasoningFrameData && state.played > 0 && <span> <small>Step ID: {reasoningFrameData.step_id}</small></span>}
+            <br></br>
+            {reasoningFrameData && state.played > 0 && <span> <small>Step Description: {reasoningFrameData.step_description}</small></span>}
             <svg ref={visRef}
                  width={chartWidth + xMarginLeft + xMarginRight + yAxisLabelWidth}
                  height={chartHeight + yMargin}
@@ -216,6 +259,7 @@ export default function TemporalOverview({currentTime, boundingBoxFrameData, rea
                     {(clipActionStatus || egovlpActionStatus) && renderActions(individualActionDataList, detectedActions)}
                     {/* Objects Temporal Overview */}
                     {boundingBoxStatus && renderObjects(individualBoundingBoxList, detectedObjects)}
+                    {reasoningStatus && renderSteps(individualReasoningList, detectedSteps)}
                     
                     {/* X-axis labels */}
                     <g

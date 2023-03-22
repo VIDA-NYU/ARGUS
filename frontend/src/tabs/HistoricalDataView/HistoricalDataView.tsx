@@ -111,13 +111,13 @@ const HistoricalDataView = () => {
           <Divider orientation='vertical'/>
 
           <Box sx={{ flex: 1, display: 'flex' }}>
-            { loadingData ? loadingSpinner() : ( <SessionView sessionInfo={sessionInfo}></SessionView> ) }
+            {/* { loadingData ? loadingSpinner() : ( <SessionView sessionInfo={sessionInfo}></SessionView> ) } */}
           </Box>
 
           <Divider orientation='vertical'/>
 
           <Box sx={{ width: '500px', display: 'flex' }}>
-            {/* { selectedRecordingName && <ModelView sessionInfo={sessionInfo} recordingName={selectedRecordingName} ></ModelView> } */}
+            { selectedRecordingName && <ModelView sessionInfo={sessionInfo} recordingName={selectedRecordingName} ></ModelView> }
           </Box>
 
         </Box>

@@ -7,9 +7,9 @@ interface detectedItems {
     label: string,
     confidence: number
 }
-interface HistogramRowProps {
+interface MatrixObjectsActionsProps {
     transform: string,
-    detectedItems : {isVideoStart: boolean, data: detectedItems [], threshold: number},
+    detectedItems : {isVideoStart: boolean, data: detectedItems [], listActions: string[], actions: detectedItems [], threshold: number},
     cellSize: number,
     chartWidth: number,
     actionCellHeight: number
@@ -21,9 +21,9 @@ interface HistogramRowProps {
     timedData: any
 }
 
-export default function HistogramRow({transform, detectedItems, cellSize, chartWidth, actionCellHeight,
+export default function MatrixObjectsActions({transform, detectedItems, cellSize, chartWidth, actionCellHeight,
                                       yAxisLabelOffsetY, yAxisLabelWidth,
-                                      index, xScale, playedTimes, timedData}: HistogramRowProps){
+                                      index, xScale, playedTimes, timedData}: MatrixObjectsActionsProps){
     const actionRef = useRef(null);
     const tools_ingredients = {
         'cutting board': 'board',
@@ -57,7 +57,7 @@ export default function HistogramRow({transform, detectedItems, cellSize, chartW
 
     const appearAVG = filterOutZeros.length/timedData.data.length;
 
-    // console.log(timedData.data);
+    console.log(detectedItems.actions);
     return (
         <g
             transform={transform}
@@ -83,19 +83,20 @@ export default function HistogramRow({transform, detectedItems, cellSize, chartW
                 transform={`translate(${yAxisLabelWidth}, 0)`}
             >
 
-                {
-                    playedTimes.map((playedTime, i) => {
+                {/* {
+                    detectedItems.actions.map((playedTime, i) => {
                         return (
+                            // <span>{playedTime.label}</span>
                             <g
                                 key={`action-${index}-cell-${i}`}
-                                transform={`translate(${xScale(playedTime)}, ${0})`}
+                                transform={`translate(${4}, ${0})`} //xScale(playedTime)
                             >
                                 <rect
                                     x={0}
                                     y={0}
                                     width={cellSize}
                                     height={actionCellHeight}
-                                    fill={interpolateBuPu(timedData.data[i])}
+                                    fill={interpolateBuPu(playedTime.confidence)}
 
 
                                 >
@@ -104,7 +105,7 @@ export default function HistogramRow({transform, detectedItems, cellSize, chartW
                             </g>
                         )
                     })
-                }
+                } */}
                 {/* AVG confidence */}
                 <g
                     transform={`translate(${chartWidth+20}, 0)`}
@@ -159,7 +160,7 @@ export default function HistogramRow({transform, detectedItems, cellSize, chartW
             <rect
                 x={0}
                 y={0}
-                width= {500}//{xScale(playedTimes[playedTimes.length - 1])}
+                width={xScale(playedTimes[playedTimes.length - 1])}
                 height={actionCellHeight}
                 fill={null}
                 opacity={0}
