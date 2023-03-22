@@ -28,11 +28,11 @@ export default function HistogramRow({transform, detectedItems, cellSize, chartW
     const tools_ingredients = {
         'cutting board': 'board',
         'butter knife': 'knife',
-        'paper towel': 'napkin',
+        'paper towel': 'paper towel',
         'flour tortilla': 'tortilla',
         'toothpicks': 'toothpicks',
-        'dental floss (string)': 'string',
-        '~12-inch strand of dental floss': 'string',
+        'dental floss (string)': 'dental floss',
+        '~12-inch strand of dental floss': 'dental floss',
         'plate': 'plate',
         'Jar of peanut butter': 'nut butter',
         'Jar of nut butter': 'nut butter',
@@ -51,17 +51,16 @@ export default function HistogramRow({transform, detectedItems, cellSize, chartW
     let xScaleLebelsConfidence = scaleLinear()
         .range([0, yAxisLabelWidth])
         .domain([0, 1]);
-// console.log(detectedItems);
+
     const filterOutZeros = timedData.data.filter(d => d > detectedItems.threshold);
     const avgConfidence = filterOutZeros.length > 0 ? filterOutZeros.reduce((a, b) => a + b) / filterOutZeros.length : 0;
 
     const appearAVG = filterOutZeros.length/timedData.data.length;
 
-    // console.log(timedData.data);
     return (
         <g
             transform={transform}
-            fillOpacity={detectedItems.isVideoStart ? '1' : detectedItems.data.map(a => a.label).includes(timedData.label) ? "1" : '0.1'}
+            fillOpacity={detectedItems.isVideoStart ? '1' : detectedItems.data.map(a => a.label).includes(timedData.label.toString()) ? "1" : '0.1'}
         >
             <text
                 ref={actionRef}

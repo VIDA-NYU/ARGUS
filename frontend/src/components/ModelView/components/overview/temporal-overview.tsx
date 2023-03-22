@@ -104,7 +104,6 @@ export default function TemporalOverview({currentTime, boundingBoxFrameData, rea
     let reasoningStatus = reasoningData && reasoningData.length !== 0;
     const reasoningTimedData = reasoningStatus && preprocessTimestampData(reasoningData, recordingMeta, playedTimes, state.totalDuration);
     const individualReasoningList = reasoningStatus && extractIndividualReasoningData(reasoningTimedData);
-    const detectedSteps = reasoningStatus && extractAllStepLabels(reasoningTimedData);
     
     // find detected actions and objects
     const detectedObjects = boundingBoxFrameData && boundingBoxFrameData.data ? boundingBoxFrameData.data.filter(d => d.confidence > thresholdObjectDetection).map(d => ({'label': d.label, 'confidence': d.confidence}) ) : [];
@@ -112,6 +111,7 @@ export default function TemporalOverview({currentTime, boundingBoxFrameData, rea
                             clipActionFrameData && Object.keys(clipActionFrameData).length > 0 ? Object.keys(clipActionFrameData).filter((key) => clipActionFrameData[key]> thresholdActionDetection).map(d => ({'label': d, 'confidence': clipActionFrameData[d]}) )  : []
                             :
                             egovlpActionFrameData && Object.keys(egovlpActionFrameData).length > 0 ? Object.keys(egovlpActionFrameData).filter((key) => egovlpActionFrameData[key]> thresholdActionDetection).map(d => ({'label': d, 'confidence': egovlpActionFrameData[d]}) ) : [];
+    const detectedSteps = (reasoningStatus && reasoningFrameData) ? [{'label': reasoningFrameData.step_id.toString(), 'confidence': 1}] : [];
 
     const cellHeight = 10; //5
     let computeContainerHeight = (a, b) => {
@@ -123,7 +123,7 @@ export default function TemporalOverview({currentTime, boundingBoxFrameData, rea
     const stepContainerHeight = computeContainerHeight(cellHeight, individualReasoningList);
 
 
-    const chartHeight = marginTop + actionContainerHeight + objectContainerHeight + stepContainerHeight + 60; // 120
+    const chartHeight = marginTop + actionContainerHeight + objectContainerHeight + stepContainerHeight + 70; // 120
 
     const xAxisY = chartHeight - 20;
 
@@ -213,7 +213,7 @@ export default function TemporalOverview({currentTime, boundingBoxFrameData, rea
     }
     let renderSteps = (timedDataList, detectedItems) => {
         return (<g
-            transform={`translate(0, ${marginTop + actionContainerHeight+objectContainerHeight +20})`} // 120
+            transform={`translate(0, ${marginTop + actionContainerHeight+objectContainerHeight + 30})`} // 120
         >
             <text
                 x={0}
