@@ -1,10 +1,11 @@
 // react
-import { Box, CircularProgress } from '@mui/material';
+import { Box, CircularProgress, Slider } from '@mui/material';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 // controller
 import { SceneViewerController } from './controllers/SceneViewer.controller';
 import ParameterBox from './ParameterBox';
+import { DataUtils } from './utils/DataUtils';
 
 const SceneViewer = ( {sceneData} : any ) => {
 
@@ -23,7 +24,7 @@ const SceneViewer = ( {sceneData} : any ) => {
         sceneViewerController.dataset.create_model_voxel_cloud(['gazeprojection-pointcloud'], 'perception', className );
         sceneViewerController.update_scene_voxel_clouds();
         
-    }
+    };
 
     const onVisibilityChange = ( cloudName: string, visibility: boolean ) => {
         sceneViewerController.change_cloud_visibility( cloudName, visibility );
@@ -31,7 +32,17 @@ const SceneViewer = ( {sceneData} : any ) => {
 
     const onPointCloudStyleChange = ( cloudName: string, attribute: string, value: number ) => {
         sceneViewerController.change_point_cloud_style( cloudName, attribute, value );
-    }
+    };
+
+    const onVoxelCloudStyleChange = ( cloudName: string, attribute: string, value: number ) => {
+        sceneViewerController.change_voxel_cloud_style( cloudName, attribute, value );
+    };
+
+    const onTimestampRangeSelected = (event: Event, newValue: number | number[]) => {
+
+        sceneViewerController.filter_points_by_timestamp( [0 , 100] );
+
+    };
 
     useEffect(() => {
 
@@ -138,12 +149,31 @@ const SceneViewer = ( {sceneData} : any ) => {
                 position: 'absolute',
                 display: 'flex'}}>
                     <ParameterBox 
-                        perceptionLabels={[]}
+                        perceptionLabels={ DataUtils.extract_perception_labels( sceneData.modelData.perception ) }
                         onModelClassSelected={onModelClassSelected}
                         onVisibilityChange={onVisibilityChange}
-                        onPointCloudStyleChange={onPointCloudStyleChange}>    
+                        onPointCloudStyleChange={onPointCloudStyleChange}
+                        onVoxelCloudStyleChange={onVoxelCloudStyleChange}>    
                     </ParameterBox>
             </div>    
+
+            <div style={{ 
+                top: '50px',
+                left: '10%',
+                width: '80%',
+                height: '100px',
+                position: 'absolute',
+                display: 'flex',
+                alignItems: 'center'}}>
+                   <Slider
+                        onChangeCommitted={onTimestampRangeSelected}
+                        min={0}
+                        max={200}
+                        value={[20, 100]}
+                        valueLabelDisplay="auto"/>
+            </div>    
+
+
 
         </div>
         

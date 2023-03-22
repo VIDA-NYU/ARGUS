@@ -24,7 +24,7 @@ const PointCloudViewer = ( {sessionInfo} : any ) => {
 
   return (
     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-      <SceneViewer sceneData={sceneData}></SceneViewer>
+      {( 'pointCloudData' in sceneData ) ? (<SceneViewer sceneData={sceneData}></SceneViewer>): <></>}
     </Box>
   )
 

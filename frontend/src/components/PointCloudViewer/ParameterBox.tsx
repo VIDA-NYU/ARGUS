@@ -22,7 +22,6 @@ const ParameterBox = ( props ) => {
 
     const pointCloudNames: string[] = [ 'gazeorigin-pointcloud', 'lefthands-pointcloud', 'righthands-pointcloud', 'gazeprojection-pointcloud', 'world-pointcloud' ];
     const voxelCloudNames: string[] = [ 'gazeorigin-voxelcloud', 'lefthands-voxelcloud', 'righthands-voxelcloud', 'gazeprojection-voxelcloud' ];
-    const classNames: string[] = ['plate', 'flour tortilla','cutting board', 'paper towel'];
 
     const visibilityChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
 
@@ -38,15 +37,13 @@ const ParameterBox = ( props ) => {
         props.onPointCloudStyleChange( cloudName, attribute, value );
     }
 
-    // const voxelCloudStyleChangeHandler = (event: any) => {
+    const voxelCloudStyleChangeHandler = (event: any) => {
 
-    //     const [cloudName, attribute] = event.target.name.split(':');
-    //     const value: number = event.target.value;
+        const [cloudName, attribute] = event.target.name.split(':');
+        const value: number = event.target.value;
 
-    //     console.log(cloudName, ' , ', attribute, ' , ', value)
-
-    //     // props.onStyleChange( cloudName, attribute, value );
-    // }
+        props.onVoxelCloudStyleChange( cloudName, attribute, value );
+    }
 
     const handleClassSelection = (event: SelectChangeEvent) => {
 
@@ -201,6 +198,156 @@ const ParameterBox = ( props ) => {
                 <Accordion>
 
                     <AccordionSummary>
+                        <Typography color={'#1976d2'}>Point Opacities</Typography>
+                    </AccordionSummary>
+
+                    <AccordionDetails>
+
+                        <Box sx={{ display: 'flex', width: '100%', height: '350px', flexDirection: 'column' }} >
+
+                            <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column' }}>
+
+                                <Box sx={{ display: 'flex', width: '95%', height: '70px', flexDirection: 'column', alignItems: 'center' }}> 
+
+                                    <Typography>
+                                        World points:
+                                    </Typography>
+
+                                    <Box sx={{ width: '80%', height: '70px'}} >
+                                        <Slider name='world-pointcloud:opacity' onChange={pointCloudStyleChangeHandler} min={0} max={1} step={0.1}/>
+                                    </Box>
+
+                                </Box>
+
+                                <Box sx={{ display: 'flex', width: '95%', height: '70px', flexDirection: 'column', alignItems: 'center' }}> 
+
+                                    <Typography>
+                                        Gaze Origin:
+                                    </Typography>
+
+                                    <Box sx={{ width: '80%', height: '70px'}} >
+                                        <Slider name='gazeorigin-pointcloud:opacity' onChange={pointCloudStyleChangeHandler} min={0} max={1} step={0.1}/>
+                                    </Box>
+
+                                </Box>
+
+
+                                <Box sx={{ display: 'flex', width: '95%', height: '70px', flexDirection: 'column', alignItems: 'center' }}> 
+
+                                    <Typography>
+                                        Gaze Projection:
+                                    </Typography>
+
+                                    <Box sx={{ width: '80%', height: '70px'}} >
+                                        <Slider name='gazeprojection-pointcloud:opacity' onChange={pointCloudStyleChangeHandler} min={0} max={1} step={0.1}/>
+                                    </Box>
+
+                                </Box>
+
+                                <Box sx={{ display: 'flex', width: '95%', height: '70px', flexDirection: 'column', alignItems: 'center' }}> 
+
+                                    <Typography>
+                                        Left Hand:
+                                    </Typography>
+
+                                    <Box sx={{ width: '80%', height: '70px'}} >
+                                        <Slider name='lefthands-pointcloud:opacity' onChange={pointCloudStyleChangeHandler} min={0} max={1} step={0.1}/>
+                                    </Box>
+
+                                </Box>
+
+                                <Box sx={{ display: 'flex', width: '95%', height: '70px', flexDirection: 'column', alignItems: 'center' }}> 
+
+                                    <Typography>
+                                        Right Hand:
+                                    </Typography>
+
+                                    <Box sx={{ width: '80%', height: '70px'}} >
+                                        <Slider name='righthands-pointcloud:opacity' onChange={pointCloudStyleChangeHandler} min={0} max={1} step={0.1}/>
+                                    </Box>
+
+                                </Box>
+
+                            </Box>
+
+                        </Box>
+
+                    </AccordionDetails>
+
+                </Accordion>
+
+                <Accordion>
+
+                    <AccordionSummary>
+                        <Typography color={'#1976d2'}>Heatmap Opacity</Typography>
+                    </AccordionSummary>
+
+                    <AccordionDetails>
+
+                        <Box sx={{ display: 'flex', width: '100%', height: '350px', flexDirection: 'column' }} >
+
+                            <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column' }}>
+
+                                <Box sx={{ display: 'flex', width: '95%', height: '70px', flexDirection: 'column', alignItems: 'center' }}> 
+
+                                    <Typography>
+                                        Gaze Origin:
+                                    </Typography>
+
+                                    <Box sx={{ width: '80%', height: '70px'}} >
+                                        <Slider name='gazeorigin-voxelcloud:opacity' onChange={voxelCloudStyleChangeHandler} min={0} max={1} step={0.1}/>
+                                    </Box>
+
+                                </Box>
+
+                                <Box sx={{ display: 'flex', width: '95%', height: '70px', flexDirection: 'column', alignItems: 'center' }}> 
+
+                                    <Typography>
+                                        Left Hands:
+                                    </Typography>
+
+                                    <Box sx={{ width: '80%', height: '70px'}} >
+                                        <Slider name='lefthands-voxelcloud:opacity' onChange={voxelCloudStyleChangeHandler} min={0} max={1} step={0.1}/>
+                                    </Box>
+
+                                </Box>
+
+
+                                <Box sx={{ display: 'flex', width: '95%', height: '70px', flexDirection: 'column', alignItems: 'center' }}> 
+
+                                    <Typography>
+                                        Right Hands:
+                                    </Typography>
+
+                                    <Box sx={{ width: '80%', height: '70px'}} >
+                                        <Slider name='righthands-voxelcloud:opacity' onChange={voxelCloudStyleChangeHandler} min={0} max={1} step={0.1}/>
+                                    </Box>
+
+                                </Box>
+
+                                <Box sx={{ display: 'flex', width: '95%', height: '70px', flexDirection: 'column', alignItems: 'center' }}> 
+
+                                    <Typography>
+                                        Gaze Projection:
+                                    </Typography>
+
+                                    <Box sx={{ width: '80%', height: '70px'}} >
+                                        <Slider name='gazeprojection-voxelcloud:opacity' onChange={voxelCloudStyleChangeHandler} min={0} max={1} step={0.1}/>
+                                    </Box>
+
+                                </Box>
+
+                            </Box>
+
+                        </Box>
+
+                    </AccordionDetails>
+
+                </Accordion>
+
+                <Accordion>
+
+                    <AccordionSummary>
                         <Typography color={'#1976d2'}>Model Heatmap</Typography>
                     </AccordionSummary>
 
@@ -230,6 +377,9 @@ const ParameterBox = ( props ) => {
                     </AccordionDetails>
 
                 </Accordion>
+
+
+
 
             </div>   
 

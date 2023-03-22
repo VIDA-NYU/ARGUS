@@ -92,9 +92,25 @@ export class SceneViewerController {
         if( cloudName in this.dataset.pointClouds ){
 
             const pointCloud: PointCloud = this.dataset.pointClouds[cloudName];
+
+            console.log(pointCloud.threeObject);
+
             pointCloud.threeObject.material[style] = value;
             return;
 
+        }
+
+    }
+
+    public change_voxel_cloud_style( cloudName: string, style: string, value: number ): void {
+
+        if( cloudName in this.dataset.voxelClouds ){
+
+            const voxelCloud: VoxelCloud = this.dataset.voxelClouds[cloudName];
+
+            voxelCloud.threeObject.children.forEach( (cube: THREE.Mesh) => {
+                cube.material[style] = value;
+            })
         }
 
     }
@@ -122,6 +138,15 @@ export class SceneViewerController {
     public initialize_tooltip( videoPath: string ){
 
         this.scene.tooltip.add_video_tag(videoPath);
+
+    }
+
+    public filter_points_by_timestamp( timestamps: number[] ): void {
+
+        const pointClouds: PointCloud[] = this.dataset.get_point_clouds(['gazeorigin-pointcloud']);
+        pointClouds.forEach( (pointCloud: PointCloud) => {
+            pointCloud.filter_points_by_timestamp( timestamps );
+        });
 
     }
     

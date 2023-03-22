@@ -14,6 +14,9 @@ export abstract class PointCloud {
     // Interactive flag
     public interactive: boolean = true;
 
+    // visibility buffer
+    public visibility: number[] = [];
+
     constructor( public name: string, public points: number[][], public colors: number[][], public normals: number[][], public timestamps: number[] ){
 
         // calculating extent
@@ -22,6 +25,9 @@ export abstract class PointCloud {
         if( colors.length === 0 ){
             this.fill_colors();
         }
+
+        // initializing visibility buffer
+        this.visibility = new Array( this.points.length ).fill( 1.0 );
         
     }
 
@@ -56,6 +62,22 @@ export abstract class PointCloud {
          
         return [ this.points.flat(), this.colors.flat(), this.normals.flat() ];
     
+    }
+
+    public filter_points_by_timestamp( timestamps: number[] ){
+
+        for(let i: number = timestamps[0]; i < timestamps[1]; i++ ){
+            this.threeObject.geometry.attributes.visibility.setX( i, 0 );
+        }
+
+
+        // for( let i = 0; i < this.timestamps.length; i++ ){
+        //     if( this.timestamps[i] > timestamps[0] && this.timestamps[i] < timestamps[1] ){
+        //         this.threeObject.geometry.attributes.visibility.setX( i, 0 )
+        //     }
+        // }
+
+        this.threeObject.geometry.attributes.visibility.needsUpdate = true;
     }
 
 
