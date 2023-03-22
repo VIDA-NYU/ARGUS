@@ -1,5 +1,6 @@
 // react
-import { useEffect, useMemo, useRef } from 'react';
+import { Box, CircularProgress } from '@mui/material';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 // controller
 import { SceneViewerController } from './controllers/SceneViewer.controller';
@@ -7,14 +8,18 @@ import ParameterBox from './ParameterBox';
 
 const SceneViewer = ( {sceneData} : any ) => {
 
+    const [loadingData, setLoadingData] = useState<boolean>(true);
+
     // DOM Refs
     const containerRef = useRef(null);
     const tooltipContainerRef = useRef(null);
 
+    // controller
     const sceneViewerController = useMemo( () => new SceneViewerController(), []);
 
     const onModelClassSelected = ( className: string ) => {
 
+        sceneViewerController.remove_scene_objects(['model-voxelcloud']);
         sceneViewerController.dataset.create_model_voxel_cloud(['gazeprojection-pointcloud'], 'perception', className );
         sceneViewerController.update_scene_voxel_clouds();
         
@@ -31,7 +36,7 @@ const SceneViewer = ( {sceneData} : any ) => {
     useEffect(() => {
 
         if( 'pointCloudData' in sceneData ){
-        
+
             // clearing scene
             sceneViewerController.scene?.clear_scene();
 
@@ -61,10 +66,22 @@ const SceneViewer = ( {sceneData} : any ) => {
 
             // render
             sceneViewerController.scene.render();
+
+            // removing spinner
+            setLoadingData(false);
             
         }
 
     }, [sceneData])
+
+
+    const loadingSpinner = () => {
+        return (
+            <Box sx={{ display: 'flex', width: '100%', height: '100%', position: 'absolute', justifyContent: 'center', alignItems: 'center' }}>
+                <CircularProgress/>
+            </Box>
+        )
+    };
 
     return (
         
@@ -72,6 +89,9 @@ const SceneViewer = ( {sceneData} : any ) => {
             width: '100%',
             height: '100%',
             position: 'relative'}}>
+
+
+            { (loadingData) ? loadingSpinner(): <></> }
 
             <div style={{ 
                 top: 0,
@@ -118,6 +138,7 @@ const SceneViewer = ( {sceneData} : any ) => {
                 position: 'absolute',
                 display: 'flex'}}>
                     <ParameterBox 
+                        perceptionLabels={[]}
                         onModelClassSelected={onModelClassSelected}
                         onVisibilityChange={onVisibilityChange}
                         onPointCloudStyleChange={onPointCloudStyleChange}>    

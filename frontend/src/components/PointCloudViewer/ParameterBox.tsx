@@ -220,7 +220,7 @@ const ParameterBox = ( props ) => {
                                     value={selectedClass}
                                     onChange={handleClassSelection}
                                     label="Class">
-                                        { classNames.map( (className: string) => <MenuItem key={className} value={className}>{className}</MenuItem> )}
+                                        { props.perceptionLabels.map( (className: string) => <MenuItem key={className} value={className}>{className}</MenuItem> )}
                                 </Select>
 
                             </Box>

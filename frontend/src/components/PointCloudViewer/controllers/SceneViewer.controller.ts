@@ -1,9 +1,15 @@
+// model
 import { Dataset } from "../model/Dataset";
 import { PointCloud } from "../model/renderables/PointCloud";
 import { Scene } from "../model/Scene";
-import { CameraParams } from "../types/types";
-import * as THREE from 'three';
 import { VoxelCloud } from "../model/renderables/VoxelCloud";
+
+// types
+import { CameraParams } from "../types/types";
+
+// third-party
+import { Object3D } from "three";
+import * as THREE from 'three';
 
 export class SceneViewerController {
 
@@ -18,6 +24,17 @@ export class SceneViewerController {
         // creating dataset
         this.dataset = new Dataset( sceneData );
     }
+
+    public remove_scene_objects( objectNames: string[] ): void {
+
+        objectNames.forEach( ( name: string ) => {
+
+            const currentObject: Object3D = this.scene.scene.getObjectByName( name );
+            if( currentObject ) this.scene.scene.remove( currentObject );
+
+        });
+
+    }   
 
     public update_scene_point_clouds(): void {
 

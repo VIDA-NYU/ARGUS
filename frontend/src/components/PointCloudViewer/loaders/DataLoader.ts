@@ -89,14 +89,16 @@ export class DataLoader {
 
             const rowIndex: { [className: string]: number } = {};
             const rowData: any[] = row.data;
+
             rowData.forEach( (labelInfo: any) => {
 
-                const labels: string[] = labelInfo.labels;
-                const confidences: number[] = labelInfo.confidences;
+                const label: string = labelInfo.label;
+                const confidence: number = labelInfo.confidence;
 
-                for(let i = 0; (i < labels.length) && (i < confidences.length); i++){
-                    rowIndex[labels[i]] = confidences[i];
+                if( !(label in rowIndex) ){
+                    rowIndex[label] = confidence;
                 }
+                rowIndex[label] = Math.max(rowIndex[label], confidence);
 
             });
 
