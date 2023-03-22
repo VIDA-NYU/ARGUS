@@ -19,7 +19,7 @@ const SessionView = ( {sessionInfo}: any ) => {
 
   return (
     <Box sx={{ flex: 1, display: 'flex'}}>
-        { sessionInfo.recordingName ? ( <PointCloudViewer sessionInfo={sessionInfo} ></PointCloudViewer> ) : emptySelection() }
+        { sessionInfo.recordingName ? ( <PointCloudViewer sessionInfo={sessionInfo}></PointCloudViewer> ) : emptySelection() }
     </Box>
   )
 

@@ -30,4 +30,20 @@ export class DataUtils {
         return parseInt(timestamp.split('-')[0])
 
     }
+
+
+    public static extract_perception_labels( rawPerceptionFile: any ): string[] {
+
+        const perceptionData: any [] = rawPerceptionFile.map( (timestamp: any) => timestamp.data );
+        const perceptionLabels: string[][] = perceptionData.map( ( labelInfo: any ) => labelInfo.map( (info: any) => info.label ) );
+        
+        const labelSet: Set<string> = new Set<string>();
+        perceptionLabels.forEach( (labels: string[]) => { 
+            labels.forEach( (label:string) => {
+                labelSet.add( label );
+            })
+        });
+
+        return Array.from(labelSet.values());
+    }
 }

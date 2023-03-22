@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 // material imports
 import Box from '@mui/material/Box';
-import { Divider } from '@mui/material';
+import { Divider, Typography } from '@mui/material';
 import { CircularProgress } from '@mui/material';
 
 // api
@@ -32,6 +32,7 @@ import { GazePointCloudRaw } from '../../components/PointCloudViewer/types/types
 
 // styles
 import './HistoricalDataView.css'
+import { DataUtils } from '../../components/PointCloudViewer/utils/DataUtils';
 
 const HistoricalDataView = () => {
 
@@ -65,8 +66,6 @@ const HistoricalDataView = () => {
     TimestampManager.initialize_main_stream( eyeGazeJSONFile.map( (timestamp: GazePointCloudRaw) => parseInt(timestamp.timestamp.split('-')[0]) ) );
     TimestampManager.index_stream_timestamp( 'perception', perceptionJSONFile.map( (timestamp: any) => parseInt(timestamp.timestamp.split('-')[0]) ) );
 
-    console.log( perceptionJSONFile );
-
     // setting session info
     setSessionInfo({recordingName:newSelection, mainCameraPath, pointCloudJSONFile, eyeGazeJSONFile, handDataJSONFile, perceptionJSONFile});
 
@@ -83,6 +82,16 @@ const HistoricalDataView = () => {
     return (
       <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <CircularProgress/>
+      </Box>
+    )
+  };
+
+  const emptySelection = () => {
+    return (
+      <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+        <Typography variant="h4" color="text.secondary">
+            <b>No Session selected...</b>
+        </Typography>
       </Box>
     )
   };
@@ -110,13 +119,16 @@ const HistoricalDataView = () => {
 
           <Divider orientation='vertical'/>
 
-          <Box sx={{ flex: 1, display: 'flex' }}>
-            {/* { loadingData ? loadingSpinner() : ( <SessionView sessionInfo={sessionInfo}></SessionView> ) } */}
-          </Box>
+          { !('pointCloudJSONFile' in sessionInfo) && !(loadingData) ? (emptySelection()): 
+          (
+            <Box sx={{ flex: 1, display: 'flex' }}>
+              { loadingData ? loadingSpinner() : ( <SessionView sessionInfo={sessionInfo} ></SessionView> ) }
+            </Box>
+          )}
 
           <Divider orientation='vertical'/>
 
-          <Box sx={{ width: '500px', display: 'flex' }}>
+          <Box sx={{ width: '500px', display: 'flex', flexDirection: 'column' }}>
             { selectedRecordingName && <ModelView sessionInfo={sessionInfo} recordingName={selectedRecordingName} ></ModelView> }
           </Box>
 

@@ -18,14 +18,39 @@ export class SceneManager {
 
         const sprite = new THREE.TextureLoader().load( '/sprites/disc.png' );
 
-        // loading positions
+        // loading buffers
         const pointgeometry = new THREE.BufferGeometry();
         if(points.length > 0) pointgeometry.setAttribute( 'position', new THREE.Float32BufferAttribute( points, 3 ) );
         if(colors.length > 0) pointgeometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
         if(normals.length > 0) pointgeometry.setAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
+        pointgeometry.setAttribute( 'visibility', new THREE.Float32BufferAttribute( pointCloud.visibility, 1 ) );
         pointgeometry.computeBoundingBox();
 
-        const pointmaterial = new THREE.PointsMaterial( { size: 0.015, map: sprite, vertexColors: true,sizeAttenuation: true, alphaTest: 0.5, transparent: true } );
+        const visibilityShader = (shader) => {
+            
+            shader.vertexShader = `
+                attribute float visibility; 
+                varying float vVisible; 
+                ${shader.vertexShader}`.replace(
+                `gl_PointSize = size;`,
+                `gl_PointSize = size;
+                vVisible = visibility;`
+            );
+
+            shader.fragmentShader = `
+                varying float vVisible;
+                ${shader.fragmentShader}`.replace(
+                    `#include <clipping_planes_fragment>`,
+                    `if (vVisible < 0.5) discard;
+                    #include <clipping_planes_fragment>`
+                );
+
+        }
+
+        // alphaTest: 0.5,
+        const pointmaterial = new THREE.PointsMaterial( { size: 0.015, map: sprite, vertexColors: true, sizeAttenuation: true, transparent: true } );
+        pointmaterial.onBeforeCompile = visibilityShader;
+        
         const pointCloudObject = new THREE.Points( pointgeometry, pointmaterial );
 
         // adding to scene

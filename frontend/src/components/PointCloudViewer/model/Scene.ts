@@ -83,8 +83,8 @@ export class Scene {
             if( timestamp === -1 ) return;
             
             // updating tooltip
-            this.tooltip.position_tooltip(intersection.mousePosition.top, intersection.mousePosition.left);
-            this.tooltip.set_video_timestamp(TimestampManager.get_elapsed_time(timestamp));
+            // this.tooltip.position_tooltip(intersection.mousePosition.top, intersection.mousePosition.left);
+            // this.tooltip.set_video_timestamp(TimestampManager.get_elapsed_time(timestamp));
 
             // firing event
             EventsManager.emit('onTimestampSelected',  {timestamp} );

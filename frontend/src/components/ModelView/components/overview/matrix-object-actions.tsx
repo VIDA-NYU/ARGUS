@@ -51,13 +51,12 @@ export default function MatrixObjectsActions({transform, detectedItems, cellSize
     let xScaleLebelsConfidence = scaleLinear()
         .range([0, yAxisLabelWidth])
         .domain([0, 1]);
-// console.log(detectedItems);
+
     const filterOutZeros = timedData.data.filter(d => d > detectedItems.threshold);
     const avgConfidence = filterOutZeros.length > 0 ? filterOutZeros.reduce((a, b) => a + b) / filterOutZeros.length : 0;
 
     const appearAVG = filterOutZeros.length/timedData.data.length;
 
-    console.log(detectedItems.actions);
     return (
         <g
             transform={transform}

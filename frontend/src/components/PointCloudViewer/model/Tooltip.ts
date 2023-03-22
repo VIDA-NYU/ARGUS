@@ -13,7 +13,6 @@ export class Tooltip{
 
     }
 
-
     public position_tooltip( top: number, left: number ): void {
 
         if(top === 0){

@@ -8,9 +8,6 @@ function preprocessTimestampData (data, recordingMetaData, playedTimes, totalDur
     const rawFirstEntryTimestamp: string = recordingMetaData['first-entry'].split('-')[0]
     const rawLastEntryTimestamp: string = recordingMetaData["last-entry"].split('-')[0]
     const duration = totalDuration && parseInt(totalDuration) ? totalDuration * 1000: parseInt(rawLastEntryTimestamp) - parseInt(rawFirstEntryTimestamp)
-    console.log("duration");
-    console.log(duration);
-
     
     for(let playedTime of playedTimes){
         let currentTime = playedTime * duration / 1000;

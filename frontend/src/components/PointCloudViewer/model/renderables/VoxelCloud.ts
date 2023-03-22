@@ -47,7 +47,8 @@ export class VoxelCloud {
 
     public color_voxel_cells_by_model_confidence( confidences: number[][] ): void {
 
-        const extent: number[] = [0, d3.max( confidences, (confidence: number[] ) => d3.max(confidence) )];
+        // const extent: number[] = [0, d3.max( confidences, (confidence: number[] ) => d3.max(confidence) )];
+        const extent: number[] = [0, 1];
 
         // creating color scale
         const colorScale: d3.ScaleSequential<any, any> = 

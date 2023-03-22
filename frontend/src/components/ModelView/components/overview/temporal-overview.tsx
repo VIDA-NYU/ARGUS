@@ -104,10 +104,7 @@ export default function TemporalOverview({currentTime, boundingBoxFrameData, rea
     let reasoningStatus = reasoningData && reasoningData.length !== 0;
     const reasoningTimedData = reasoningStatus && preprocessTimestampData(reasoningData, recordingMeta, playedTimes, state.totalDuration);
     const individualReasoningList = reasoningStatus && extractIndividualReasoningData(reasoningTimedData);
-    const detectedSteps = extractAllStepLabels(reasoningTimedData);
-    console.log("detectedSteps");
-    console.log(detectedSteps);
-
+    const detectedSteps = reasoningStatus && extractAllStepLabels(reasoningTimedData);
     
     // find detected actions and objects
     const detectedObjects = boundingBoxFrameData && boundingBoxFrameData.data ? boundingBoxFrameData.data.filter(d => d.confidence > thresholdObjectDetection).map(d => ({'label': d.label, 'confidence': d.confidence}) ) : [];
@@ -120,8 +117,8 @@ export default function TemporalOverview({currentTime, boundingBoxFrameData, rea
     let computeContainerHeight = (a, b) => {
         return a * 1.2 * (b.length ? b.length : 0);
      }
-     console.log(egovlpActionData);//   "1678292621486-0" 
-     console.log(reasoningTimedData);// "1678292404428-0" --- "1678292404983-0"
+    //  console.log(egovlpActionData);//   "1678292621486-0" 
+    //  console.log(reasoningTimedData);// "1678292404428-0" --- "1678292404983-0"
      
     const actionContainerHeight = computeContainerHeight(cellHeight, individualActionDataList);
     const objectContainerHeight = computeContainerHeight(cellHeight, individualBoundingBoxList);
@@ -217,9 +214,6 @@ export default function TemporalOverview({currentTime, boundingBoxFrameData, rea
         </g>)
     }
     let renderSteps = (timedDataList, detectedItems) => {
-        console.log("-------------------timedDataList");
-        console.log(timedDataList);
-        
         return (<g
             transform={`translate(0, ${marginTop + actionContainerHeight+objectContainerHeight +20})`} // 120
         >
@@ -239,15 +233,11 @@ export default function TemporalOverview({currentTime, boundingBoxFrameData, rea
 
         </g>)
     }
-
-    console.log("reasoningFrameData");
-    console.log(reasoningFrameData);
     
     return (
         <Container>
-            {reasoningFrameData && state.played > 0 && <span> <small>Step ID: {reasoningFrameData.step_id}</small></span>}
+            {reasoningFrameData && state.played > 0 && <p text-indent="50px" line-height= "0.8"> <small><b>Step {reasoningFrameData.step_id}:</b> {reasoningFrameData.step_description}</small></p>}
             <br></br>
-            {reasoningFrameData && state.played > 0 && <span> <small>Step Description: {reasoningFrameData.step_description}</small></span>}
             <svg ref={visRef}
                  width={chartWidth + xMarginLeft + xMarginRight + yAxisLabelWidth}
                  height={chartHeight + yMargin}
