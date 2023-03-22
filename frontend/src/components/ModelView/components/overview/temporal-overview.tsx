@@ -117,8 +117,6 @@ export default function TemporalOverview({currentTime, boundingBoxFrameData, rea
     let computeContainerHeight = (a, b) => {
         return a * 1.2 * (b.length ? b.length : 0);
      }
-    //  console.log(egovlpActionData);//   "1678292621486-0" 
-    //  console.log(reasoningTimedData);// "1678292404428-0" --- "1678292404983-0"
      
     const actionContainerHeight = computeContainerHeight(cellHeight, individualActionDataList);
     const objectContainerHeight = computeContainerHeight(cellHeight, individualBoundingBoxList);

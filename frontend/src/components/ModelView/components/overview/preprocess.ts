@@ -4,14 +4,13 @@ function preprocessTimestampData (data, recordingMetaData, playedTimes, totalDur
 
     let dataset = new Dataset(recordingMetaData, data);
     const result = []
-
     const rawFirstEntryTimestamp: string = recordingMetaData['first-entry'].split('-')[0]
     const rawLastEntryTimestamp: string = recordingMetaData["last-entry"].split('-')[0]
-    const duration = totalDuration && parseInt(totalDuration) ? totalDuration * 1000: parseInt(rawLastEntryTimestamp) - parseInt(rawFirstEntryTimestamp)
-    
+    // const duration = totalDuration && parseInt(totalDuration) ? totalDuration * 1000: parseInt(rawLastEntryTimestamp) - parseInt(rawFirstEntryTimestamp);
+    const duration = totalDuration && parseInt(rawLastEntryTimestamp) - parseInt(rawFirstEntryTimestamp); // get total duration from json files.
+
     for(let playedTime of playedTimes){
         let currentTime = playedTime * duration / 1000;
-
         const {
             element: currFrameData,
             index: currFrameIndex
