@@ -12,6 +12,9 @@ export class DataParser {
         // TODO: Read this bounding box from constants
         const xyz: number[][] = [];
         const colors: number[][] = [];
+
+        if( !('xyz_world' in dataset) ) return new WorldPointCloud('world-pointcloud', xyz, colors, []);
+
         dataset.xyz_world.forEach( (coord: number[],  index: number) => {
             if(coord[1] <= -0.39 || coord[1] >= -0.018){
                 xyz.push(coord);
@@ -47,6 +50,7 @@ export class DataParser {
             timestamps.push( currentTimestamp );
 
         });
+
 
         return new HandPointCloud( `${side}hands-pointcloud`, points, colors, normals, timestamps );
 
