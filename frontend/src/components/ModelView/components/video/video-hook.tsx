@@ -1,5 +1,5 @@
 import { onProgressType } from '../../../../components/VideoDataView/VideoCard/VideoCard';
-import React, {useRef} from "react";
+import React, {useEffect, useRef} from "react";
 import {format, formatTotalDuration} from '../../../../utils/Helpers';
 import screenful from "screenfull";
 import { MediaState } from "../../../../components/Controls/types/types";
@@ -35,6 +35,13 @@ export function useVideoControl (recordingData: any){
         totalDuration,
         currentTime,
     } = state;
+
+    useEffect(() => {
+        recordingData && recordingData.name && setState({
+            ...state,
+            totalDuration: totalDurationValue
+        });
+    }, [recordingData && recordingData.name]);
 
     const handleProgress = (changeState: onProgressType) => {
 
