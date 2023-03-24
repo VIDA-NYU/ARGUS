@@ -9,10 +9,11 @@ import Controls from '../../utils/Controls';
 import {useFrameData, useRecordingData} from "./components/utils/data-hook";
 import {filterObjectWithRecipe, generateRecipeObjectIndex} from "./components/object-comps/utils";
 import {AnnotationData, AnnotationMeta} from "./components/annotation/types";
-import {buildNewAnnotationMeta, computeCurrentStep} from "./components/annotation/utils";
+import {buildNewAnnotationMeta, computeCurrentStep, setNewObjectConfidenceThreshold} from "./components/annotation/utils";
 import {syncWithVideoTime} from "./components/video/utils/wrapper";
 import { useEffect, useState } from "react";
 import { scaleLinear } from "d3";
+import ObjectConfidenceThresholdAdjuster from "./components/object-comps/object-confidence-threshold-adjuster";
 
 
 interface RecipeData {
@@ -91,6 +92,9 @@ export default function ModelViewDataConsumer({recordingName, playedTime, annota
         reasoningData, boundingBoxData, memoryData, eyeData
     } = useRecordingData(recordingID, token, fetchAuth);
 
+    const handleSettingObjectConfidenceThreshold = (value) => {
+        setAnnotationData(setNewObjectConfidenceThreshold(annotationData, value));
+    }
     const {
         state,
         controlsRef, playerContainerRef, playerRef, canvasRef,
@@ -173,6 +177,12 @@ export default function ModelViewDataConsumer({recordingName, playedTime, annota
         />
     )
 
+    const confidenceControl = (
+        <ObjectConfidenceThresholdAdjuster
+        thresholdValue={annotationData.perceptronParameters.objectConfidenceThreshold}
+        onSettingThresholdValue={handleSettingObjectConfidenceThreshold}
+    />
+    )
     const recipePicker = (
         <div/>
     )
@@ -201,6 +211,7 @@ export default function ModelViewDataConsumer({recordingName, playedTime, annota
             videoControls={videoControls}
             videoPlayer={videoPlayer}
             recipePicker={recipePicker}
+            confidenceControl={confidenceControl}
         />
     )
 

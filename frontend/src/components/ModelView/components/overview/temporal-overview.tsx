@@ -6,9 +6,10 @@ import {schemeGnBu, interpolateTurbo, interpolateBuPu} from "d3-scale-chromatic"
 import {Tooltip} from "react-svg-tooltip"
 import Card from "@mui/material/Card";
 import HistogramRow from "./histogram-row";
-import {generateHumanAnnotationTemporalData} from "../annotation/utils";
+import {generateHumanAnnotationTemporalData, setNewObjectConfidenceThreshold} from "../annotation/utils";
 import { preprocessFrameBoundingBoxData, syncWithVideoTime } from "../video/utils/wrapper";
 import Legend from "./legend";
+import ObjectConfidenceThresholdAdjuster from "../object-comps/object-confidence-threshold-adjuster";
 // import * from "color-legend-element";
 
 const Container = styled(Card)({})
@@ -52,7 +53,7 @@ export default function TemporalOverview({currentTime, boundingBoxFrameData, rea
     const xAxisRef = useRef(null);
 
     const thresholdObjectDetection = annotationData.perceptronParameters.objectConfidenceThreshold;
-    const thresholdActionDetection = 0.1;
+    const thresholdActionDetection = annotationData.perceptronParameters.objectConfidenceThreshold;
 
     // create as many bins as seconds (duration of the session/video in seconds)
     xCellNumber = Math.floor(recordingMeta.duration_secs);
@@ -66,6 +67,7 @@ export default function TemporalOverview({currentTime, boundingBoxFrameData, rea
             select(xAxisRef.current).call(xAxis)
         }
     }, [state.totalDuration]);
+
 
     let xScale = scaleLinear()
         .range([0, chartWidth])
@@ -234,7 +236,7 @@ export default function TemporalOverview({currentTime, boundingBoxFrameData, rea
     
     return (
         <Container>
-            {reasoningFrameData && state.played > 0 && <p text-indent="50px" line-height= "0.8"> <small><b>Step {reasoningFrameData.step_id}:</b> {reasoningFrameData.step_description}</small></p>}
+            {reasoningFrameData && state.played > 0 && <p style={{marginBottom:"-8px"}} text-indent="50px" line-height= "0.8"> <small><b>Step {reasoningFrameData.step_id}:</b> {reasoningFrameData.step_description}</small></p>}
             <br></br>
             <svg ref={visRef}
                  width={chartWidth + xMarginLeft + xMarginRight + yAxisLabelWidth}
@@ -262,7 +264,7 @@ export default function TemporalOverview({currentTime, boundingBoxFrameData, rea
                     >
                         Time (mm:ss)
                     </text>
-                    <Legend type={'confidence'} legendXPos={65} legendWidth={69} title={"Confidence (%)"} rangeFromTo={[0,100]} chartWidth={chartWidth-80+60} cellSize={cellSize} yAxisLabelOffsetY={yAxisLabelOffsetY} />
+                    <Legend type={'confidence'} legendXPos={55} legendWidth={50} title={"Confidence"} rangeFromTo={[0,1]} chartWidth={chartWidth-80+60} cellSize={cellSize} yAxisLabelOffsetY={yAxisLabelOffsetY} />
                     <Legend legendXPos={60} legendWidth={44} title={"Coverage"} rangeFromTo={[0,1]} chartWidth={chartWidth+60} cellSize={cellSize} yAxisLabelOffsetY={yAxisLabelOffsetY} />
 
 

@@ -45,7 +45,8 @@ interface WozCompContainerProps {
     videoControls: ReactElement,
     currentTime: number,
     recipePicker: ReactElement,
-    currentStep: number
+    currentStep: number,
+    confidenceControl: ReactElement
 
 }
 
@@ -59,7 +60,7 @@ export default function ModelViewCompContainer({
                                              egovlpActionData, egovlpActionFrameData,
                                              clipActionData, clipActionFrameData, videoPlayer,
                                              videoControls, streamInfo, currentTime, currentStep,
-                                             recipePicker
+                                             recipePicker, confidenceControl
                                          }: WozCompContainerProps) {
 
     const renderTemporalOverview = (annotationData: AnnotationData) => {
@@ -159,6 +160,15 @@ export default function ModelViewCompContainer({
                                 sx={{gridArea: "N"}}
                             >
                                 {annotationData.meta.mode === "offline" && videoControls}
+                            </Box>
+                        )}
+                    </AnnotationContext.Consumer>
+                    <AnnotationContext.Consumer>
+                        {({annotationData}) => (
+                            <Box
+                                sx={{gridArea: "r"}}
+                            >
+                                {annotationData.meta.mode === "offline" && confidenceControl}
                             </Box>
                         )}
                     </AnnotationContext.Consumer>
