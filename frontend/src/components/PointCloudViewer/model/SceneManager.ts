@@ -16,7 +16,7 @@ export class SceneManager {
         // getting raw data
         const [points, colors, normals] = pointCloud.get_buffer_positions();
 
-        const sprite = new THREE.TextureLoader().load( '/sprites/disc.png' );
+        // const sprite = new THREE.TextureLoader().load( '/sprites/disc.png' );
 
         // loading buffers
         const pointgeometry = new THREE.BufferGeometry();
@@ -48,7 +48,8 @@ export class SceneManager {
         }
 
         // alphaTest: 0.5,
-        const pointmaterial = new THREE.PointsMaterial( { size: 0.015, map: sprite, vertexColors: true, sizeAttenuation: true, transparent: true } );
+        const pointmaterial = new THREE.PointsMaterial( { size: 0.015, vertexColors: true, sizeAttenuation: true, transparent: true } );
+        // const pointmaterial = new THREE.PointsMaterial( { size: 0.015, map: sprite, vertexColors: true, alphaTest: 0.5, sizeAttenuation: true, transparent: true } );
         pointmaterial.onBeforeCompile = visibilityShader;
         
         const pointCloudObject = new THREE.Points( pointgeometry, pointmaterial );

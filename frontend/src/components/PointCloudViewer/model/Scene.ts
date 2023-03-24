@@ -89,6 +89,7 @@ export class Scene {
             // firing event
             EventsManager.emit('onTimestampSelected',  {timestamp} );
 
+
         } else {
 
             this.sceneHighlight.on_point_cloud_offlight();

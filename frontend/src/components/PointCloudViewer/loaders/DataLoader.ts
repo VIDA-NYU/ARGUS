@@ -51,7 +51,6 @@ export class DataLoader {
 
     } 
 
-
     public static project_point_cloud( name, originPointCloud: PointCloud, targetPointCloud: PointCloud, raycaster: Raycaster ): PointCloud {
 
         const points: number[][] = [];

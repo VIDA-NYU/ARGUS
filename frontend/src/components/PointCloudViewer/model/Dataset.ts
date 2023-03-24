@@ -132,9 +132,18 @@ export class Dataset {
 
     public create_projection( name: string, originPointCloud: PointCloud, targetPointCloud: PointCloud, raycaster: Raycaster ): void {
 
-        const pointCloud: PointCloud = DataLoader.project_point_cloud( name, originPointCloud, targetPointCloud, raycaster );
-        pointCloud.baseColor = BASE_COLORS[name];
-        this.pointClouds[name] = pointCloud;
+        try {
+
+            const pointCloud: PointCloud = DataLoader.project_point_cloud( name, originPointCloud, targetPointCloud, raycaster );
+            pointCloud.baseColor = BASE_COLORS[name];
+            this.pointClouds[name] = pointCloud;
+
+        }catch( exception ){
+
+            console.log('Exception: ', exception );
+        
+        }
+
 
     }
 
