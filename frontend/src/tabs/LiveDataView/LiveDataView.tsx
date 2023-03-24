@@ -14,6 +14,7 @@ import { StreamView } from './components/StreamDataView/LiveStream';
 import { ImageView } from './components/StreamDataView/ImageView';
 import { ClipOutputsLiveView } from './components/StreamDataView/PerceptionOutputsView';
 import { ReasoningOutputsView } from './components/StreamDataView/ReasoningOutputsView';
+import DebuggingDataView from '../DebuggingDataView/DebuggingDataView';
 
 
 const RecordingControls = () => {
@@ -62,11 +63,11 @@ const parseTime = (tstr) => new Date(Date.parse(tstr + ' GMT')).toLocaleTimeStri
 
 function LiveVideo() {
   return (
-    <Box>
+    <Box display='flex' justifyContent='center' alignItems='center' height='100%' width='100%'>
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(6, minmax(0, 1fr))',
+          gridTemplateColumns: 'repeat(0, minmax(0, 1fr))',
           gap: 1,
           gridTemplateRows: 'auto',
           gridTemplateAreas: {
@@ -95,7 +96,7 @@ function LiveVideo() {
           },
         }}>
         <Box sx={{ gridArea: 'H' }}><RecordingControls /></Box>
-        <Box sx={{ gridArea: 'M' }}><ImageView streamId={MAIN_STREAM} boxStreamId={DETIC_IMAGE_STREAM} confidence={0.5} debugMode={false}/></Box>
+        <DebuggingDataView />
       </Box>
     </Box>
   )
