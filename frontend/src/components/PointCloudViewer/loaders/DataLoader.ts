@@ -10,6 +10,8 @@ import { Raycaster } from "../model/raycaster/Raycaster";
 import { GazeProjectionPointCloud } from "../model/renderables/gaze/GazeProjectionPointCloud";
 import * as THREE from 'three';
 import { ObjectPointCloud } from "../model/renderables/objects/ObjectPointCloud";
+import { LineCloud } from "../model/renderables/LineCloud";
+import { GazeProjectionLineCloud } from "../model/renderables/gaze/GazeProjectionLineCloud";
 
 export class DataLoader {
 
@@ -101,6 +103,29 @@ export class DataLoader {
 
     }
 
+    public static create_gaze_projection_line_cloud( name: string, origin: PointCloud, destination: PointCloud ): LineCloud {
+
+        const originPoints: number[][] = [];
+        const destinationPoints: number[][] = [];
+        const colors: number[][] = [];
+        const timestamps: number[] = [];
+
+        for(let i = 0; ( i < origin.points.length ) && ( i < destination.points.length); i++ ){
+
+            originPoints.push( origin.points[i] );
+            destinationPoints.push( destination.points[i] );
+            colors.push( BASE_COLORS['default'] );
+            timestamps.push( (origin.timestamps[i] + destination.timestamps[i]) / 2 )
+
+            // TODO: Removing it. Here for debugging purposes
+            if( !( origin.timestamps[i] === destination.timestamps[i] )) console.log( 'Different timestamps ');
+
+        }
+
+        return new GazeProjectionLineCloud( name, originPoints, destinationPoints, colors, timestamps );
+
+    } 
+
     public static load_perception_data( rawPerception: any[] ): { [timestamp: number]: { [className: string]: number }} {
 
         const indexedPerception: { [timestamp: number]: { [className: string]: number }} = {};
@@ -156,7 +181,5 @@ export class DataLoader {
         return indexed3DPerception;
 
     } 
-
-
 
 }

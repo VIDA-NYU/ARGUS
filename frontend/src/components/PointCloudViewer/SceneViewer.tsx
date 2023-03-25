@@ -80,8 +80,12 @@ const SceneViewer = ( {sceneData} : any ) => {
                 debug && console.log('Creating density clouds');
                 sceneViewerController.dataset.create_density_voxel_clouds();
                 // sceneViewerController.dataset.create_model_voxel_cloud(['gazeprojection-pointcloud'], 'perception');
-                
                 sceneViewerController.update_scene_voxel_clouds();
+
+                // creating line clouds
+                debug && console.log('Creating line clouds');
+                sceneViewerController.dataset.create_line_clouds();
+                sceneViewerController.update_scene_line_clouds();
 
                 // intializing highlights
                 // sceneViewerController.scene.update_scene_highlight();

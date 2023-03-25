@@ -1,6 +1,8 @@
 // third party
+import { line } from 'd3';
 import * as THREE from 'three';
 import { VoxelCube } from '../types/types';
+import { LineCloud } from './renderables/LineCloud';
 
 // model 
 import { PointCloud } from "./renderables/PointCloud";
@@ -97,6 +99,31 @@ export class SceneManager {
         return group;
 
     }
+
+    public add_line_cloud( lineCloud: LineCloud ): THREE.Group {
+
+        // creating group of highlighted objects
+        const group: THREE.Group = new THREE.Group();
+        group.name = lineCloud.name;
+
+        for( let i = 0; (i < lineCloud.origins.length) && (i < lineCloud.destinations.length); i++ ){
+
+            const originVector: THREE.Vector3 = new THREE.Vector3( lineCloud.origins[i][0], lineCloud.origins[i][1], lineCloud.origins[i][2] );
+            const destinationVector: THREE.Vector3 = new THREE.Vector3( lineCloud.destinations[i][0], lineCloud.destinations[i][1], lineCloud.destinations[i][2] );
+
+            // Direction highlight
+            const originColor: THREE.Color = new THREE.Color( lineCloud.colors[i][0], lineCloud.colors[i][1], lineCloud.colors[i][2] );
+            const lineMaterial = new THREE.LineBasicMaterial({ color: originColor, linewidth: 2, transparent: true, opacity: 0.5 });
+            const lineGeometry = new THREE.BufferGeometry().setFromPoints( [originVector, destinationVector] );
+            const line: THREE.Line = new THREE.Line( lineGeometry, lineMaterial );
+
+            group.add(line);
+        }
+
+        this.scene.add( group );
+        return group;
+
+    } 
 
 
 }

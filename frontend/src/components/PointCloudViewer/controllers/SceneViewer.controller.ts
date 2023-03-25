@@ -10,6 +10,7 @@ import { CameraParams } from "../types/types";
 // third-party
 import { Object3D } from "three";
 import * as THREE from 'three';
+import { LineCloud } from "../model/renderables/LineCloud";
 
 export class SceneViewerController {
 
@@ -72,6 +73,24 @@ export class SceneViewerController {
 
         });
         
+    }
+
+    public update_scene_line_clouds(): void {
+
+        // getting available voxel clouds
+        const lineClouds: LineCloud[] = this.dataset.get_line_clouds();
+
+        lineClouds.forEach( ( lineCloud: LineCloud ) => {
+
+            if(!(this.scene.scene.getObjectByName(lineCloud.name))){
+
+                const lineCloudGroup: THREE.Group = this.scene.sceneManager.add_line_cloud( lineCloud  );
+                lineCloud.threeObject = lineCloudGroup;
+
+            }
+
+        });
+
     }
 
     public change_cloud_visibility( cloudName: string, visibility: boolean ): void {

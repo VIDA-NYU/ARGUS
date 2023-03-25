@@ -15,6 +15,7 @@ import { Raycaster } from "./raycaster/Raycaster";
 import * as THREE from 'three';
 import { BASE_COLORS } from "../constants/Constants";
 import TimestampManager from "../../../tabs/HistoricalDataView/services/TimestampManager";
+import { LineCloud } from "./renderables/LineCloud";
 
 export class Dataset {
 
@@ -24,6 +25,7 @@ export class Dataset {
     // point clouds
     public pointClouds: { [datasetName: string]: PointCloud  } = {};
     public voxelClouds: { [datasetName: string]: VoxelCloud  } = {};
+    public lineClouds:  { [datasetName: string]: LineCloud   } = {}
     public videos: { [videoName: string]: string } = {};
 
     // model outputs
@@ -84,6 +86,20 @@ export class Dataset {
 
     }
 
+    public create_line_clouds(): void {
+
+        // pairs of point clouds
+        const lineCloudPairs: string[][] = [[ 'gazeorigin-pointcloud', 'gazeprojection-pointcloud' ]];
+
+        lineCloudPairs.forEach( (pair: string[]) => {
+
+            const lineCloud: LineCloud = DataLoader.create_gaze_projection_line_cloud( 'gazeProjectionLineCloud', this.pointClouds[pair[0]], this.pointClouds[pair[1]] );
+            this.lineClouds['gazeProjectionLineCloud'] = lineCloud;
+
+        });
+
+    }
+
     public create_model_voxel_cloud( pointCloudNames: string[], modelType: string, className: string ): void {
 
         // voxel grid
@@ -123,8 +139,6 @@ export class Dataset {
             this.voxelClouds[ `model-voxelcloud` ] = voxelCloud;
        
         });  
-
-        // this.voxelClouds[ `model-voxelcloud` ];
         
     }
 
@@ -136,7 +150,9 @@ export class Dataset {
     }
 
     public store_videos( rawData: any ): { [videoName: string]: string } {
+        
         return { 'mainCamera': rawData.videoData };
+    
     }
 
     public create_projection( name: string, originPointCloud: PointCloud, targetPointCloud: PointCloud, raycaster: Raycaster ): void {
@@ -205,6 +221,19 @@ export class Dataset {
     public get_voxel_clouds( names: [] = [] ): VoxelCloud[] {
 
         return Object.values( this.voxelClouds );
+
+    }
+
+    public get_line_clouds( names: [] = [] ): LineCloud[] {
+
+        if( names.length === 0 ) return Object.values( this.lineClouds );
+
+        const lineClouds: LineCloud[] = [];
+        names.forEach( (name: string) => {
+            lineClouds.push(this.lineClouds[name]);  
+        });
+
+        return lineClouds;
 
     }
 
