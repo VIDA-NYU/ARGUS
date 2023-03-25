@@ -95,9 +95,6 @@ const SceneViewer = ( {sceneData} : any ) => {
                 sceneViewerController.dataset.create_line_clouds();
                 sceneViewerController.update_scene_line_clouds();
 
-                // intializing highlights
-                // sceneViewerController.scene.update_scene_highlight();
-
                 // getting scene duration
                 const sessionDuration: number[] = sceneViewerController.dataset.get_session_timestamp_range();
                 setSessionDuration(sessionDuration);

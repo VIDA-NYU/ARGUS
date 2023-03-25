@@ -375,7 +375,7 @@ const ParameterBox = ( props ) => {
                 <Accordion>
 
                     <AccordionSummary>
-                        <Typography color={'#1976d2'}>Model Heatmap</Typography>
+                        <Typography color={'#1976d2'}>Perception Points</Typography>
                     </AccordionSummary>
 
                     <AccordionDetails>

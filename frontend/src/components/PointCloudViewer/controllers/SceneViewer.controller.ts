@@ -86,7 +86,7 @@ export class SceneViewerController {
 
                 const lineCloudGroup: THREE.Group = this.scene.sceneManager.add_line_cloud( lineCloud  );
                 lineCloud.threeObject = lineCloudGroup;
-
+                console.log(lineCloudGroup);
             }
 
         });
@@ -175,6 +175,11 @@ export class SceneViewerController {
         const pointClouds: PointCloud[] = this.dataset.get_point_clouds();
         pointClouds.forEach( (pointCloud: PointCloud) => {
             pointCloud.filter_points_by_timestamp( timestamps );
+        });
+
+        const lineClouds: LineCloud[] = this.dataset.get_line_clouds();
+        lineClouds.forEach( (lineCloud: LineCloud) => {
+            lineCloud.filter_lines_by_timestamp( timestamps );
         });
 
     }

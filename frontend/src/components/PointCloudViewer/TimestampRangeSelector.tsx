@@ -15,9 +15,7 @@ const TimestampRangeSelector = ( props ) => {
     };
 
     const changeCommited = (event: Event, newValue: number | number[]) => {
-
         props.onTimestampRangeCommited( selectedRange );
-
     };
 
     return(

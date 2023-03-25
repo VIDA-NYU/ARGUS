@@ -66,6 +66,7 @@ export abstract class PointCloud {
 
     public filter_points_by_timestamp( timestamps: number[] ){
 
+
         for( let i = 0; i < this.timestamps.length; i++ ){
             if( this.timestamps[i] > timestamps[0] && this.timestamps[i] < timestamps[1] ){
                 this.threeObject.geometry.attributes.visibility.setX( i, 1 );
