@@ -28,7 +28,8 @@ export class Dataset {
 
     // model outputs
     public perception: { [timestamp: number]: { [className: string]: number }  } = {};
-    
+    public perception3D: { [timestamp: number]: { [className: string]: {confidence: number, position: number[] } }} = {};
+
     constructor( rawData: any ){
 
         this.initialize_dataset( rawData );
@@ -45,6 +46,7 @@ export class Dataset {
 
         // saving models data
         this.perception = DataLoader.load_perception_data( rawData.modelData.perception);
+        this.perception3D = DataLoader.load_perception_3D_data( rawData.modelData.perception3D );
 
     }  
 
@@ -82,7 +84,7 @@ export class Dataset {
 
     }
 
-    public create_model_voxel_cloud( pointCloudNames: string[], modelType: string, className: string = 'cutting board' ): void {
+    public create_model_voxel_cloud( pointCloudNames: string[], modelType: string, className: string ): void {
 
         // voxel grid
         const worldVoxelGrid: WorldVoxelGrid = this.worldVoxelGrid;
@@ -124,6 +126,13 @@ export class Dataset {
 
         // this.voxelClouds[ `model-voxelcloud` ];
         
+    }
+
+    public create_object_point_cloud( pointCloudName: string, className: string ): void {
+
+        const objectPointCloud: PointCloud = DataLoader.create_object_point_cloud( pointCloudName, className, this.perception3D );
+        this.pointClouds[pointCloudName] = objectPointCloud;
+
     }
 
     public store_videos( rawData: any ): { [videoName: string]: string } {

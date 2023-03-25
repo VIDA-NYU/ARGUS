@@ -45,11 +45,16 @@ export class SceneViewerController {
         pointClouds.forEach( (pointCloud: PointCloud) => {
 
             if (!(this.scene.scene.getObjectByName(pointCloud.name))){
+
+                // adding point cloud
                 const pointCloudObject: THREE.Points = this.scene.sceneManager.add_point_cloud( pointCloud );
                 pointCloud.threeObject = pointCloudObject;
+
             }
             
         });
+
+        this.scene.update_scene_highlight();
 
     }
 

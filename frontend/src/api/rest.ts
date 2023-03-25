@@ -329,6 +329,19 @@ export async function getPerceptionData(recordingName) {
     return response;
 }
 
+export async function get3DObjectPositionData(recordingName) {
+    // const url ="https://api.ptg.poly.edu/recordings/static/coffee-test-1/eye.json";
+    const url = API_URL +  RECORDINGS_STATIC_PATH + `${recordingName}/detic:world.json`;
+    const response = await fetch(url).then((res) => res.json());
+    return response;
+}
+
+export async function getReasoningData(recordingName) {
+    // const url ="https://api.ptg.poly.edu/recordings/static/coffee-test-1/eye.json";
+    const url = API_URL +  RECORDINGS_STATIC_PATH + `${recordingName}/clip:action:steps.json`;
+    const response = await fetch(url).then((res) => res.json());
+    return response;
+}
 
 export async function getEyeData(recordingName) {
     // const url ="https://api.ptg.poly.edu/recordings/static/coffee-test-1/eye.json";

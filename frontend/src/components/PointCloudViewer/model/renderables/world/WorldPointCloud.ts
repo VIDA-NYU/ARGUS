@@ -11,7 +11,7 @@ export class WorldPointCloud extends PointCloud {
     private highlightObjects: { [name: string]: Object3D } = {};
 
     constructor( public name: string, public points: number[][], public colors: number[][], public normals: number[][] ){
-
+        
         // initializing super class
         super(name, points, colors, normals, []);
 

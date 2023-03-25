@@ -9,6 +9,7 @@ import { BASE_COLORS } from "../constants/Constants";
 import { Raycaster } from "../model/raycaster/Raycaster";
 import { GazeProjectionPointCloud } from "../model/renderables/gaze/GazeProjectionPointCloud";
 import * as THREE from 'three';
+import { ObjectPointCloud } from "../model/renderables/objects/ObjectPointCloud";
 
 export class DataLoader {
 
@@ -78,6 +79,28 @@ export class DataLoader {
 
     }
 
+    public static create_object_point_cloud( name: string, className: string, indexedPerception3D: { [timestamp: number]: { [className: string]: {confidence: number, position: number[] } }} ): PointCloud {
+
+        const points: number[][] = [];
+        const colors: number[][] = [];
+        const timestamps: number[] = [];
+        
+        for (const [timestamp, value] of Object.entries(indexedPerception3D)) {
+
+            if( className in value ){
+
+                points.push( value[className].position );
+                colors.push( BASE_COLORS[name] );
+                timestamps.push( parseInt(timestamp) );
+            
+            }
+        }
+
+        const objectPointCloud: PointCloud = new ObjectPointCloud(name, points, colors, [], timestamps);
+        return objectPointCloud;
+
+    }
+
     public static load_perception_data( rawPerception: any[] ): { [timestamp: number]: { [className: string]: number }} {
 
         const indexedPerception: { [timestamp: number]: { [className: string]: number }} = {};
@@ -106,6 +129,31 @@ export class DataLoader {
         });
     
         return indexedPerception;
+
+    } 
+
+    public static load_perception_3D_data( raw3DPerception: any[] ): { [timestamp: number]: { [className: string]: {confidence: number, position: number[] } }} {
+
+        const indexed3DPerception: { [timestamp: number]: { [className: string]: {confidence: number, position: number[] } }} = {};
+
+        raw3DPerception.forEach( (row: any) => {
+
+            const currentTimestamp: number = parseInt(row.timestamp.split('-')[0]);
+            if( !(currentTimestamp in indexed3DPerception) ) indexed3DPerception[currentTimestamp] = {};
+            
+            row.values.forEach( (classInfo: any) => {
+
+                const className: string = classInfo.label;
+                const classConfidence: number = classInfo.confidence;
+                const objectPosition: number[] = classInfo.xyz_center;
+
+                indexed3DPerception[currentTimestamp][className] = { 'confidence': classConfidence, position: objectPosition };
+
+            });
+
+        });
+    
+        return indexed3DPerception;
 
     } 
 

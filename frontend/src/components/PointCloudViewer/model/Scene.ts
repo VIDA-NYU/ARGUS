@@ -179,12 +179,20 @@ export class Scene {
         
     }
 
-    public initialize_scene_highlight(): void {
+    public update_scene_highlight(): void {
+
+        let renderedHighlight: Object3D = this.scene.getObjectByName('highlight');
+        while( renderedHighlight ){
+
+            this.scene.remove( renderedHighlight );
+            renderedHighlight = this.scene.getObjectByName('highlight');
+        }
 
         this.sceneHighlight = new SceneHighlight( this.rayCaster, this.dataset );
         const highlightObjects: Object3D[] = this.sceneHighlight.get_layer_highlights();
 
         highlightObjects.forEach( (object: Object3D) => {
+            object.name = 'highlight';
             this.scene.add( object );
         });
 

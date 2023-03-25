@@ -9,6 +9,8 @@ import { DataUtils } from './utils/DataUtils';
 
 const SceneViewer = ( {sceneData} : any ) => {
 
+    const debug: boolean = false;
+
     const [loadingData, setLoadingData] = useState<boolean>(true);
 
     // DOM Refs
@@ -20,9 +22,13 @@ const SceneViewer = ( {sceneData} : any ) => {
 
     const onModelClassSelected = ( className: string ) => {
 
-        sceneViewerController.remove_scene_objects(['model-voxelcloud']);
-        sceneViewerController.dataset.create_model_voxel_cloud(['gazeprojection-pointcloud'], 'perception', className );
-        sceneViewerController.update_scene_voxel_clouds();
+        sceneViewerController.remove_scene_objects(['object-pointcloud']);
+        sceneViewerController.dataset.create_object_point_cloud( 'object-pointcloud', className );
+        sceneViewerController.update_scene_point_clouds();
+
+        // sceneViewerController.remove_scene_objects(['model-voxelcloud']);
+        // sceneViewerController.dataset.create_model_voxel_cloud(['gazeprojection-pointcloud'], 'perception', className );
+        // sceneViewerController.update_scene_voxel_clouds();
         
     };
 
@@ -39,43 +45,46 @@ const SceneViewer = ( {sceneData} : any ) => {
     };
 
     const onTimestampRangeSelected = (event: Event, newValue: number | number[]) => {
-
         sceneViewerController.filter_points_by_timestamp( [0 , 100] );
-
     };
 
     useEffect(() => {
 
         if( 'pointCloudData' in sceneData ){
 
-            try{
+            // try{
 
                 // clearing scene
                 sceneViewerController.scene?.clear_scene();
 
                 // initializing dataset
+                debug && console.log('Loading point clouds');
                 sceneViewerController.initialize_dataset( sceneData );
                 sceneViewerController.initialize_scene( containerRef.current, tooltipContainerRef.current );
                 sceneViewerController.initialize_tooltip( sceneData.videoData );
 
                 // adding clouds to scene
+                debug && console.log('Rendering point clouds');
                 sceneViewerController.update_scene_point_clouds();
                 
                 // creating derived data
+                debug && console.log('Creating projections');
                 sceneViewerController.create_projections();
                 sceneViewerController.update_scene_point_clouds();
 
                 // creating world voxel grid
+                debug && console.log('Creating Voxel Grid');
                 sceneViewerController.dataset.create_world_voxel_grid();
 
                 // updating voxel clouds
+                debug && console.log('Creating density clouds');
                 sceneViewerController.dataset.create_density_voxel_clouds();
                 // sceneViewerController.dataset.create_model_voxel_cloud(['gazeprojection-pointcloud'], 'perception');
                 
                 sceneViewerController.update_scene_voxel_clouds();
 
                 // intializing highlights
-                sceneViewerController.scene.initialize_scene_highlight();
+                // sceneViewerController.scene.update_scene_highlight();
 
                 // render
                 sceneViewerController.scene.render();
@@ -83,13 +92,13 @@ const SceneViewer = ( {sceneData} : any ) => {
                 // removing spinner
                 setLoadingData(false);
 
-            }catch( exception ){
+            // } catch( exception ) {
 
-                // removing spinner
-                setLoadingData(false);
+            //     // removing spinner
+            //     setLoadingData(false);
 
-                console.log('Point cloud loading failed');
-            }
+            //     console.log('Point cloud loading failed');
+            // }
             
         }
 
