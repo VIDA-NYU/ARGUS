@@ -22,8 +22,11 @@ const ParameterBox = ( props ) => {
 
     const pointCloudNames: string[] = [ 'gazeorigin-pointcloud', 'lefthands-pointcloud', 'righthands-pointcloud', 'gazeprojection-pointcloud', 'world-pointcloud' ];
     const voxelCloudNames: string[] = [ 'gazeorigin-voxelcloud', 'lefthands-voxelcloud', 'righthands-voxelcloud', 'gazeprojection-voxelcloud' ];
+    const lineCloudNames:  string[] = [ 'gazeProjectionLineCloud' ];
 
     const visibilityChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+
+        console.log(event.target.id);
 
         props.onVisibilityChange(event.target.id, event.target.checked);
     
@@ -78,6 +81,32 @@ const ParameterBox = ( props ) => {
                                 <Checkbox id={pointCloudName} onChange={visibilityChangeHandler} defaultChecked />
                                 <Typography>
                                     {pointCloudName}
+                                </Typography>
+                                <Divider></Divider>
+                            </Box>
+                        ))}
+
+                        </Box>
+
+                    </AccordionDetails>
+
+                </Accordion>
+
+                <Accordion>
+
+                    <AccordionSummary>
+                        <Typography color={'#1976d2'}>Visibility (lines)</Typography>
+                    </AccordionSummary>
+
+                    <AccordionDetails>
+
+                        <Box sx={{ display: 'flex', width: '100%', height: '300px', flexDirection: 'column' }} >
+
+                        { lineCloudNames.map( ( lineCloudName: string ) => (
+                            <Box key={lineCloudName} sx={{ display: 'flex', width: '100%', height: '50px', alignItems: 'center' }}>
+                                <Checkbox id={lineCloudName} onChange={visibilityChangeHandler} defaultChecked />
+                                <Typography>
+                                    {lineCloudName}
                                 </Typography>
                                 <Divider></Divider>
                             </Box>

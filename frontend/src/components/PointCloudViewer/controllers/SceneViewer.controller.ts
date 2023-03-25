@@ -109,6 +109,14 @@ export class SceneViewerController {
             return
         }
 
+        if( cloudName in this.dataset.lineClouds ){
+
+            const lineCloud: LineCloud = this.dataset.lineClouds[cloudName];
+            lineCloud.threeObject.visible = visibility;
+            return
+
+        }
+
     } 
 
     public change_point_cloud_style( cloudName: string, style: string, value: number ): void {
