@@ -26,8 +26,6 @@ const ParameterBox = ( props ) => {
 
     const visibilityChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
 
-        console.log(event.target.id);
-
         props.onVisibilityChange(event.target.id, event.target.checked);
     
     }

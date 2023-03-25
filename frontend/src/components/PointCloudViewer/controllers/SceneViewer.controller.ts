@@ -124,9 +124,6 @@ export class SceneViewerController {
         if( cloudName in this.dataset.pointClouds ){
 
             const pointCloud: PointCloud = this.dataset.pointClouds[cloudName];
-
-            console.log(pointCloud.threeObject);
-
             pointCloud.threeObject.material[style] = value;
             return;
 
@@ -175,7 +172,7 @@ export class SceneViewerController {
 
     public filter_points_by_timestamp( timestamps: number[] ): void {
 
-        const pointClouds: PointCloud[] = this.dataset.get_point_clouds(['gazeorigin-pointcloud']);
+        const pointClouds: PointCloud[] = this.dataset.get_point_clouds();
         pointClouds.forEach( (pointCloud: PointCloud) => {
             pointCloud.filter_points_by_timestamp( timestamps );
         });

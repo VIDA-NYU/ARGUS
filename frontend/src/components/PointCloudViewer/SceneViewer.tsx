@@ -1,10 +1,17 @@
 // react
-import { Box, CircularProgress, Slider } from '@mui/material';
 import { useEffect, useMemo, useRef, useState } from 'react';
+
+// material
+import { Box, CircularProgress, Slider } from '@mui/material';
 
 // controller
 import { SceneViewerController } from './controllers/SceneViewer.controller';
+
+// views
 import ParameterBox from './ParameterBox';
+import TimestampRangeSelector from './TimestampRangeSelector';
+
+// utils
 import { DataUtils } from './utils/DataUtils';
 
 const SceneViewer = ( {sceneData} : any ) => {
@@ -12,6 +19,7 @@ const SceneViewer = ( {sceneData} : any ) => {
     const debug: boolean = false;
 
     const [loadingData, setLoadingData] = useState<boolean>(true);
+    const [sessionDuration, setSessionDuration] = useState<number[]>([]);
 
     // DOM Refs
     const containerRef = useRef(null);
@@ -44,8 +52,8 @@ const SceneViewer = ( {sceneData} : any ) => {
         sceneViewerController.change_voxel_cloud_style( cloudName, attribute, value );
     };
 
-    const onTimestampRangeSelected = (event: Event, newValue: number | number[]) => {
-        sceneViewerController.filter_points_by_timestamp( [0 , 100] );
+    const onTimestampRangeSelected = ( timestampRange: number[] ) => {
+        sceneViewerController.filter_points_by_timestamp( timestampRange );
     };
 
     useEffect(() => {
@@ -90,11 +98,16 @@ const SceneViewer = ( {sceneData} : any ) => {
                 // intializing highlights
                 // sceneViewerController.scene.update_scene_highlight();
 
+                // getting scene duration
+                const sessionDuration: number[] = sceneViewerController.dataset.get_session_timestamp_range();
+                setSessionDuration(sessionDuration);
+
                 // render
                 sceneViewerController.scene.render();
 
                 // removing spinner
                 setLoadingData(false);
+
 
             // } catch( exception ) {
 
@@ -123,7 +136,6 @@ const SceneViewer = ( {sceneData} : any ) => {
             width: '100%',
             height: '100%',
             position: 'relative'}}>
-
 
             { (loadingData) ? loadingSpinner(): <></> }
 
@@ -188,15 +200,10 @@ const SceneViewer = ( {sceneData} : any ) => {
                 position: 'absolute',
                 display: 'flex',
                 alignItems: 'center'}}>
-                   <Slider
-                        onChangeCommitted={onTimestampRangeSelected}
-                        min={0}
-                        max={200}
-                        value={[20, 100]}
-                        valueLabelDisplay="auto"/>
+                    <TimestampRangeSelector 
+                    onTimestampRangeCommited={onTimestampRangeSelected}
+                    timestampRange={ sessionDuration } />
             </div>    
-
-
 
         </div>
         

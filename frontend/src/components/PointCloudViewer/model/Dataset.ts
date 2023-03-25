@@ -7,15 +7,21 @@ import { DataLoader } from "../loaders/DataLoader";
 // renderables
 import { PointCloud } from "./renderables/PointCloud";
 import { VoxelCloud } from "./renderables/VoxelCloud";
-import { DataUtils } from "../utils/DataUtils";
+import { LineCloud } from "./renderables/LineCloud";
 import { VoxelCell } from "./voxel/VoxelCell";
-import { GazeProjectionPointCloud } from "./renderables/gaze/GazeProjectionPointCloud";
+
+// model
 import { Raycaster } from "./raycaster/Raycaster";
 
-import * as THREE from 'three';
-import { BASE_COLORS } from "../constants/Constants";
+// utils
+import { DataUtils } from "../utils/DataUtils";
 import TimestampManager from "../../../tabs/HistoricalDataView/services/TimestampManager";
-import { LineCloud } from "./renderables/LineCloud";
+
+// constants
+import { BASE_COLORS } from "../constants/Constants";
+
+// third-party
+import * as d3 from 'd3';
 
 export class Dataset {
 
@@ -244,6 +250,15 @@ export class Dataset {
 
     }     
 
+    public get_session_timestamp_range(): number[] {
+
+        /* 
+        * Returns session duration in seconds based on the timestamps
+        */
+
+        const timestampRange: number[] = d3.extent( this.pointClouds['gazeorigin-pointcloud'].timestamps );
+        return timestampRange;
     
+    } 
 
 }
