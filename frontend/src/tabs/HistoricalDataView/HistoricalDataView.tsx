@@ -19,7 +19,9 @@ import {
   getIMUAccelData, 
   getIMUGyroData, 
   getIMUMagData,  
-  getPerceptionData} from '../../api/rest';
+  getPerceptionData,
+  getReasoningData,
+  get3DObjectPositionData} from '../../api/rest';
 
 // global components
 import Controls from '../../utils/Controls';
@@ -60,14 +62,17 @@ const HistoricalDataView = () => {
     const pointCloudJSONFile = await getVoxelizedPointCloudData( newSelection );
     const eyeGazeJSONFile = await getEyeData( newSelection );
     const handDataJSONFile = await getHandData( newSelection );
-    const perceptionJSONFile = await getPerceptionData( newSelection );   
+    const perceptionJSONFile = await getPerceptionData( newSelection );  
+    const perception3DJSONFile = await get3DObjectPositionData( newSelection ) 
+    // const reasoningJSONFile = await getReasoningData( newSelection ); 
 
     // initializing timestamps
     TimestampManager.initialize_main_stream( eyeGazeJSONFile.map( (timestamp: GazePointCloudRaw) => parseInt(timestamp.timestamp.split('-')[0]) ) );
     TimestampManager.index_stream_timestamp( 'perception', perceptionJSONFile.map( (timestamp: any) => parseInt(timestamp.timestamp.split('-')[0]) ) );
+    TimestampManager.index_stream_timestamp( 'perception3D', perception3DJSONFile.map( (timestamp: any) => parseInt(timestamp.timestamp.split('-')[0]) ) );
 
     // setting session info
-    setSessionInfo({recordingName:newSelection, mainCameraPath, pointCloudJSONFile, eyeGazeJSONFile, handDataJSONFile, perceptionJSONFile});
+    setSessionInfo({recordingName:newSelection, mainCameraPath, pointCloudJSONFile, eyeGazeJSONFile, handDataJSONFile, perceptionJSONFile, perception3DJSONFile});
 
     // // setting spinner flag
     setLoadingData(false);

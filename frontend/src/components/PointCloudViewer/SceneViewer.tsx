@@ -1,15 +1,25 @@
 // react
-import { Box, CircularProgress, Slider } from '@mui/material';
 import { useEffect, useMemo, useRef, useState } from 'react';
+
+// material
+import { Box, CircularProgress, Slider } from '@mui/material';
 
 // controller
 import { SceneViewerController } from './controllers/SceneViewer.controller';
+
+// views
 import ParameterBox from './ParameterBox';
+import TimestampRangeSelector from './TimestampRangeSelector';
+
+// utils
 import { DataUtils } from './utils/DataUtils';
 
 const SceneViewer = ( {sceneData} : any ) => {
 
+    const debug: boolean = false;
+
     const [loadingData, setLoadingData] = useState<boolean>(true);
+    const [sessionDuration, setSessionDuration] = useState<number[]>([]);
 
     // DOM Refs
     const containerRef = useRef(null);
@@ -20,9 +30,13 @@ const SceneViewer = ( {sceneData} : any ) => {
 
     const onModelClassSelected = ( className: string ) => {
 
-        sceneViewerController.remove_scene_objects(['model-voxelcloud']);
-        sceneViewerController.dataset.create_model_voxel_cloud(['gazeprojection-pointcloud'], 'perception', className );
-        sceneViewerController.update_scene_voxel_clouds();
+        sceneViewerController.remove_scene_objects(['object-pointcloud']);
+        sceneViewerController.dataset.create_object_point_cloud( 'object-pointcloud', className );
+        sceneViewerController.update_scene_point_clouds();
+
+        // sceneViewerController.remove_scene_objects(['model-voxelcloud']);
+        // sceneViewerController.dataset.create_model_voxel_cloud(['gazeprojection-pointcloud'], 'perception', className );
+        // sceneViewerController.update_scene_voxel_clouds();
         
     };
 
@@ -38,44 +52,53 @@ const SceneViewer = ( {sceneData} : any ) => {
         sceneViewerController.change_voxel_cloud_style( cloudName, attribute, value );
     };
 
-    const onTimestampRangeSelected = (event: Event, newValue: number | number[]) => {
-
-        sceneViewerController.filter_points_by_timestamp( [0 , 100] );
-
+    const onTimestampRangeSelected = ( timestampRange: number[] ) => {
+        sceneViewerController.filter_points_by_timestamp( timestampRange );
     };
 
     useEffect(() => {
 
         if( 'pointCloudData' in sceneData ){
 
-            try{
+            // try{
 
                 // clearing scene
                 sceneViewerController.scene?.clear_scene();
 
                 // initializing dataset
+                debug && console.log('Loading point clouds');
                 sceneViewerController.initialize_dataset( sceneData );
                 sceneViewerController.initialize_scene( containerRef.current, tooltipContainerRef.current );
                 sceneViewerController.initialize_tooltip( sceneData.videoData );
 
                 // adding clouds to scene
+                debug && console.log('Rendering point clouds');
                 sceneViewerController.update_scene_point_clouds();
                 
                 // creating derived data
+                debug && console.log('Creating projections');
                 sceneViewerController.create_projections();
                 sceneViewerController.update_scene_point_clouds();
 
                 // creating world voxel grid
+                debug && console.log('Creating Voxel Grid');
                 sceneViewerController.dataset.create_world_voxel_grid();
 
                 // updating voxel clouds
+                debug && console.log('Creating density and occupancy clouds');
                 sceneViewerController.dataset.create_density_voxel_clouds();
+                sceneViewerController.dataset.create_occupancy_voxel_cloud();
                 // sceneViewerController.dataset.create_model_voxel_cloud(['gazeprojection-pointcloud'], 'perception');
-                
-                sceneViewerController.update_scene_voxel_clouds();
+                sceneViewerController.update_scene_voxel_clouds();                
 
-                // intializing highlights
-                sceneViewerController.scene.initialize_scene_highlight();
+                // creating line clouds
+                debug && console.log('Creating line clouds');
+                sceneViewerController.dataset.create_line_clouds();
+                sceneViewerController.update_scene_line_clouds();
+
+                // getting scene duration
+                const sessionDuration: number[] = sceneViewerController.dataset.get_session_timestamp_range();
+                setSessionDuration(sessionDuration);
 
                 // render
                 sceneViewerController.scene.render();
@@ -83,13 +106,14 @@ const SceneViewer = ( {sceneData} : any ) => {
                 // removing spinner
                 setLoadingData(false);
 
-            }catch( exception ){
 
-                // removing spinner
-                setLoadingData(false);
+            // } catch( exception ) {
 
-                console.log('Point cloud loading failed');
-            }
+            //     // removing spinner
+            //     setLoadingData(false);
+
+            //     console.log('Point cloud loading failed');
+            // }
             
         }
 
@@ -110,7 +134,6 @@ const SceneViewer = ( {sceneData} : any ) => {
             width: '100%',
             height: '100%',
             position: 'relative'}}>
-
 
             { (loadingData) ? loadingSpinner(): <></> }
 
@@ -175,15 +198,10 @@ const SceneViewer = ( {sceneData} : any ) => {
                 position: 'absolute',
                 display: 'flex',
                 alignItems: 'center'}}>
-                   <Slider
-                        onChangeCommitted={onTimestampRangeSelected}
-                        min={0}
-                        max={200}
-                        value={[20, 100]}
-                        valueLabelDisplay="auto"/>
+                    <TimestampRangeSelector 
+                    onTimestampRangeCommited={onTimestampRangeSelected}
+                    timestampRange={ sessionDuration } />
             </div>    
-
-
 
         </div>
         

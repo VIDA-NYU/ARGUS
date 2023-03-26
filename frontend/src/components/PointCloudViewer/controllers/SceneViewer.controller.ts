@@ -10,6 +10,7 @@ import { CameraParams } from "../types/types";
 // third-party
 import { Object3D } from "three";
 import * as THREE from 'three';
+import { LineCloud } from "../model/renderables/LineCloud";
 
 export class SceneViewerController {
 
@@ -45,11 +46,16 @@ export class SceneViewerController {
         pointClouds.forEach( (pointCloud: PointCloud) => {
 
             if (!(this.scene.scene.getObjectByName(pointCloud.name))){
+
+                // adding point cloud
                 const pointCloudObject: THREE.Points = this.scene.sceneManager.add_point_cloud( pointCloud );
                 pointCloud.threeObject = pointCloudObject;
+
             }
             
         });
+
+        this.scene.update_scene_highlight();
 
     }
 
@@ -69,6 +75,23 @@ export class SceneViewerController {
         
     }
 
+    public update_scene_line_clouds(): void {
+
+        // getting available voxel clouds
+        const lineClouds: LineCloud[] = this.dataset.get_line_clouds();
+
+        lineClouds.forEach( ( lineCloud: LineCloud ) => {
+
+            if(!(this.scene.scene.getObjectByName(lineCloud.name))){
+
+                const lineCloudGroup: THREE.Group = this.scene.sceneManager.add_line_cloud( lineCloud  );
+                lineCloud.threeObject = lineCloudGroup;
+            }
+
+        });
+
+    }
+
     public change_cloud_visibility( cloudName: string, visibility: boolean ): void {
 
         if( cloudName in this.dataset.pointClouds ){
@@ -85,6 +108,14 @@ export class SceneViewerController {
             return
         }
 
+        if( cloudName in this.dataset.lineClouds ){
+
+            const lineCloud: LineCloud = this.dataset.lineClouds[cloudName];
+            lineCloud.threeObject.visible = visibility;
+            return
+
+        }
+
     } 
 
     public change_point_cloud_style( cloudName: string, style: string, value: number ): void {
@@ -92,9 +123,6 @@ export class SceneViewerController {
         if( cloudName in this.dataset.pointClouds ){
 
             const pointCloud: PointCloud = this.dataset.pointClouds[cloudName];
-
-            console.log(pointCloud.threeObject);
-
             pointCloud.threeObject.material[style] = value;
             return;
 
@@ -143,9 +171,14 @@ export class SceneViewerController {
 
     public filter_points_by_timestamp( timestamps: number[] ): void {
 
-        const pointClouds: PointCloud[] = this.dataset.get_point_clouds(['gazeorigin-pointcloud']);
+        const pointClouds: PointCloud[] = this.dataset.get_point_clouds();
         pointClouds.forEach( (pointCloud: PointCloud) => {
             pointCloud.filter_points_by_timestamp( timestamps );
+        });
+
+        const lineClouds: LineCloud[] = this.dataset.get_line_clouds();
+        lineClouds.forEach( (lineCloud: LineCloud) => {
+            lineCloud.filter_lines_by_timestamp( timestamps );
         });
 
     }

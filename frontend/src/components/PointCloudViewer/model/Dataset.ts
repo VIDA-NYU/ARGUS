@@ -7,14 +7,21 @@ import { DataLoader } from "../loaders/DataLoader";
 // renderables
 import { PointCloud } from "./renderables/PointCloud";
 import { VoxelCloud } from "./renderables/VoxelCloud";
-import { DataUtils } from "../utils/DataUtils";
+import { LineCloud } from "./renderables/LineCloud";
 import { VoxelCell } from "./voxel/VoxelCell";
-import { GazeProjectionPointCloud } from "./renderables/gaze/GazeProjectionPointCloud";
+
+// model
 import { Raycaster } from "./raycaster/Raycaster";
 
-import * as THREE from 'three';
-import { BASE_COLORS } from "../constants/Constants";
+// utils
+import { DataUtils } from "../utils/DataUtils";
 import TimestampManager from "../../../tabs/HistoricalDataView/services/TimestampManager";
+
+// constants
+import { BASE_COLORS } from "../constants/Constants";
+
+// third-party
+import * as d3 from 'd3';
 
 export class Dataset {
 
@@ -24,11 +31,13 @@ export class Dataset {
     // point clouds
     public pointClouds: { [datasetName: string]: PointCloud  } = {};
     public voxelClouds: { [datasetName: string]: VoxelCloud  } = {};
+    public lineClouds:  { [datasetName: string]: LineCloud   } = {}
     public videos: { [videoName: string]: string } = {};
 
     // model outputs
     public perception: { [timestamp: number]: { [className: string]: number }  } = {};
-    
+    public perception3D: { [timestamp: number]: { [className: string]: {confidence: number, position: number[] } }} = {};
+
     constructor( rawData: any ){
 
         this.initialize_dataset( rawData );
@@ -45,6 +54,7 @@ export class Dataset {
 
         // saving models data
         this.perception = DataLoader.load_perception_data( rawData.modelData.perception);
+        this.perception3D = DataLoader.load_perception_3D_data( rawData.modelData.perception3D );
 
     }  
 
@@ -82,7 +92,21 @@ export class Dataset {
 
     }
 
-    public create_model_voxel_cloud( pointCloudNames: string[], modelType: string, className: string = 'cutting board' ): void {
+    public create_line_clouds(): void {
+
+        // pairs of point clouds
+        const lineCloudPairs: string[][] = [[ 'gazeorigin-pointcloud', 'gazeprojection-pointcloud' ]];
+
+        lineCloudPairs.forEach( (pair: string[]) => {
+
+            const lineCloud: LineCloud = DataLoader.create_gaze_projection_line_cloud( 'gazeProjectionLineCloud', this.pointClouds[pair[0]], this.pointClouds[pair[1]] );
+            this.lineClouds['gazeProjectionLineCloud'] = lineCloud;
+
+        });
+
+    }
+
+    public create_model_voxel_cloud( pointCloudNames: string[], modelType: string, className: string ): void {
 
         // voxel grid
         const worldVoxelGrid: WorldVoxelGrid = this.worldVoxelGrid;
@@ -94,7 +118,7 @@ export class Dataset {
             // const voxelCloud: VoxelCloud = new VoxelCloud( `${pointCloud.name.split('-')[0]}-${className}-voxelcloud`, pointCloudVoxelCells );
             const voxelCloud: VoxelCloud = new VoxelCloud( `model-voxelcloud`, pointCloudVoxelCells );
 
-            // getting timestamps
+            // getting indices
             const cellIndices: number[][] = voxelCloud.get_cell_indices( pointCloud.name );
 
             const voxelCloudConfidences: number[][] = [];
@@ -121,13 +145,26 @@ export class Dataset {
             this.voxelClouds[ `model-voxelcloud` ] = voxelCloud;
        
         });  
-
-        // this.voxelClouds[ `model-voxelcloud` ];
         
     }
 
+    public create_object_point_cloud( pointCloudName: string, className: string ): void {
+
+        const objectPointCloud: PointCloud = DataLoader.create_object_point_cloud( pointCloudName, className, this.perception3D );
+        this.pointClouds[pointCloudName] = objectPointCloud;
+
+    }
+
+    public create_occupancy_voxel_cloud(): void {
+
+        const voxelCloud: VoxelCloud = DataLoader.create_occupancy_voxel_cloud( this.pointClouds['gazeprojection-pointcloud'], 'perception3D', this.perception3D, this.worldVoxelGrid );
+        this.voxelClouds[ `occupancy-voxelcloud` ] = voxelCloud;
+    }
+
     public store_videos( rawData: any ): { [videoName: string]: string } {
+        
         return { 'mainCamera': rawData.videoData };
+    
     }
 
     public create_projection( name: string, originPointCloud: PointCloud, targetPointCloud: PointCloud, raycaster: Raycaster ): void {
@@ -199,6 +236,19 @@ export class Dataset {
 
     }
 
+    public get_line_clouds( names: [] = [] ): LineCloud[] {
+
+        if( names.length === 0 ) return Object.values( this.lineClouds );
+
+        const lineClouds: LineCloud[] = [];
+        names.forEach( (name: string) => {
+            lineClouds.push(this.lineClouds[name]);  
+        });
+
+        return lineClouds;
+
+    }
+
     public get_interactive_point_cloud_names(): string[] {
 
         const interactiveLayers: PointCloud[] = Object.values(this.pointClouds).filter( (pointCloud: PointCloud) => pointCloud.interactive );
@@ -206,6 +256,15 @@ export class Dataset {
 
     }     
 
+    public get_session_timestamp_range(): number[] {
+
+        /* 
+        * Returns session duration in seconds based on the timestamps
+        */
+
+        const timestampRange: number[] = d3.extent( this.pointClouds['gazeorigin-pointcloud'].timestamps );
+        return timestampRange;
     
+    } 
 
 }

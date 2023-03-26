@@ -66,16 +66,14 @@ export abstract class PointCloud {
 
     public filter_points_by_timestamp( timestamps: number[] ){
 
-        for(let i: number = timestamps[0]; i < timestamps[1]; i++ ){
-            this.threeObject.geometry.attributes.visibility.setX( i, 0 );
+
+        for( let i = 0; i < this.timestamps.length; i++ ){
+            if( this.timestamps[i] > timestamps[0] && this.timestamps[i] < timestamps[1] ){
+                this.threeObject.geometry.attributes.visibility.setX( i, 1 );
+            }else{
+                this.threeObject.geometry.attributes.visibility.setX( i, 0 );
+            }
         }
-
-
-        // for( let i = 0; i < this.timestamps.length; i++ ){
-        //     if( this.timestamps[i] > timestamps[0] && this.timestamps[i] < timestamps[1] ){
-        //         this.threeObject.geometry.attributes.visibility.setX( i, 0 )
-        //     }
-        // }
 
         this.threeObject.geometry.attributes.visibility.needsUpdate = true;
     }

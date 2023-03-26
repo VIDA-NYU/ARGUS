@@ -16,7 +16,7 @@ const PointCloudViewer = ( {sessionInfo} : any ) => {
     setSceneData({
       videoData: sessionInfo.mainCameraPath, 
       pointCloudData: {'world': sessionInfo.pointCloudJSONFile, 'gaze': sessionInfo.eyeGazeJSONFile, 'hand': sessionInfo.handDataJSONFile}, 
-      modelData: {'perception': sessionInfo.perceptionJSONFile }
+      modelData: {'perception': sessionInfo.perceptionJSONFile, 'perception3D': sessionInfo.perception3DJSONFile }
       });
 
       // IMUAccelData: sessionInfo.IMUAccelFile, IMUGyroData: sessionInfo.IMUGyroFile, IMUMagData: sessionInfo.IMUMagFile

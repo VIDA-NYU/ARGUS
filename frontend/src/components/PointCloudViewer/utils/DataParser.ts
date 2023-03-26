@@ -40,9 +40,8 @@ export class DataParser {
 
             const currentTimestamp: number = DataUtils.hololens_timestamp_parser( point.timestamp );
 
-            const joints: any[] = JSON.parse(point[side]).items;
+            const joints: any[] = (point[side]).items;
             const palmInfo: any = joints.filter( (joint: any) => joint.joint === 'Palm');
-
             const currentPoint: number[] = [ palmInfo[0].pose.position.x, palmInfo[0].pose.position.y, (-1)*palmInfo[0].pose.position.z ];
 
             // adding points and normal to arrays
@@ -50,7 +49,6 @@ export class DataParser {
             timestamps.push( currentTimestamp );
 
         });
-
 
         return new HandPointCloud( `${side}hands-pointcloud`, points, colors, normals, timestamps );
 
@@ -68,6 +66,9 @@ export class DataParser {
             // parsing points
             const currentPoint: number[] = [ point.GazeOrigin.x, point.GazeOrigin.y, (-1)*point.GazeOrigin.z ];
             const currentNormal: number[] = [ point.GazeDirection.x, point.GazeDirection.y, (-1)*point.GazeDirection.z ];
+
+            // const currentPoint: number[] = [ point.GazeOrigin.x, point.GazeOrigin.y, point.GazeOrigin.z ];
+            // const currentNormal: number[] = [ point.GazeDirection.x, point.GazeDirection.y, point.GazeDirection.z ];
 
             // parsing timestamp
             const currentTimestamp: number = DataUtils.hololens_timestamp_parser( point.timestamp );

@@ -7,7 +7,8 @@ export const BASE_COLORS: { [pointCloudName: string]: number[] } = {
     'gazeprojection-pointcloud': [0.501, 0.000, 0.149 ], // RED
     'lefthands-pointcloud': [0.000, 0.270, 0.160 ], // GREEN
     'righthands-pointcloud': [0.000, 0.270, 0.160 ], // GREEN
-
+    'object-pointcloud': [0.596, 0.305, 0.639 ], // PURPLE
+    'default': [0.450, 0.450, 0.450] // GRAY
 }
 
 export const BASE_SCALES: { [voxelCloudName: string]: any } = {
@@ -18,14 +19,10 @@ export const BASE_SCALES: { [voxelCloudName: string]: any } = {
     // 'righthands-voxelcloud': d3.interpolatePurples, // PURPLE
 
     // [ '#a6bddb', '#74a9cf', '#3690c0', '#0570b0', '#045a8d', '#023858' ]
-    'gazeorigin-voxelcloud':     [ '#a6bddb', '#74a9cf', '#3690c0', '#0570b0', '#045a8d', '#023858' ], //BLUE
-    'gazeprojection-voxelcloud': [ '#feb24c', '#fd8d3c', '#fc4e2a', '#e31a1c', '#bd0026', '#800026' ], //RED
+    'gazeorigin-voxelcloud':     [ '#a6bddb', '#74a9cf', '#3690c0', '#0570b0', '#045a8d', '#023858' ], // BLUE
+    'gazeprojection-voxelcloud': [ '#feb24c', '#fd8d3c', '#fc4e2a', '#e31a1c', '#bd0026', '#800026' ], // RED
     'lefthands-voxelcloud': ['#addd8e', '#78c679', '#41ab5d', '#238443', '#238443', '#006837', '#004529'], // GREEN
     'righthands-voxelcloud': ['#addd8e', '#78c679', '#41ab5d', '#238443', '#238443', '#006837', '#004529'] // GREEN
-
-    
-    
-
 
 }
 
