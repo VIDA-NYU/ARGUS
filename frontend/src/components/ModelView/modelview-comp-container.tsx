@@ -46,8 +46,8 @@ interface WozCompContainerProps {
     currentTime: number,
     recipePicker: ReactElement,
     currentStep: number,
-    confidenceControl: ReactElement
-
+    confidenceControl: ReactElement,
+    setTimestamps: (ranges: string[][]) => void
 }
 
 
@@ -60,7 +60,7 @@ export default function ModelViewCompContainer({
                                              egovlpActionData, egovlpActionFrameData,
                                              clipActionData, clipActionFrameData, videoPlayer,
                                              videoControls, streamInfo, currentTime, currentStep,
-                                             recipePicker, confidenceControl
+                                             recipePicker, confidenceControl, setTimestamps
                                          }: WozCompContainerProps) {
 
     const renderTemporalOverview = (annotationData: AnnotationData) => {
@@ -80,6 +80,7 @@ export default function ModelViewCompContainer({
                 reasoningData={reasoningData}
                 boundingBoxData={boundingBoxData}
                 recordingMeta={recordingData}
+                setTimestamps={setTimestamps}
             ></TemporalOverview>)
         }else if (annotationData.meta.mode === "offline" && (!reasoningData || reasoningData.length === 0)) {
             return (<ErrorAlert message={"Reasoning data is not available for this recording"}/>)

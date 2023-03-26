@@ -78,6 +78,13 @@ const HistoricalDataView = () => {
       setAvailableRecordings(updatedAvailableRecordings);
   }
 
+  /** Return an array of timestamps ranges for a selected action, object or step,
+      for example: [['1678123335304-0', '1678123353177-0'], ['1678123369152-0', '1678123370189-0']]
+  */
+  const setTimestamps = (ranges) => {
+    console.log(ranges);
+  }
+
   const loadingSpinner = () => {
     return (
       <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -129,7 +136,7 @@ const HistoricalDataView = () => {
           <Divider orientation='vertical'/>
 
           <Box sx={{ width: '500px', display: 'flex', flexDirection: 'column' }}>
-            { selectedRecordingName && <ModelView sessionInfo={sessionInfo} recordingName={selectedRecordingName} ></ModelView> }
+            { selectedRecordingName && <ModelView sessionInfo={sessionInfo} recordingName={selectedRecordingName} setTimestamps={setTimestamps} ></ModelView> }
           </Box>
 
         </Box>

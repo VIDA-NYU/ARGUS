@@ -33,10 +33,11 @@ interface ModelViewDataConsumerProps {
     recordingName: string,
     annotationData: AnnotationData,
     playedTime: number,
-    setAnnotationData: (newData: AnnotationData) => void
+    setAnnotationData: (newData: AnnotationData) => void,
+    setTimestamps: (ranges: string[][]) => void
 }
 
-export default function ModelViewDataConsumer({recordingName, playedTime, annotationData, setAnnotationData}: ModelViewDataConsumerProps) {
+export default function ModelViewDataConsumer({recordingName, playedTime, annotationData, setAnnotationData, setTimestamps}: ModelViewDataConsumerProps) {
     const [seekingPlayedTime, setSeekingPlayedTime] = useState<boolean>(false);
 
     // Update annotationData if the selected recording changes. 
@@ -212,6 +213,7 @@ export default function ModelViewDataConsumer({recordingName, playedTime, annota
             videoPlayer={videoPlayer}
             recipePicker={recipePicker}
             confidenceControl={confidenceControl}
+            setTimestamps={setTimestamps}
         />
     )
 

@@ -48,7 +48,7 @@ const yAxisLabelOffsetY = 6;
 
 export default function TemporalOverview({currentTime, boundingBoxFrameData, reasoningFrameData, reasoningData, boundingBoxData,
                                              clipActionData, egovlpActionData, clipActionFrameData, egovlpActionFrameData, recordingMeta,
-                                             state, annotationData}) {
+                                             state, annotationData, setTimestamps}) {
     const visRef = useRef(null);
     const xAxisRef = useRef(null);
 
@@ -139,7 +139,10 @@ export default function TemporalOverview({currentTime, boundingBoxFrameData, rea
                 yAxisLabelOffsetY={yAxisLabelOffsetY} yAxisLabelWidth={yAxisLabelWidth}
                 index={index} xScale={xScale}
                 actionCellHeight={cellHeight}
-                playedTimes={playedTimes} timedData={timedData}></HistogramRow>
+                playedTimes={playedTimes} timedData={timedData}
+                selectedItem={""}
+                setTimestamps={setTimestamps}
+                ></HistogramRow>
         )
     }
 

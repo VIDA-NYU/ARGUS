@@ -38,6 +38,7 @@ const ModelView = ({...props}) => {
                         playedTime = {currentTimestamp ? TimestampManager.get_elapsed_time(currentTimestamp) : 0}
                         annotationData={annotationData}
                         setAnnotationData={setAnnotationData}
+                        setTimestamps={props.setTimestamps}
                     />;
                   }
                 }

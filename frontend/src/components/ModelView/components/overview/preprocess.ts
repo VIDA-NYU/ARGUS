@@ -70,7 +70,8 @@ function extractIndividualActionData(wholeActionData){
     for(let label of actionLabels){
         result.push({
             "label": label,
-            data: wholeActionData.map(d=>d[label] ? d[label] : 0)
+            data: wholeActionData.map(d=>d[label] ? d[label] : 0),
+            timestamps: wholeActionData.map(d => d.timestamp )
         })
     }
     return result
@@ -83,7 +84,8 @@ function extractIndividualBoundingBoxData(wholeBoundingBoxData){
         result.push({
             "label": objLabel,
             data: wholeBoundingBoxData.map(d=> d.data.map((o) => o.label).indexOf(objLabel) != -1 ?
-            d["data"][d.data.map((o) => o.label).indexOf(objLabel)].confidence : 0)
+            d["data"][d.data.map((o) => o.label).indexOf(objLabel)].confidence : 0),
+            timestamps: wholeBoundingBoxData.map(d => d.timestamp )
         })
     }
     return result
@@ -96,7 +98,8 @@ function extractIndividualReasoningData(wholeReasoningData){
 
         result.push({
             "label": label,
-            data: wholeReasoningData.map(d=>(d.step_id).toString() === label ? 1 : 0)
+            data: wholeReasoningData.map(d=>(d.step_id).toString() === label ? 1 : 0),
+            timestamps: wholeReasoningData.map(d => d.timestamp )
         })
     }
     return result
