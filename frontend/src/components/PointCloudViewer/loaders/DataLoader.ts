@@ -134,7 +134,7 @@ export class DataLoader {
     public static create_occupancy_voxel_cloud( pointCloud: PointCloud, modelType: string, modelData: { [timestamp: number]: any }, worldVoxelGrid: WorldVoxelGrid ): VoxelCloud {
 
         const pointCloudVoxelCells: VoxelCell[] = worldVoxelGrid.get_point_cloud_voxel_cells( pointCloud.name );
-        const voxelCloud: VoxelCloud = new VoxelCloud( `ocupancy-voxelcloud`, pointCloudVoxelCells );
+        const voxelCloud: VoxelCloud = new VoxelCloud( `occupancy-voxelcloud`, pointCloudVoxelCells );
 
         // retrieving cell indices
         const cellIndices: number[][] = voxelCloud.get_cell_indices( pointCloud.name );
@@ -155,9 +155,6 @@ export class DataLoader {
 
             voxelCloudCounters.push(d3.mean(cellCounter));
         }
-
-
-        console.log( voxelCloudCounters );
 
         voxelCloud.color_voxel_cells_by_measurement( voxelCloudCounters );
 

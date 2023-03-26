@@ -21,7 +21,7 @@ const ParameterBox = ( props ) => {
     const [ selectedClass, setSelectedClass ] = React.useState('');
 
     const pointCloudNames: string[] = [ 'gazeorigin-pointcloud', 'lefthands-pointcloud', 'righthands-pointcloud', 'gazeprojection-pointcloud', 'world-pointcloud' ];
-    const voxelCloudNames: string[] = [ 'gazeorigin-voxelcloud', 'lefthands-voxelcloud', 'righthands-voxelcloud', 'gazeprojection-voxelcloud' ];
+    const voxelCloudNames: string[] = [ 'gazeorigin-voxelcloud', 'lefthands-voxelcloud', 'righthands-voxelcloud', 'gazeprojection-voxelcloud', 'occupancy-voxelcloud' ];
     const lineCloudNames:  string[] = [ 'gazeProjectionLineCloud' ];
 
     const visibilityChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {

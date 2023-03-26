@@ -86,7 +86,6 @@ export class SceneViewerController {
 
                 const lineCloudGroup: THREE.Group = this.scene.sceneManager.add_line_cloud( lineCloud  );
                 lineCloud.threeObject = lineCloudGroup;
-                console.log(lineCloudGroup);
             }
 
         });

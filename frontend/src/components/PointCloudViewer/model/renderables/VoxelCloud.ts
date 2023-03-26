@@ -83,6 +83,11 @@ export class VoxelCloud {
 
         const extent: number[] = [0, d3.max(measurements)];
 
+        const opacityScale: d3.ScaleLinear<any, any> = 
+        d3.scaleLinear()
+            .domain( extent )
+            .range( [0.1, 0.8] );
+
         // creating color scale
         const colorScale: d3.ScaleSequential<any, any> = 
             d3.scaleSequential()
@@ -90,15 +95,18 @@ export class VoxelCloud {
                 .interpolator(d3.interpolateReds);
 
         const colors: number[][] = [];
+        const opacities: number[] = [];
         this.voxelCells.forEach( (voxelCell: VoxelCell, index: number) => {
 
             const color: any = d3.color(colorScale(measurements[index]));
             const formatedColor: number[] = [ color.r/255, color.g/255, color.b/255 ];
             colors.push( formatedColor );
+            opacities.push( opacityScale(measurements[index]) );
         
         });
 
         this.colors = colors;
+        this.opacities = opacities;
 
     }
 

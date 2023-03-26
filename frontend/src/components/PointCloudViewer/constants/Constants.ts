@@ -19,8 +19,8 @@ export const BASE_SCALES: { [voxelCloudName: string]: any } = {
     // 'righthands-voxelcloud': d3.interpolatePurples, // PURPLE
 
     // [ '#a6bddb', '#74a9cf', '#3690c0', '#0570b0', '#045a8d', '#023858' ]
-    'gazeorigin-voxelcloud':     [ '#a6bddb', '#74a9cf', '#3690c0', '#0570b0', '#045a8d', '#023858' ], //BLUE
-    'gazeprojection-voxelcloud': [ '#feb24c', '#fd8d3c', '#fc4e2a', '#e31a1c', '#bd0026', '#800026' ], //RED
+    'gazeorigin-voxelcloud':     [ '#a6bddb', '#74a9cf', '#3690c0', '#0570b0', '#045a8d', '#023858' ], // BLUE
+    'gazeprojection-voxelcloud': [ '#feb24c', '#fd8d3c', '#fc4e2a', '#e31a1c', '#bd0026', '#800026' ], // RED
     'lefthands-voxelcloud': ['#addd8e', '#78c679', '#41ab5d', '#238443', '#238443', '#006837', '#004529'], // GREEN
     'righthands-voxelcloud': ['#addd8e', '#78c679', '#41ab5d', '#238443', '#238443', '#006837', '#004529'] // GREEN
 
