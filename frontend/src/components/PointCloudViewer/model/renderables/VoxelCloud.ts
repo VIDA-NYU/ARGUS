@@ -40,10 +40,11 @@ export class VoxelCloud {
 
     public get_cell_indices( pointCloudName: string ): number[][] {
 
-        const timestamps: number[][] = this.voxelCells.map( ( voxelCell: VoxelCell ) =>  voxelCell.get_point_cloud_indices(pointCloudName) );
-        return timestamps;
+        const indices: number[][] = this.voxelCells.map( ( voxelCell: VoxelCell ) =>  voxelCell.get_point_cloud_indices(pointCloudName) );
+        return indices;
 
     }
+
 
     public color_voxel_cells_by_model_confidence( confidences: number[][] ): void {
 
@@ -68,6 +69,34 @@ export class VoxelCloud {
             const formatedColor: number[] = [ color.r/255, color.g/255, color.b/255 ];
             colors.push( formatedColor );
         })
+
+        this.colors = colors;
+
+    }
+
+    public color_voxel_cells_by_measurement( measurements: number[] ): void {
+
+        /*
+        * Users must provide one value per voxel cell
+        *
+        */
+
+        const extent: number[] = [0, d3.max(measurements)];
+
+        // creating color scale
+        const colorScale: d3.ScaleSequential<any, any> = 
+            d3.scaleSequential()
+                .domain(extent)
+                .interpolator(d3.interpolateReds);
+
+        const colors: number[][] = [];
+        this.voxelCells.forEach( (voxelCell: VoxelCell, index: number) => {
+
+            const color: any = d3.color(colorScale(measurements[index]));
+            const formatedColor: number[] = [ color.r/255, color.g/255, color.b/255 ];
+            colors.push( formatedColor );
+        
+        });
 
         this.colors = colors;
 

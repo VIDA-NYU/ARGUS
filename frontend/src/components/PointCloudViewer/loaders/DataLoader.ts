@@ -12,6 +12,11 @@ import * as THREE from 'three';
 import { ObjectPointCloud } from "../model/renderables/objects/ObjectPointCloud";
 import { LineCloud } from "../model/renderables/LineCloud";
 import { GazeProjectionLineCloud } from "../model/renderables/gaze/GazeProjectionLineCloud";
+import { VoxelCloud } from "../model/renderables/VoxelCloud";
+import { WorldVoxelGrid } from "../model/voxel/WorldVoxelGrid";
+import { VoxelCell } from "../model/voxel/VoxelCell";
+import TimestampManager from "../../../tabs/HistoricalDataView/services/TimestampManager";
+import * as d3 from 'd3';
 
 export class DataLoader {
 
@@ -125,6 +130,40 @@ export class DataLoader {
         return new GazeProjectionLineCloud( name, originPoints, destinationPoints, colors, timestamps );
 
     } 
+
+    public static create_occupancy_voxel_cloud( pointCloud: PointCloud, modelType: string, modelData: { [timestamp: number]: any }, worldVoxelGrid: WorldVoxelGrid ): VoxelCloud {
+
+        const pointCloudVoxelCells: VoxelCell[] = worldVoxelGrid.get_point_cloud_voxel_cells( pointCloud.name );
+        const voxelCloud: VoxelCloud = new VoxelCloud( `ocupancy-voxelcloud`, pointCloudVoxelCells );
+
+        // retrieving cell indices
+        const cellIndices: number[][] = voxelCloud.get_cell_indices( pointCloud.name );
+    
+        const voxelCloudCounters: number[] = [];
+        for(let i = 0; i < cellIndices.length; i++){
+
+            const cellCounter: number[] = [];
+            for(let j = 0; j < cellIndices[i].length; j++){
+                
+                const currentIndex: number = cellIndices[i][j];
+                const currentTimestamp: number = pointCloud.timestamps[currentIndex]
+                const closestModelTimestamp: number = TimestampManager.get_closest_timestamp( modelType, currentTimestamp );
+
+                cellCounter.push( Object.keys(modelData[closestModelTimestamp]).length );
+
+            }
+
+            voxelCloudCounters.push(d3.mean(cellCounter));
+        }
+
+
+        console.log( voxelCloudCounters );
+
+        voxelCloud.color_voxel_cells_by_measurement( voxelCloudCounters );
+
+        return voxelCloud;
+
+    }
 
     public static load_perception_data( rawPerception: any[] ): { [timestamp: number]: { [className: string]: number }} {
 

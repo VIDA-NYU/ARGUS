@@ -118,7 +118,7 @@ export class Dataset {
             // const voxelCloud: VoxelCloud = new VoxelCloud( `${pointCloud.name.split('-')[0]}-${className}-voxelcloud`, pointCloudVoxelCells );
             const voxelCloud: VoxelCloud = new VoxelCloud( `model-voxelcloud`, pointCloudVoxelCells );
 
-            // getting timestamps
+            // getting indices
             const cellIndices: number[][] = voxelCloud.get_cell_indices( pointCloud.name );
 
             const voxelCloudConfidences: number[][] = [];
@@ -153,6 +153,12 @@ export class Dataset {
         const objectPointCloud: PointCloud = DataLoader.create_object_point_cloud( pointCloudName, className, this.perception3D );
         this.pointClouds[pointCloudName] = objectPointCloud;
 
+    }
+
+    public create_occupancy_voxel_cloud(): void {
+
+        const voxelCloud: VoxelCloud = DataLoader.create_occupancy_voxel_cloud( this.pointClouds['gazeprojection-pointcloud'], 'perception3D', this.perception3D, this.worldVoxelGrid );
+        this.voxelClouds[ `occupancy-voxelcloud` ] = voxelCloud;
     }
 
     public store_videos( rawData: any ): { [videoName: string]: string } {

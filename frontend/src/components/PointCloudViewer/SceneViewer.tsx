@@ -85,10 +85,11 @@ const SceneViewer = ( {sceneData} : any ) => {
                 sceneViewerController.dataset.create_world_voxel_grid();
 
                 // updating voxel clouds
-                debug && console.log('Creating density clouds');
+                debug && console.log('Creating density and occupancy clouds');
                 sceneViewerController.dataset.create_density_voxel_clouds();
+                sceneViewerController.dataset.create_occupancy_voxel_cloud();
                 // sceneViewerController.dataset.create_model_voxel_cloud(['gazeprojection-pointcloud'], 'perception');
-                sceneViewerController.update_scene_voxel_clouds();
+                sceneViewerController.update_scene_voxel_clouds();                
 
                 // creating line clouds
                 debug && console.log('Creating line clouds');
