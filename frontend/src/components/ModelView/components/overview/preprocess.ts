@@ -38,7 +38,7 @@ function extractAllObjectLabels(wholeBoundingBoxData){
     const labels = []
     for(let timedBoundingBoxData of wholeBoundingBoxData){
         // let timedLabels = Object.keys(timedBoundingBoxData).filter(d => d != "timestamp");
-        let timedLabels = timedBoundingBoxData.data;
+        let timedLabels = timedBoundingBoxData.values;
         for(let objLabel of timedLabels){
             if(!labels.includes(objLabel.label)){
                 labels.push(objLabel.label);
@@ -80,11 +80,12 @@ function extractIndividualActionData(wholeActionData){
 function extractIndividualBoundingBoxData(wholeBoundingBoxData){
     let objectLabels = extractAllObjectLabels(wholeBoundingBoxData);
     let result = [];
+    const dataAttr = Object.keys(wholeBoundingBoxData[0]).indexOf("data") != -1 ? "data" : "values";
     for(let objLabel of objectLabels){
         result.push({
             "label": objLabel,
-            data: wholeBoundingBoxData.map(d=> d.data.map((o) => o.label).indexOf(objLabel) != -1 ?
-            d["data"][d.data.map((o) => o.label).indexOf(objLabel)].confidence : 0),
+            data: wholeBoundingBoxData.map(d=> d[dataAttr].map((o) => o.label).indexOf(objLabel) != -1 ?
+            d[dataAttr][d[dataAttr].map((o) => o.label).indexOf(objLabel)].confidence : 0),
             timestamps: wholeBoundingBoxData.map(d => d.timestamp )
         })
     }
