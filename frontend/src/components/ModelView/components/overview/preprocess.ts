@@ -34,11 +34,11 @@ function extractAllLabels(wholeActionData){
 
 }
 
-function extractAllObjectLabels(wholeBoundingBoxData){
+function extractAllObjectLabels(wholeBoundingBoxData, dataAttr){
     const labels = []
     for(let timedBoundingBoxData of wholeBoundingBoxData){
         // let timedLabels = Object.keys(timedBoundingBoxData).filter(d => d != "timestamp");
-        let timedLabels = timedBoundingBoxData.values;
+        let timedLabels = timedBoundingBoxData[dataAttr];
         for(let objLabel of timedLabels){
             if(!labels.includes(objLabel.label)){
                 labels.push(objLabel.label);
@@ -78,9 +78,10 @@ function extractIndividualActionData(wholeActionData){
 }
 
 function extractIndividualBoundingBoxData(wholeBoundingBoxData){
-    let objectLabels = extractAllObjectLabels(wholeBoundingBoxData);
-    let result = [];
     const dataAttr = Object.keys(wholeBoundingBoxData[0]).indexOf("data") != -1 ? "data" : "values";
+    let objectLabels = extractAllObjectLabels(wholeBoundingBoxData, dataAttr);
+    let result = [];
+
     for(let objLabel of objectLabels){
         result.push({
             "label": objLabel,
