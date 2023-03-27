@@ -60,7 +60,7 @@ const SceneViewer = ( {sceneData} : any ) => {
 
         if( 'pointCloudData' in sceneData ){
 
-            try{
+            // try{
 
                 // clearing scene
                 sceneViewerController.scene?.clear_scene();
@@ -107,13 +107,13 @@ const SceneViewer = ( {sceneData} : any ) => {
                 setLoadingData(false);
 
 
-            } catch( exception ) {
+            // } catch( exception ) {
 
-                // removing spinner
-                setLoadingData(false);
+            //     // removing spinner
+            //     setLoadingData(false);
 
-                console.log('Point cloud loading failed');
-            }
+            //     console.log('Point cloud loading failed');
+            // }
             
         }
 
