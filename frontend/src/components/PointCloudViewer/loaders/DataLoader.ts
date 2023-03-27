@@ -171,7 +171,7 @@ export class DataLoader {
             const timestamp: number = parseInt(row.timestamp.split('-')[0]); 
 
             const rowIndex: { [className: string]: number } = {};
-            const rowData: any[] = row.data;
+            const rowData: any[] = row.data || row.values;
 
             rowData.forEach( (labelInfo: any) => {
 

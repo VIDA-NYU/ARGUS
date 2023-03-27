@@ -34,7 +34,7 @@ export class DataUtils {
 
     public static extract_perception_labels( rawPerceptionFile: any ): string[] {
 
-        const perceptionData: any [] = rawPerceptionFile.map( (timestamp: any) => timestamp.data );
+        const perceptionData: any [] = rawPerceptionFile.map( (timestamp: any) => timestamp.values || timestamp.data );
         const perceptionLabels: string[][] = perceptionData.map( ( labelInfo: any ) => labelInfo.map( (info: any) => info.label ) );
         
         const labelSet: Set<string> = new Set<string>();
