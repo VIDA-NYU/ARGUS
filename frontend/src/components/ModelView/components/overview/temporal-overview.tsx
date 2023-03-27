@@ -108,7 +108,9 @@ export default function TemporalOverview({currentTime, boundingBoxFrameData, rea
     const individualReasoningList = reasoningStatus && extractIndividualReasoningData(reasoningTimedData);
     
     // find detected actions and objects
-    const detectedObjects = boundingBoxFrameData && boundingBoxFrameData.data ? boundingBoxFrameData.data.filter(d => d.confidence > thresholdObjectDetection).map(d => ({'label': d.label, 'confidence': d.confidence}) ) : [];
+    const dataAttr = boundingBoxFrameData && Object.keys(boundingBoxFrameData).indexOf("data") != -1 ? "data" : "values";
+
+    const detectedObjects = boundingBoxFrameData && boundingBoxFrameData[dataAttr] ? boundingBoxFrameData[dataAttr].filter(d => d.confidence > thresholdObjectDetection).map(d => ({'label': d.label, 'confidence': d.confidence}) ) : [];
     const detectedActions = clipActionStatus ?
                             clipActionFrameData && Object.keys(clipActionFrameData).length > 0 ? Object.keys(clipActionFrameData).filter((key) => clipActionFrameData[key]> thresholdActionDetection).map(d => ({'label': d, 'confidence': clipActionFrameData[d]}) )  : []
                             :
