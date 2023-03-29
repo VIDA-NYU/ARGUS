@@ -26,8 +26,7 @@ const RecordingControls = () => {
     Last Entry Time: {recordingData["last-entry-time"]}
   </>;
   return (
-    <Box>
-      <Box sx={{ '& > button': { mt: 2, mb: 2, mr: 2 } }}>
+      <Box sx={{ '& > button': { mt: "-20px", mb: 2, mr: 2 } }}>
         <LoadingButton
           startIcon={<VideocamOutlinedIcon />}
           size="medium"
@@ -56,46 +55,50 @@ const RecordingControls = () => {
           {finishedRecording && <Alert severity="success">Your recording was saved.<br/><br/>{formatRecording(finishedRecording)}</Alert>}
         </Box>
       </Box>
-    </Box>
   )
 }
 const parseTime = (tstr) => new Date(Date.parse(tstr + ' GMT')).toLocaleTimeString()
 
 function LiveVideo() {
   return (
-    <Box display='flex' justifyContent='center' alignItems='center' height='100%' width='100%'>
+    <Box display='flex' justifyContent='center' alignItems='top' height='100%' width='100%'>
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(0, minmax(0, 1fr))',
+          gridTemplateColumns: 'repeat(6, minmax(0, 1fr))',
           gap: 1,
           gridTemplateRows: 'auto',
           gridTemplateAreas: {
+            lg: `
+              "c c c c c c"
+              "h M M M M r"
+              "h M M M M r"
+              "i M M M M a"
+              "i M M M M a"
+              "g M M M M a"
+              "g M M M M a"
+            `,
             md: `
-              "H H H H H H"
-              "H H H H H H"
-              "M M M M r r"
-              "M M M M r r"
-              "M M M M b b"
-              "M M M M b b"
-              "g g g g g g"
-              "c c d d e e"
-          `,
-          xs: `
-              "H H H H H H"
-              "H H H H H H"
-              "M M M M M M"
-              "M M M M M M"
-              "M M M M M M"
-              "M M M M M M"
-              "g g g g g g"
-              "a a a b b b"
-              "e e e e e e"
-              "c c c d d d"
-          `
+              "c c c c c c"
+              "h M M M M r"
+              "h M M M M r"
+              "i M M M M a"
+              "i M M M M a"
+              "g M M M M a"
+              "g M M M M a"
+            `,
+            xs: `
+              "c c c c c c"
+              "h M M M M r"
+              "h M M M M r"
+              "i M M M M a"
+              "i M M M M a"
+              "g M M M M a"
+              "g M M M M a"
+            `
           },
         }}>
-        <Box sx={{ gridArea: 'H' }}><RecordingControls /></Box>
+        <Box sx={{ gridArea: 'c', marginTop: 4 }}><RecordingControls /></Box>
         <DebuggingDataView />
       </Box>
     </Box>

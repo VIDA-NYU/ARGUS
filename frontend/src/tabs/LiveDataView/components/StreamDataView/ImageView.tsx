@@ -153,11 +153,11 @@ const ImageCanvas = ({ image=null, boxes=null, confidence: defaultConfidence=nul
 }
 
 
-export const ImageView = ({ streamId, boxStreamId, debugMode, ...rest}) => {
+export const ImageView = ({ streamId,  showStreamId=true, boxStreamId, debugMode, ...rest}) => {
     const { sid, time, data, readyState } = useStreamData({ streamId, params: { output: 'jpg' } });
     const { data:  boxes } = useStreamData({ streamId: boxStreamId, utf: true, parse: JSON.parse });
     return (
-        <StreamInfo sid={sid||streamId} time={time} data={data} readyState={readyState}>
+        <StreamInfo sid={showStreamId ? sid||streamId : null} time={time} data={data} readyState={readyState}>
             <ImageCanvas image={data} boxes={boxes} debugMode ={debugMode} {...rest} />
         </StreamInfo>
     )

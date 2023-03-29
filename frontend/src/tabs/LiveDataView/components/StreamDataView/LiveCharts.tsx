@@ -18,20 +18,20 @@ export const DeticHandsChart = ({ data, maxLen=100, height=100 }) => {
     const overTime = useDeque(data, maxLen);
 
     return (
-        <Box sx={{ minHeight: '60px' }}>
+        <Box sx={{ minHeight: '60px', marginTop: 5 }}>
             <Grid container spacing={2} alignItems="center">
-                <Grid item xs style={{marginTop:2}}>
-                <ResponsiveContainer width="100%" height={height}>
-                <LineChart width={500} height={300} data={overTime}>
-                    <XAxis dataKey="time" tickCount={2} domain={['dataMin', 'dataMax']} tickFormatter={t => ((Date.now() - t)/1000).toFixed(1)} />
-                    <YAxis domain={[0, 1]} />
-                    <Tooltip />
-                    <Line type="monotone" dataKey='mean_conf_smooth' stroke="#8884d8" />
-                </LineChart>
-                </ResponsiveContainer>
+                <Grid item xs style={{marginTop:2, marginLeft: "-35px"}}>
+                    <ResponsiveContainer width="100%" height={height}>
+                    <LineChart width={500} height={300} data={overTime}>
+                        <XAxis dataKey="time" tickCount={2} domain={['dataMin', 'dataMax']} tickFormatter={t => ((Date.now() - t)/1000).toFixed(1)} />
+                        <YAxis domain={[0, 1]} />
+                        <Tooltip />
+                        <Line type="monotone" dataKey='mean_conf_smooth' stroke="#8884d8" />
+                    </LineChart>
+                    </ResponsiveContainer>
                 </Grid>
-                <Grid item style={{marginTop:'-21px', marginLeft:'20%'}}>
-                <span>Hand Detection Confidence over the Time</span>
+                <Grid item style={{marginTop:'-21px', marginLeft: 65}}>
+                    <span style={{color:"#777777"}}>Confidence over the Time</span>
                 </Grid>
             </Grid>
         </Box>
