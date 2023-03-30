@@ -15,11 +15,12 @@ import { DataPlot } from './types/types';
 
 // styles
 // import './styles/HistoricalDataView.css'
-import * as d3 from 'd3'
-
 // third-party
 import c3 from "c3";
 import Grid from '@mui/material/Grid';
+import BarChart from './BarChart';
+
+import { red, grey, blue, blueGrey } from '@mui/material/colors';
 
 export const Chart = ({result, title}) => {
   let durationStats = [];
@@ -48,40 +49,48 @@ export const Chart = ({result, title}) => {
   }
 
   export function Filters({dataMinMax, summaryDuration, summarySize, summaryStreaming, ...props }) {
-    const [valueDuration, setValueDuration] = React.useState<number>(dataMinMax.duration_max);
-    const [valueSize, setValueSize] = React.useState<number>(dataMinMax.size_mb_max);
-    const [valueStreamings, setValueStreamings] = React.useState<number>(dataMinMax.size_mb_max);
+    const [valueDuration, setValueDuration] = React.useState<number[]>([0, dataMinMax.duration_max]);
+    const [valueSize, setValueSize] = React.useState<number[]>([0,dataMinMax.size_mb_max]);
+    const [valueStreamings, setValueStreamings] = React.useState<number[]>([0,dataMinMax.size_mb_max]);
 
 
-    const handleChangeDuration = (event: Event, newValue: number | number[]) => {
-      if (typeof newValue === 'number') {
+    const handleChangeDuration = (event: Event, newValue: number[]) => {
+      // if (typeof newValue === 'number') {
         setValueDuration(newValue);
         props.onChangeDuration(newValue);
-      }
+      // }
     };
-    const handleChangeSize = (event: Event, newValue: number | number[]) => {
-      if (typeof newValue === 'number') {
+    const handleChangeSize = (event: Event, newValue: number[]) => {
+      // if (typeof newValue === 'number') {
         setValueSize(newValue);
         props.onChangeSize(newValue);
-      }
+      // }
     };
-    const handleChangeStreamings = (event: Event, newValue: number | number[]) => {
-      if (typeof newValue === 'number') {
+    const handleChangeStreamings = (event: Event, newValue: number[]) => {
+      // if (typeof newValue === 'number') {
         setValueStreamings(newValue);
         props.onChangeStreamings(newValue);
-      }
+      // }
     };
 
+    const [value, setValue] = React.useState<number[]>([20, 37]);
+
+    const handleChange = (event: Event, newValue: number | number[]) => {
+      setValue(newValue as number[]);
+    };
+
+
     return (
-      <Box sx={{ width: "95%" }}>
+      <Box sx={{ width: "95%" , marginTop: 2}}>
         <Grid container spacing={1}>
-          <Grid style={{marginTop: '-10px', marginLeft: '-20px'}} item xs={6}>
-            <Chart result={summaryDuration} title={"duration"} />
+          <Grid style={{marginTop: '8px', marginLeft: '-32px', marginRight: "-10px"}} item xs={5}>
+          <BarChart width={195} height={100} datas={summaryDuration} title={"Duration"}/>
+            {/* <Chart result={summaryDuration} title={"duration"} /> */}
             <Slider
-              style={{marginTop: '-30px', marginBottom: '20px'}}
-              aria-label="Custom marks"
+              style={{marginLeft: 20, marginTop: '-52px', marginBottom: '37px', paddingRight: "0px", marginRight: "-10px"}}
+              // aria-label="Custom marks"
               value={valueDuration}
-              getAriaValueText={valuetext}
+              // getAriaValueText={valuetext}
               step={60}
               valueLabelDisplay="auto"
               // marks={[
@@ -97,15 +106,33 @@ export const Chart = ({result, title}) => {
               min={dataMinMax.duration_min}
               max={dataMinMax.duration_max}
               onChange={handleChangeDuration}
+              sx={{
+                width: 155,
+                color: blueGrey[300],
+                "& .MuiSlider-thumb": {
+                  height: 15,
+                  width: 15,
+                  borderRadius: "12px"
+                },
+                "& .MuiSlider-track": {
+                  height: 3
+                },
+                "& .MuiSlider-rail": {
+                  // color: theme.palette.mode === "dark" ? "#bfbfbf" : "#d8d8d8",
+                  // opacity: theme.palette.mode === "dark" ? undefined : 1,
+                  height: 2
+                }
+              }}
             />
           </Grid>
-          <Grid style={{marginTop: '-10px', marginLeft: '15px'}} item xs={6}>
-            <Chart result={summarySize} title={"size"} />
+          <Grid style={{marginTop: '8px', marginLeft: '60px'}} item xs={5}>
+            {/* <Chart result={summarySize} title={"size"} /> */}
+            <BarChart width={195} height={100} datas={summarySize} title={"Size"}/>
             <Slider
-              style={{marginTop: '-30px', marginBottom: '20px'}}
-              aria-label="Custom marks"
+              style={{marginLeft: 20, marginTop: '-52px', marginBottom: '37px'}}
+              // aria-label="Custom marks"
               value={valueSize}
-              getAriaValueText={valuetext}
+              // getAriaValueText={valuetext}
               step={60}
               valueLabelDisplay="auto"
               // marks={[
@@ -121,15 +148,33 @@ export const Chart = ({result, title}) => {
               min={dataMinMax.size_mb_min}
               max={dataMinMax.size_mb_max}
               onChange={handleChangeSize}
+              sx={{
+                width: 153,
+                color: blueGrey[300],
+                "& .MuiSlider-thumb": {
+                  height: 15,
+                  width: 15,
+                  borderRadius: "12px"
+                },
+                "& .MuiSlider-track": {
+                  height: 3
+                },
+                "& .MuiSlider-rail": {
+                  // color: theme.palette.mode === "dark" ? "#bfbfbf" : "#d8d8d8",
+                  // opacity: theme.palette.mode === "dark" ? undefined : 1,
+                  height: 2
+                }
+              }}
             />
           </Grid>
-          <Grid style={{marginTop: '-40px', marginLeft: '-20px'}} item xs={6}>
-            <Chart result={summaryStreaming} title={"streamings"} />
+          <Grid style={{marginTop: '5px', marginLeft: '-32px', marginRight: "-10px"}} item xs={5}>
+            {/* <Chart result={summaryStreaming} title={"streamings"} /> */}
+            <BarChart width={195} height={100} datas={summaryStreaming} title={"Streamings"}/>
             <Slider
-              style={{marginTop: '-30px', marginBottom: '20px'}}
-              aria-label="Custom marks"
+              style={{marginLeft: 20, marginTop: '-52px', marginBottom: '37px', paddingRight: "0px", marginRight: "10px"}}
+              // aria-label="Custom marks"
               value={valueStreamings}
-              getAriaValueText={valuetext}
+              // getAriaValueText={valuetext}
               step={1}
               valueLabelDisplay="auto"
               // marks={[
@@ -145,6 +190,23 @@ export const Chart = ({result, title}) => {
               min={dataMinMax.streams_min}
               max={dataMinMax.streams_max}
               onChange={handleChangeStreamings}
+              sx={{
+                width: 156,
+                color: blueGrey[300],
+                "& .MuiSlider-thumb": {
+                  height: 15,
+                  width: 15,
+                  borderRadius: "12px"
+                },
+                "& .MuiSlider-track": {
+                  height: 3
+                },
+                "& .MuiSlider-rail": {
+                  // color: theme.palette.mode === "dark" ? "#bfbfbf" : "#d8d8d8",
+                  // opacity: theme.palette.mode === "dark" ? undefined : 1,
+                  height: 2
+                }
+              }}
             />
           </Grid>
         </Grid>

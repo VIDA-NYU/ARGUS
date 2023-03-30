@@ -1,4 +1,5 @@
 import * as d3 from 'd3';
+import { dataType } from '../api/types';
 
 export const getHistogramValues = (data, interval, key) => {
     let result = [];
@@ -36,9 +37,9 @@ export const getMinMaxData = (array) => {
     return {
         "duration_min": 0,// d3.min(array, d => d.duration_secs), 
         "duration_max": d3.max(array, d => d.duration_secs), 
-        "size_mb_min": d3.min(array, d => d.size_mb),
+        "size_mb_min": 0,
         "size_mb_max": d3.max(array, d => d.size_mb),
-        "streams_min": d3.min(array, d => Object.keys(d.streams).length),
+        "streams_min": 0,
         "streams_max": d3.max(array, d => Object.keys(d.streams).length)
     };
 }
@@ -48,10 +49,11 @@ export const getFilteredData = (data, key, rangeValues) => {
 
   result = (key === "streams")
             ?
-            data.filter(function(d){ return ((Object.keys(d.streams).length <= rangeValues)  ); }) // check if the number between lower and upper bound
+            data.filter(function(d){ return ((Object.keys(d.streams).length <= rangeValues[1] && Object.keys(d.streams).length >= rangeValues[0])  ); }) // for streamings: check if the number between lower and upper bound
             :
             data.filter(function(d){
-              return ((d[key] <= rangeValues)  );  // check if the number between lower and upper bound
+              // console.log();
+              return ((d[key] <= rangeValues[1] && d[key] >= rangeValues[0])  );  // check if the number between lower and upper bound
             });
   return result;
 }
