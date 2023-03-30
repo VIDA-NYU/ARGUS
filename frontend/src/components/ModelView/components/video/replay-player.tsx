@@ -79,9 +79,13 @@ const VideoDataView = ({ type, title, data, recordingName, state, onProgress, on
     }, [canvasRef.current])
 
     useEffect(() => {
+
         // dynamically assign the width and height to canvas
         const canvasEle = canvasRef.current;
-        if (canvasEle && boundingBoxData && boundingBoxData.data) {
+
+        const dataAttr = boundingBoxData && Object.keys(boundingBoxData).indexOf("data") != -1 ? "data" : "values";
+
+        if (canvasEle && boundingBoxData && boundingBoxData[dataAttr]) {
             // canvasEle.width = canvasEle.clientWidth;
             // canvasEle.height = canvasEle.clientHeight;
             // get context of the canvas
@@ -142,8 +146,6 @@ const VideoDataView = ({ type, title, data, recordingName, state, onProgress, on
             const syncedBoundingBoxData = syncWithVideoTime(currentTime, state, annotationData.meta.entryTime, boundingBoxData)
             let frameData = preprocessFrameBoundingBoxData(syncedBoundingBoxData,
                 annotationData.perceptronParameters.objectConfidenceThreshold);
-
-
 
             if (frameData && frameData.objects) {
                 for (let object of frameData.objects) {

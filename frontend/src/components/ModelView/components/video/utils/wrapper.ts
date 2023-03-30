@@ -64,13 +64,15 @@ function preprocessFrameObject(objectData){
 }
 
 function preprocessFrameBoundingBoxData(rawData, confidenceThreshold: number | undefined) : TimeRecord{
+    const dataAttr = rawData && Object.keys(rawData).indexOf("data") != -1 ? "data" : "values";
+    
     if(!confidenceThreshold){
         confidenceThreshold = 0;
     }
     return {
         index: 0,
         time: 0,
-        objects: rawData.data.filter(d => d.confidence > confidenceThreshold).map(d => preprocessFrameObject(d))
+        objects: rawData[dataAttr].filter(d => d.confidence > confidenceThreshold).map(d => preprocessFrameObject(d))
     }
 }
 function locateFrame(boundingBoxSequence: Array<TimeRecord>, played: number){
@@ -85,7 +87,8 @@ function locateFrame(boundingBoxSequence: Array<TimeRecord>, played: number){
 
 
 function syncWithVideoTime(currentTime: number, state: any, videoEntryTime: number, boundingBoxData: any){
-    if(!boundingBoxData || !boundingBoxData.data){
+    const dataAttr = boundingBoxData && Object.keys(boundingBoxData).indexOf("data") != -1 ? "data" : "values";
+    if(!boundingBoxData || !boundingBoxData[dataAttr]){
         return boundingBoxData;
     }
     const threshold = 1000;
