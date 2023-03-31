@@ -73,8 +73,8 @@ function LiveVideo() {
               "c c c c c c"
               "h M M M M r"
               "h M M M M r"
-              "i M M M M a"
-              "i M M M M a"
+              "i M M M M r"
+              "i M M M M r"
               "g M M M M a"
               "g M M M M a"
             `,
@@ -82,8 +82,8 @@ function LiveVideo() {
               "c c c c c c"
               "h M M M M r"
               "h M M M M r"
-              "i M M M M a"
-              "i M M M M a"
+              "i M M M M r"
+              "i M M M M r"
               "g M M M M a"
               "g M M M M a"
             `,
@@ -91,8 +91,8 @@ function LiveVideo() {
               "c c c c c c"
               "h M M M M r"
               "h M M M M r"
-              "i M M M M a"
-              "i M M M M a"
+              "i M M M M r"
+              "i M M M M r"
               "g M M M M a"
               "g M M M M a"
             `

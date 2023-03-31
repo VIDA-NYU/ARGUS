@@ -42,7 +42,7 @@ export const ReasoningOutputsView = ({ data }) => {
         {/* <span><b>Current Step:</b>{step_id || ' No active step.'}</span> */}
         <span><b>Description:</b> {step_description || 'No active step.'}</span>
         <span><b>Status:</b> {step_status}</span>
-        <br/>
+        {/* <br/> */}
         <span><b>Errors:</b> {error_description || 'No errors.'}</span><br/>
         <span><b>Entities:</b></span>
         <Box sx={{gridArea: 'e', height: 50,}}>

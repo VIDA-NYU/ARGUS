@@ -25,8 +25,8 @@ function DebuggingDataView() {
           </StreamView>
         </Box>
         <Box sx={{ gridArea: 'a' }}>
-          <StreamView utf streamId={EGOVLP_ACTION_STEPS_STREAM}>
-            {data => (<Box mt={"-14px"}><ClipOutputsView data={JSON.parse(data)} /></Box>)}
+          <StreamView utf streamId={EGOVLP_ACTION_STEPS_STREAM} showTime={false}>
+            {data => (<Box mt={8} pt={"34px"}><ClipOutputsView data={JSON.parse(data)} /></Box>)}
           </StreamView>
         </Box>
         {/* <Box sx={{ gridArea: 'e' }}><StreamView utf parse='prettyJSON' streamId={'reasoning'} /></Box> */}

@@ -30,7 +30,7 @@ export const DeticHandsChart = ({ data, maxLen=100, height=100 }) => {
                     </LineChart>
                     </ResponsiveContainer>
                 </Grid>
-                <Grid item style={{marginTop:'-21px', marginLeft: 65}}>
+                <Grid item style={{marginTop:'-21px', marginLeft: 30}}>
                     <span style={{color:"#777777"}}>Confidence over the Time</span>
                 </Grid>
             </Grid>
