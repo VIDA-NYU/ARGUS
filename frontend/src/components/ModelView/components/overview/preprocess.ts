@@ -23,7 +23,7 @@ function preprocessTimestampData (data, recordingMetaData, playedTimes, totalDur
 function extractAllLabels(wholeActionData){
     const labels = []
     for(let timedActionData of wholeActionData){
-        let timedLabels = Object.keys(timedActionData).filter(d => d != "timestamp");
+        let timedLabels = Object.keys(timedActionData).filter(d => d != "timestamp").filter(d => d != "frame_type");
         for(let label of timedLabels){
             if(!labels.includes(label)){
                 labels.push(label);
