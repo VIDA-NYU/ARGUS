@@ -74,7 +74,7 @@ export default function DashboardTabs() {
                   <MenuIcon />
               </IconButton>
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                  TIM Dashboard
+                  ARGUS
               </Typography>
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" textColor="inherit" TabIndicatorProps={{style: {background: colorTabIndicator}}}>
                   <Tab label="Create Data" {...a11yProps(0)} />
