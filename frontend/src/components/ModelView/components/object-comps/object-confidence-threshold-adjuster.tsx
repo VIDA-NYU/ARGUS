@@ -1,4 +1,4 @@
-import {styled, Tooltip} from "@mui/material";
+import {FormControlLabel, FormGroup, styled, Switch, Tooltip} from "@mui/material";
 import Card from "@mui/material/Card";
 import * as React from 'react';
 import Box from '@mui/material/Box';
@@ -37,10 +37,15 @@ export default function ObjectConfidenceThresholdAdjuster({
 
     return (
         <Container>
-            <Card  sx={{marginLeft: "260px"}} >
+            <Card  sx={{marginLeft: "5px", marginTop: "-15px"}} >
                 <Box sx={{marginLeft: "2px", marginTop: 0, marginRight: 1, marginBottom: "2px"}} display={"flex"} flexDirection={"row"}
                     alignItems={"center"}
                 >
+                    <Grid sx={{marginLeft: 0, marginRight: 1, paddingLeft:1}} container spacing={1} alignItems="center">
+                    <FormGroup>
+                        <FormControlLabel disabled control={<Switch />} label="Panoramic Mosaics" />
+                    </FormGroup>
+                    </Grid>
                     <Grid sx={{marginLeft: 0, marginRight: 1}} container spacing={1} alignItems="center">
                         <Grid item xs={4}>
                         <Tooltip title="Action and object confidence" placement="top-start">
