@@ -1,71 +1,35 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>Local deployment / development setup &mdash; Dashboard  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Using the web interface" href="webui.html" />
     <link rel="prev" title="Welcome to dashboard’s documentation!" href="index.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="index.html" class="icon icon-home"> Dashboard
-          
-
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -73,25 +37,12 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Local deployment / development setup</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#set-up-the-ptg-data-store-api">Set up the PTG Data Store API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#set-up-hololens">Set up Hololens</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#build-the-containers">Build the containers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#start-the-base-container">Start the base container</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#stop-the-containers">Stop the containers</a></li>
 </ul>
 </li>
@@ -99,157 +50,109 @@
 <li class="toctree-l1"><a class="reference internal" href="internals.html">Internals</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">Dashboard</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
       <li>Local deployment / development setup</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="_sources/deployment.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="local-deployment-development-setup">
-<h1>Local deployment / development setup<a class="headerlink" href="#local-deployment-development-setup" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="local-deployment-development-setup">
+<h1>Local deployment / development setup<a class="headerlink" href="#local-deployment-development-setup" title="Permalink to this heading"></a></h1>
 <p>To deploy the system locally using docker-compose, follow those steps:</p>
-<div class="section" id="set-up-the-ptg-data-store-api">
-<h2>Set up the PTG Data Store API<a class="headerlink" href="#set-up-the-ptg-data-store-api" title="Permalink to this headline">¶</a></h2>
+<section id="set-up-the-ptg-data-store-api">
+<h2>Set up the PTG Data Store API<a class="headerlink" href="#set-up-the-ptg-data-store-api" title="Permalink to this heading"></a></h2>
 <p>Access: <a class="reference external" href="https://github.com/VIDA-NYU/ptg-api-server">https://github.com/VIDA-NYU/ptg-api-server</a></p>
-<p>To bring up the server on your local machine, do:</p>
-<p><code class="docutils literal notranslate"><span class="pre">`</span>
-<span class="pre">$</span> <span class="pre">make</span> <span class="pre">services</span>
-<span class="pre">`</span></code></p>
+<p>To bring up the entire server on your local machine, do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make full
+</pre></div>
+</div>
+<p>To bring up everything except for the machine learning containers (in case you’re using a different machine for GPUs), you can do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make api
+make dash
+make record
+</pre></div>
+</div>
+<p>then on the other machine, you would run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make ml
+</pre></div>
+</div>
 <p>For more information about how to set up the server environment <a class="reference external" href="https://github.com/VIDA-NYU/ptg-api-server#setup-instructions">click here</a>.</p>
-</div>
-<div class="section" id="set-up-hololens">
-<h2>Set up Hololens<a class="headerlink" href="#set-up-hololens" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="build-the-containers">
-<h2>Build the containers<a class="headerlink" href="#build-the-containers" title="Permalink to this headline">¶</a></h2>
-<p>After bringing up the server and setting up the hololens, build the Dashboard container:</p>
-<p><code class="docutils literal notranslate"><span class="pre">`</span>
-<span class="pre">$</span> <span class="pre">docker-compose</span> <span class="pre">build</span> <span class="pre">frontend</span>
-<span class="pre">`</span></code></p>
-</div>
-<div class="section" id="start-the-base-container">
-<h2>Start the base container<a class="headerlink" href="#start-the-base-container" title="Permalink to this headline">¶</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">`</span>
-<span class="pre">$</span> <span class="pre">docker-compose</span> <span class="pre">up</span> <span class="pre">-d</span> <span class="pre">frontend</span>
-<span class="pre">`</span></code></p>
 <p>Ports:</p>
-<ul class="simple">
-<li><p>The web interface is at <a class="reference external" href="http://localhost:3000">http://localhost:3000</a></p></li>
+<ul>
+<li><p>The dashboard is at <a class="reference external" href="http://localhost:3000">http://localhost:3000</a></p></li>
+<li><p>The api is at <a class="reference external" href="http://localhost:7890">http://localhost:7890</a>
+- for information about how to interact with the API, see:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>CLI and Python client: <a class="reference external" href="https://github.com/VIDA-NYU/ptgctl">https://github.com/VIDA-NYU/ptgctl</a></p></li>
+<li><p>API Docs: <a class="reference external" href="https://api.ptg.poly.edu/docs">https://api.ptg.poly.edu/docs</a></p></li>
 </ul>
+</div></blockquote>
+</li>
+<li><p>To interact with the mongodb instance, you can use Mongo Express - a GUI for editing documents:
+- Mongo express is available at <a class="reference external" href="http://localhost:8081">http://localhost:8081</a></p></li>
+</ul>
+</section>
+<section id="set-up-hololens">
+<h2>Set up Hololens<a class="headerlink" href="#set-up-hololens" title="Permalink to this heading"></a></h2>
+<p>To setup the Hololens, you need to configure the URL for the API server. Currently to do this, it involves going into the Hololens source code and changing the URL that the Hololens is pointing to. Obviously this is not great.</p>
+<p>Perhaps there is a way to have a textbox/dropdown for reconfiguring the URL in the Hololens UI?</p>
+</section>
+<section id="stop-the-containers">
+<h2>Stop the containers<a class="headerlink" href="#stop-the-containers" title="Permalink to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make down
+</pre></div>
 </div>
-<div class="section" id="stop-the-containers">
-<h2>Stop the containers<a class="headerlink" href="#stop-the-containers" title="Permalink to this headline">¶</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">`</span>
-<span class="pre">$</span> <span class="pre">docker-compose</span> <span class="pre">down</span>
-<span class="pre">`</span></code></p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="webui.html" class="btn btn-neutral float-right" title="Using the web interface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="index.html" class="btn btn-neutral float-left" title="Welcome to dashboard’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="webui.html" class="btn btn-neutral float-right" title="Using the web interface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2022, New York University.
-
-    </p>
+    <p>&#169; Copyright 2022, New York University.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>
