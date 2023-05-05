@@ -51,6 +51,8 @@ Under the tab “Historical Data”, ARGUS provides a visual user interface that
 
 ARGUS offline mode has 3 main components: the Data Manager, the Temporal View, and the Spatial View.
 
+..  figure:: screenshots/historical_data_overview.png
+
 .. This page allows you to inspect all the recordings. By default, the data that belongs to the first recording is displayed. To select a different recording, use the "Select Data" drop-down menu. 
 .. Currently, the following data is displayed: Cameras (Main, Depth, Grey Left-Left, Grey Left-Front, Grey Right-Front, and Grey Right-Right), Eye data and inertial measurement unit (IMU) data.\
 
@@ -68,21 +70,38 @@ data will be loaded into the views of the system.
 ..  figure:: screenshots/recorsding_list.png
 
 
-**Spatial View**
-ARGUS provides a Spatial View that allows users to analyze how performers interact with the physical environment in conjunction with the spatial distribution of model outputs. 
-
 **Temporal View**
-ARGUS provides a model debugger based on temporal visualizations to debug the ML models used in AI assistant systems.
+ARGUS provides a model debugger based on temporal visualizations to debug the ML models used in AI assistant systems. It contains two main components: 1) Video Player and 2) Model Output Viewer.
 
-Using the controls, users can play/stop all the videos. They can also seek any position on the video using the slider. 
+- 1) Video Player:  The object detection model not only recognizes all objects in an image but also their positions. To inspect these outputs, ARGUS contains a video player component that identifies the spatial location of detected objects over time. We highlight these objects by using bounding boxes that are drawn using the (x,y) coordinates of the upper-left corner, and width and height information. This component includes a “Play” button that enables data playback, where the cursor is automatically advanced in real-time through the data. This component controls the video player and updates the Model Output Viewer as well.
 
-..  figure:: screenshots/historical_data_overview.png
+    ..  figure:: screenshots/video_player.png
+        :scale: 40%
+
+..  Using the controls, users can play/stop all the videos. They can also seek any position on the video using the slider. 
+
+- 2) Model Output Viewer: It provides a summarization of the temporal distribution of the ML models outputs across the whole session. Once these model outputs are available - ARGUS currently support object, actions and step models outputs, they are used to create the matrix visual representations for temporal model analysis. The Model Output Viewer has e three main components: the model outputs view, the confidence matrix, and the global summaries. 
+
+    - *Model outputs view*, presents all the model outputs grouped by category (objects, actions and steps). The object, action, and step sections have multiple rows, each of them listing the model outputs for each category, for example, the detected objects identified by the perception model. 
+    - *Confidence matrix:* The x-axis indicates the time, from 0 to the total duration of the session (video). The matrix is filled with cells, where each cell represents the confidence score of the detected item at time t. If no action, object, or step is present, the matrix cell is left blank (white), otherwise, it is colored based on the confidence score. The total number of cells is proportional to the size of the session (seconds), and all cells are equal in height. Users can hover over the cells to see additional details. 
+    - *Global summaries:* The Model Output Viewer also provides summaries of the average confidence and detection coverage for each row on the right side of the viewer so users can quickly evaluate them. The average confidence only takes the confidence value of detected objects, actions, or steps into account. Detection coverage refers to the total number of detections available for each model output (objects, actions, and steps). 
+
+    ..  figure:: screenshots/models_output_viewer.png
+
 
 .. At the upper-right of the previous image, the eye data is displayed. Find below an expanded version of it. It is a visualization of the LIDAR mosaic of the physical space with user location over time denoted by beige squares and user vision path by blue lines.
 
 
 
 .. Finally, at the bottom is the IMU metrics over time of head/HoloLens acceleration, rotation (gyroscope), and velocity in the x (blue), y (orange), and z (green) directions.
+
+
+
+**Spatial View**
+ARGUS provides a Spatial View that allows users to analyze how performers interact with the physical environment in conjunction with the spatial distribution of model outputs. The basis of the Spatial View is a 3D point cloud (or world point cloud) which represents the physical environment where the performer is immersed.
+Eye position, hand position, and other data streams can also be represented as 3D points in the same scene. The blue dots show the eye position of the user during a session, while the green dots show the hand position. For each collection of 3D points repre- senting a data stream, users can retrieve more detailed information by interacting with the points. For example, if the user hovers their mouse over the points representing the eye position, a line representing the gaze direction will automatically be rendered in the scene, representing what point in space the user was looking at from their current position at a specific timestamp. This is possible by calculating the intersection of the gaze direction vector with the world point cloud.
+
+..  figure:: screenshots/spatial_viewer.png
 
 
 **Recipe Collection**

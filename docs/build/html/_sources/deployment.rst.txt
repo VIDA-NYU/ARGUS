@@ -33,11 +33,12 @@ For more information about how to set up the server environment `click here <htt
 
 Ports:
 
-- The dashboard is at http://localhost:3000
-- The api is at http://localhost:7890
-  - for information about how to interact with the API, see:
-     - CLI and Python client: https://github.com/VIDA-NYU/ptgctl
-     - API Docs: https://api.ptg.poly.edu/docs
+
+- The ARGUS dashboard is at http://localhost:3000
+- The api is at http://localhost:7890 - for information about how to interact with the API, see:
+
+  - CLI and Python client: https://github.com/VIDA-NYU/ptgctl
+  - API Docs: https://api.ptg.poly.edu/docs
 - To interact with the mongodb instance, you can use Mongo Express - a GUI for editing documents:
   - Mongo express is available at http://localhost:8081
 

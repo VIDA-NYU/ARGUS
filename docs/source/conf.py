@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'Dashboard'
+project = 'ARGUS'
 copyright = '2022, New York University'
 author = 'New York University'
 
