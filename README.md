@@ -1,6 +1,6 @@
-# TIM Dashboard
+# ARGUS
 
-TIM Dashboard is a Hololens data exploration platform developed at New York University. It can be used to ingest new data or to explore data generated using Hololens.
+ARGUS is a Hololens data exploration platform developed at New York University. It can be used to ingest new data or to explore data generated using Hololens.
 
 [Documentation is available here](https://dashboard-rtd.ptg.poly.edu/index.html#)
 
