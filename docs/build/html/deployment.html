@@ -1,35 +1,71 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  <meta charset="utf-8" />
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
   <title>Local deployment / development setup &mdash; ARGUS  documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-    <script src="_static/js/theme.js"></script>
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Using the web interface" href="webui.html" />
     <link rel="prev" title="Welcome to ARGUS’s documentation!" href="index.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
+          
+
+          
             <a href="index.html" class="icon icon-home"> ARGUS
+          
+
+          
           </a>
+
+          
+            
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -37,8 +73,19 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Local deployment / development setup</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#set-up-the-ptg-data-store-api">Set up the PTG Data Store API</a></li>
@@ -50,35 +97,76 @@
 <li class="toctree-l1"><a class="reference internal" href="internals.html">Internals</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">ARGUS</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
+    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
       <li>Local deployment / development setup</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
+          
             <a href="_sources/deployment.rst.txt" rel="nofollow"> View page source</a>
+          
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
-  <section id="local-deployment-development-setup">
-<h1>Local deployment / development setup<a class="headerlink" href="#local-deployment-development-setup" title="Permalink to this heading"></a></h1>
+            
+  <div class="section" id="local-deployment-development-setup">
+<h1>Local deployment / development setup<a class="headerlink" href="#local-deployment-development-setup" title="Permalink to this headline">¶</a></h1>
 <p>To deploy the system locally using docker-compose, follow those steps:</p>
-<section id="set-up-the-ptg-data-store-api">
-<h2>Set up the PTG Data Store API<a class="headerlink" href="#set-up-the-ptg-data-store-api" title="Permalink to this heading"></a></h2>
+<div class="section" id="set-up-the-ptg-data-store-api">
+<h2>Set up the PTG Data Store API<a class="headerlink" href="#set-up-the-ptg-data-store-api" title="Permalink to this headline">¶</a></h2>
 <p>Access: <a class="reference external" href="https://github.com/VIDA-NYU/ptg-api-server">https://github.com/VIDA-NYU/ptg-api-server</a></p>
 <p>To bring up the entire server on your local machine, do:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make full
@@ -107,49 +195,66 @@ make record
 <li><p>To interact with the mongodb instance, you can use Mongo Express - a GUI for editing documents:
 - Mongo express is available at <a class="reference external" href="http://localhost:8081">http://localhost:8081</a></p></li>
 </ul>
-</section>
-<section id="set-up-hololens">
-<h2>Set up Hololens<a class="headerlink" href="#set-up-hololens" title="Permalink to this heading"></a></h2>
+</div>
+<div class="section" id="set-up-hololens">
+<h2>Set up Hololens<a class="headerlink" href="#set-up-hololens" title="Permalink to this headline">¶</a></h2>
 <p>To setup the Hololens, you need to configure the URL for the API server. Currently to do this, it involves going into the Hololens source code and changing the URL that the Hololens is pointing to. Obviously this is not great.</p>
 <p>Perhaps there is a way to have a textbox/dropdown for reconfiguring the URL in the Hololens UI?</p>
-</section>
-<section id="stop-the-containers">
-<h2>Stop the containers<a class="headerlink" href="#stop-the-containers" title="Permalink to this heading"></a></h2>
+</div>
+<div class="section" id="stop-the-containers">
+<h2>Stop the containers<a class="headerlink" href="#stop-the-containers" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make down
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
+           
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to ARGUS’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="webui.html" class="btn btn-neutral float-right" title="Using the web interface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to ARGUS’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, New York University.</p>
-  </div>
+    <p>
+        &#169; Copyright 2022, New York University.
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
-  <script>
+  
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

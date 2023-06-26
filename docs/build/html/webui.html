@@ -1,35 +1,71 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  <meta charset="utf-8" />
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
   <title>Using the web interface &mdash; ARGUS  documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-    <script src="_static/js/theme.js"></script>
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Internals" href="internals.html" />
     <link rel="prev" title="Local deployment / development setup" href="deployment.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
+          
+
+          
             <a href="index.html" class="icon icon-home"> ARGUS
+          
+
+          
           </a>
+
+          
+            
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -37,8 +73,19 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="deployment.html">Local deployment / development setup</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Using the web interface</a><ul>
@@ -49,53 +96,94 @@
 <li class="toctree-l1"><a class="reference internal" href="internals.html">Internals</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">ARGUS</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
+    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
       <li>Using the web interface</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
+          
             <a href="_sources/webui.rst.txt" rel="nofollow"> View page source</a>
+          
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
-  <section id="using-the-web-interface">
-<h1>Using the web interface<a class="headerlink" href="#using-the-web-interface" title="Permalink to this heading"></a></h1>
+            
+  <div class="section" id="using-the-web-interface">
+<h1>Using the web interface<a class="headerlink" href="#using-the-web-interface" title="Permalink to this headline">¶</a></h1>
 <p>ARGUS is an interactive webpage to view current streams, access historical data, and debug models.
 The web interface allows users to explore the Hololens data with no additional software.</p>
 <p>The system can be found at this address: <a class="reference external" href="http://dashboardptg.vida-nyu.org:8033/">http://dashboardptg.vida-nyu.org:8033/</a></p>
 <p>ARGUS has two operation modes: “Online” (during task performance), and “Offline” (after performance). ARGUS has four main features:  (1) Data creation , (2) data exploration, (3) model debugging, and (4) recipe collection (ingredients, descriptions, tools, etc).</p>
-<section id="online-mode">
-<h2>Online Mode<a class="headerlink" href="#online-mode" title="Permalink to this heading"></a></h2>
+<div class="section" id="online-mode">
+<h2>Online Mode<a class="headerlink" href="#online-mode" title="Permalink to this headline">¶</a></h2>
 <p>Under the tab “Create Data”, users can create new data and perform a real-time debugging.</p>
 <p><strong>Data Creation</strong></p>
 <p>This page allows users to record new videos using a hololens. If the hololens is connected, you will see the live view. Otherwise, displays the following message: “Be right back”. </p>
 <p>To start a new recording, click on the “Start Recording” button.</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="_images/start_rec_v3.png" src="_images/start_rec_v3.png" />
-</figure>
+</div>
 <p>When you are done, click on the “Stop Recording” buttton to stop and finish the recording. Automatically, the video will be saved and uploaded to the server under a unique and pre-generated name with date and time stamps of the current system (YY-MM-DD.HH-MM-SS).</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="_images/stop_rec_v3.png" src="_images/stop_rec_v3.png" />
-</figure>
+</div>
 <p>To verify if the recording was saved correctly, go to the tab “Historical Data”, then click on the last entry from the list of recording listed in the left-side. It may take some time to appear here (around 1 min).</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="_images/check_rec_v3.png" src="_images/check_rec_v3.png" />
-</figure>
+</div>
 <p><strong>Real-Time Model Debugging</strong></p>
 <p>Under the tab “Create Data”, users can perform a real-time debugging. This page allows users inspect the model’s outputs. To better follow the interpretation systems during a stream, the debugging model tab provides model outputs from recognition, reasoning, and perception modules. Included are the following:</p>
 <ol class="arabic simple">
@@ -105,29 +193,29 @@ The web interface allows users to explore the Hololens data with no additional s
 <li><p>Below (3), is the list of predicted most likely current actions with their probability. In this example, the model predicts with 78.79% likelihood “wrap wrap” is the current action, followed by “insert toothpick” at 15.15%.</p></li>
 <li><p>In the upper-left, we display the location and confidence for the recognized objects and user hands as well as a small graph of the hand detection confidence over time.</p></li>
 </ol>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="_images/debugging_model_view_v3.png" src="_images/debugging_model_view_v3.png" />
-</figure>
-</section>
-<section id="offline-mode">
-<h2>“Offline” Mode<a class="headerlink" href="#offline-mode" title="Permalink to this heading"></a></h2>
+</div>
+</div>
+<div class="section" id="offline-mode">
+<h2>“Offline” Mode<a class="headerlink" href="#offline-mode" title="Permalink to this headline">¶</a></h2>
 <p>Under the tab “Historical Data”, ARGUS provides a visual user interface that enables querying, filtering, and exploration of the data. Due to the spatiotemporal characteristics of the data, we provide both spatial and temporal visualization widgets to allow users to analyze the data from different perspectives.</p>
 <p>ARGUS offline mode has 3 main components: the Data Manager, the Temporal View, and the Spatial View.</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="_images/historical_data_overview.png" src="_images/historical_data_overview.png" />
-</figure>
+</div>
 <p><strong>Data Manager</strong>
 The Data Manager enables data retrieval by allowing users to specify filters and select specific sessions from a list of results.
 Users can query the data by specifying various filters. Filters are presented in the form of histograms the users can brush to select the desired range.</p>
-<figure class="align-default">
+<div class="figure align-default">
 <a class="reference internal image-reference" href="_images/filters.png"><img alt="_images/filters.png" src="_images/filters.png" style="width: 299.2px; height: 251.20000000000002px;" /></a>
-</figure>
+</div>
 <p>The results component displays the retrieved sessions in a list format. The following figure shows the results for a given query specified by the user. Each element represents a session showing key features,
 including name, duration, date, recorded streams, and available model outputs. Once an element of the list is clicked, all the corresponding
 data will be loaded into the views of the system.</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="_images/recorsding_list.png" src="_images/recorsding_list.png" />
-</figure>
+</div>
 <p><strong>Temporal View</strong>
 ARGUS provides a model debugger based on temporal visualizations to debug the ML models used in AI assistant systems. It contains two main components: 1) Video Player and 2) Model Output Viewer.</p>
 <ul>
@@ -135,9 +223,9 @@ ARGUS provides a model debugger based on temporal visualizations to debug the ML
 <li><p>Video Player:  The object detection model not only recognizes all objects in an image but also their positions. To inspect these outputs, ARGUS contains a video player component that identifies the spatial location of detected objects over time. We highlight these objects by using bounding boxes that are drawn using the (x,y) coordinates of the upper-left corner, and width and height information. This component includes a “Play” button that enables data playback, where the cursor is automatically advanced in real-time through the data. This component controls the video player and updates the Model Output Viewer as well.</p></li>
 </ol>
 <blockquote>
-<div><figure class="align-default">
+<div><div class="figure align-default">
 <a class="reference internal image-reference" href="_images/video_player.png"><img alt="_images/video_player.png" src="_images/video_player.png" style="width: 407.20000000000005px; height: 304.8px;" /></a>
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
@@ -151,55 +239,72 @@ ARGUS provides a model debugger based on temporal visualizations to debug the ML
 <li><p><em>Confidence matrix:</em> The x-axis indicates the time, from 0 to the total duration of the session (video). The matrix is filled with cells, where each cell represents the confidence score of the detected item at time t. If no action, object, or step is present, the matrix cell is left blank (white), otherwise, it is colored based on the confidence score. The total number of cells is proportional to the size of the session (seconds), and all cells are equal in height. Users can hover over the cells to see additional details.</p></li>
 <li><p><em>Global summaries:</em> The Model Output Viewer also provides summaries of the average confidence and detection coverage for each row on the right side of the viewer so users can quickly evaluate them. The average confidence only takes the confidence value of detected objects, actions, or steps into account. Detection coverage refers to the total number of detections available for each model output (objects, actions, and steps).</p></li>
 </ul>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="_images/models_output_viewer.png" src="_images/models_output_viewer.png" />
-</figure>
+</div>
 </div></blockquote>
 </li>
 </ul>
 <p><strong>Spatial View</strong>
 ARGUS provides a Spatial View that allows users to analyze how performers interact with the physical environment in conjunction with the spatial distribution of model outputs. The basis of the Spatial View is a 3D point cloud (or world point cloud) which represents the physical environment where the performer is immersed.
 Eye position, hand position, and other data streams can also be represented as 3D points in the same scene. The blue dots show the eye position of the user during a session, while the green dots show the hand position. For each collection of 3D points repre- senting a data stream, users can retrieve more detailed information by interacting with the points. For example, if the user hovers their mouse over the points representing the eye position, a line representing the gaze direction will automatically be rendered in the scene, representing what point in space the user was looking at from their current position at a specific timestamp. This is possible by calculating the intersection of the gaze direction vector with the world point cloud.</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="_images/spatial_viewer.png" src="_images/spatial_viewer.png" />
-</figure>
+</div>
 <p><strong>Recipe Collection</strong></p>
 <p>This page allows users to explore the recipes. It includes information about the ingredients, tools and descriptions.</p>
-<figure class="align-default">
+<div class="figure align-default">
 <img alt="_images/recipes_tab.png" src="_images/recipes_tab.png" />
-</figure>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>
+           
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="deployment.html" class="btn btn-neutral float-left" title="Local deployment / development setup" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="internals.html" class="btn btn-neutral float-right" title="Internals" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="deployment.html" class="btn btn-neutral float-left" title="Local deployment / development setup" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, New York University.</p>
-  </div>
+    <p>
+        &#169; Copyright 2022, New York University.
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
-  <script>
+  
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

@@ -9,9 +9,7 @@ Welcome to ARGUS's documentation!
 ARGUS Dashboard is a Hololens data exploration platform developed at New York University. It can be used to ingest new data or to explore data generated using Hololens. 
 The system can be found at this address: http://dashboardptg.vida-nyu.org:8033/
 
-You can find the source code on GitLab: https://github.com/VIDA-NYU/tim-dashboard
-
-Documentation is available `here <https://github.com/VIDA-NYU/tim-dashboard/blob/main/docs/source/webui.rst>`_.
+You can find the source code in our GitHub repository: https://github.com/VIDA-NYU/ARGUS
 
 ..  toctree::
     :maxdepth: 2
