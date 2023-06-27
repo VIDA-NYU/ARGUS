@@ -4,8 +4,6 @@ Using the web interface
 ARGUS is an interactive webpage to view current streams, access historical data, and debug models. 
 The web interface allows users to explore the Hololens data with no additional software. 
 
-The system can be found at this address: http://dashboardptg.vida-nyu.org:8033/
-
 ARGUS has two operation modes: “Online” (during task performance), and “Offline” (after performance). ARGUS has four main features:  (1) Data creation , (2) data exploration, (3) model debugging, and (4) recipe collection (ingredients, descriptions, tools, etc).
 
 
@@ -44,7 +42,7 @@ Under the tab “Create Data”, users can perform a real-time debugging. This p
 ..  figure:: screenshots/debugging_model_view_v3.png
 
 
-“Offline” Mode
+Offline Mode
 ----------------------
 
 Under the tab “Historical Data”, ARGUS provides a visual user interface that enables querying, filtering, and exploration of the data. Due to the spatiotemporal characteristics of the data, we provide both spatial and temporal visualization widgets to allow users to analyze the data from different perspectives. 
